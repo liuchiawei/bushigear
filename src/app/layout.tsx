@@ -3,6 +3,7 @@ import { Noto_Sans_JP } from "next/font/google";
 import "./globals.css";
 import Nav from "@/components/layout/nav";
 import Footer from "@/components/layout/footer";
+import BackToTop from "@/components/common/backToTop";
 
 const notoSansJP = Noto_Sans_JP({
   variable: "--font-noto-sans-jp",
@@ -27,6 +28,7 @@ export default function RootLayout({
         <Nav />
         {children}
         <Footer />
+        <BackToTop />
       </body>
     </html>
   );
