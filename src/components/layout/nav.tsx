@@ -5,7 +5,7 @@ export default function Nav() {
   return (
     <nav className="w-full p-3 fixed top-0 left-0 z-50 flex justify-between items-center">
       <div className="w-24">
-        <h1 className="text-2xl font-bold text-center">LOGO</h1>
+        <Link href="/" className="text-2xl font-bold text-center">LOGO</Link>
       </div>
       <div>
         <h1 className="text-2xl font-bold text-center">ナビゲーション</h1>
