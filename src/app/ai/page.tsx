@@ -9,7 +9,7 @@ export default function Chat() {
     maxSteps: 3,
   });
   return (
-    <div className="flex flex-col relative w-full max-w-md h-full min-h-screen py-24 mx-auto stretch">
+    <section className="flex flex-col relative w-full max-w-md h-full min-h-screen py-24 mx-auto stretch">
       {messages.map(message => (
         <div key={message.id} className="whitespace-pre-wrap">
           {message.role === 'user' ? 'User: ' : 'AI: '}
@@ -18,7 +18,6 @@ export default function Chat() {
               case 'text':
                 return <div key={`${message.id}-${i}`}>{part.text}</div>;
               case 'tool-weather':
-              case 'tool-convertFahrenheitToCelsius':
                 return (
                   <pre key={`${message.id}-${i}`}>
                     {JSON.stringify(part, null, 2)}
@@ -43,6 +42,6 @@ export default function Chat() {
           onChange={e => setInput(e.currentTarget.value)}
         />
       </form>
-    </div>
+    </section>
   );
 }

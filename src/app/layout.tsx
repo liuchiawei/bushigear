@@ -11,7 +11,10 @@ const notoSansJP = Noto_Sans_JP({
 });
 
 export const metadata: Metadata = {
-  title: "ブシギア | 格闘用品専門店",
+  title: {
+    default: "ブシギア | 格闘用品専門店",
+    template: "%s | ブシギア",
+  },
   description: "「ブシギア」は、高品質な日本製の格闘用品を中心に取り扱う専門ECサイトです。",
 };
 
