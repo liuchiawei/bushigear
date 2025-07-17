@@ -4,6 +4,7 @@ import "./globals.css";
 import Nav from "@/components/layout/nav";
 import Footer from "@/components/layout/footer";
 import BackToTop from "@/components/common/backToTop";
+import AiAssistant from "@/components/common/aiAssistant";
 
 const notoSansJP = Noto_Sans_JP({
   variable: "--font-noto-sans-jp",
@@ -32,6 +33,7 @@ export default function RootLayout({
         {children}
         <Footer />
         <BackToTop />
+        <AiAssistant />
       </body>
     </html>
   );
