@@ -7,21 +7,29 @@ import {
 
 export default function SNS() {
   return (
-    <ul className="flex flex-row justify-center items-center [&_li]:cursor-pointer ">
+    <ul className="flex justify-center items-center gap-2 [&_li]:cursor-pointer">
       {SNSList.map((sns) => (
-        <SNSItem key={sns.title} title={sns.title} href={sns.href} />
+        <SNSItem key={sns.title} title={sns.title} href={sns.href} icon={sns.icon} />
       ))}
     </ul>
   );
 }
 
-const SNSItem = ({ title, href }: { title: string; href: string }) => {
+const SNSItem = (
+  { title,
+    href,
+    icon
+  }:
+  { title: string;
+    href: string;
+    icon: React.ReactNode
+  }) => {
   return (
     <li>
       <Tooltip>
         <TooltipTrigger>
           <a title={title} href={href}>
-            <Instagram />
+            {icon}
           </a>
         </TooltipTrigger>
         <TooltipContent>
@@ -36,13 +44,16 @@ const SNSList = [
   {
     title: "Instagram",
     href: "https://www.instagram.com/",
+    icon: <Instagram />,
   },
   {
     title: "Facebook",
     href: "https://www.facebook.com/",
+    icon: <Facebook />,
   },
   {
     title: "X",
     href: "https://www.x.com/",
+    icon: <X />,
   },
 ];
