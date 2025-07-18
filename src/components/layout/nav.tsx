@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Search, Languages, Bot } from "lucide-react";
+import { Search, Languages } from "lucide-react";
 
 export default function Nav() {
   return (
@@ -13,7 +13,6 @@ export default function Nav() {
       <ul className="flex items-center gap-4">
         <li>
           <a title="検索" href="#">
-            {/* test */}
             <Search className="size-4" />
           </a>
         </li>
@@ -26,11 +25,6 @@ export default function Nav() {
           <a href="#">
             ログイン
           </a>
-        </li>
-        <li>
-          <Link title="AI" href="/ai">
-            <Bot className="size-4" />
-          </Link>
         </li>
         <li>
           <a title="言語切り替え" href="#">
