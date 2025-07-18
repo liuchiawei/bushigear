@@ -11,13 +11,20 @@ export default function Nav() {
   const [isScrolled, setIsScrolled] = useState(false);
 
   // ホームページの場合、400px以上スクロールしたらナビゲーションを表示
-  if (isHome) {
-    useEffect(() => {
-      window.addEventListener("scroll", () => {
-        setIsScrolled(window.scrollY > 400);
-      });
-    }, []);
-  }
+  useEffect(() => {
+    if (!isHome) return;
+
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 400);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    // スクロールイベントのリスナーを削除
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [isHome]);
 
   return (
     <nav className={`w-full p-3 fixed top-0 left-0 z-50 flex justify-between items-center transition-all duration-300
