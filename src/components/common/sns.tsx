@@ -1,27 +1,59 @@
-import { Instagram } from "lucide-react";
-import { Facebook } from "lucide-react";
-import { X } from "lucide-react";
+import { Instagram, Facebook, X } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export default function SNS() {
   return (
-    <div className="flex flex-row justify-center items-center space-x-4">
-      <ul className="flex flex-row [&_li]:gap-6 [&_li]:cursor-pointer ">
-        <li>
-          <a href="https://www.instagram.com/">
-            <Instagram />
-          </a>
-        </li>
-        <li>
-          <a href="https://www.facebook.com/">
-            <Facebook />
-          </a>
-        </li>
-        <li>
-          <a href="https://www.x.com/">
-            <X />
-          </a>
-        </li>
-      </ul>
-    </div>
+    <ul className="flex justify-center items-center gap-2 [&_li]:cursor-pointer">
+      {SNSList.map((sns) => (
+        <SNSItem key={sns.title} title={sns.title} href={sns.href} icon={sns.icon} />
+      ))}
+    </ul>
   );
 }
+
+const SNSItem = (
+  { title,
+    href,
+    icon
+  }:
+  { title: string;
+    href: string;
+    icon: React.ReactNode
+  }) => {
+  return (
+    <li>
+      <Tooltip>
+        <TooltipTrigger>
+          <a title={title} href={href}>
+            {icon}
+          </a>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>{title}</p>
+        </TooltipContent>
+      </Tooltip>
+    </li>
+  );
+};
+
+const SNSList = [
+  {
+    title: "Instagram",
+    href: "https://www.instagram.com/",
+    icon: <Instagram />,
+  },
+  {
+    title: "Facebook",
+    href: "https://www.facebook.com/",
+    icon: <Facebook />,
+  },
+  {
+    title: "X",
+    href: "https://www.x.com/",
+    icon: <X />,
+  },
+];
