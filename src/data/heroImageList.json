@@ -1,0 +1,17 @@
+[
+  {
+    "id": 1,
+    "title": "デモ1",
+    "image": "/images/hero/demo_001.jpg"
+  },
+  {
+    "id": 2,
+    "title": "デモ2",
+    "image": "/images/hero/demo_002.jpg"
+  },
+  {
+    "id": 3,
+    "title": "デモ3",
+    "image": "/images/hero/demo_003.jpg"
+  }
+]
