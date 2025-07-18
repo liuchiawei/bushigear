@@ -9,48 +9,42 @@ import {
 
 export default function SNS() {
   return (
-    <div className="flex flex-row justify-center items-center space-x-4">
-      <ul className="flex flex-row  [&_li]:gap-y-4 [&_li]:cursor-pointer ">
-        <li>
-          <Tooltip>
-            <TooltipTrigger>
-              {" "}
-              <a href="https://www.instagram.com/">
-                <Instagram />
-              </a>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Instagram</p>
-            </TooltipContent>
-          </Tooltip>
-        </li>
-        <li>
-          <Tooltip>
-            <TooltipTrigger>
-              {" "}
-              <a href="https://www.facebook.com/">
-                <Facebook />
-              </a>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Facebook</p>
-            </TooltipContent>
-          </Tooltip>
-        </li>
-        <li>
-          <Tooltip>
-            <TooltipTrigger>
-              {" "}
-              <a href="https://www.x.com/">
-                <X />
-              </a>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>X</p>
-            </TooltipContent>
-          </Tooltip>
-        </li>
-      </ul>
-    </div>
+    <ul className="flex flex-row justify-center items-center [&_li]:cursor-pointer ">
+      {SNSList.map((sns) => (
+        <SNSItem key={sns.title} title={sns.title} href={sns.href} />
+      ))}
+    </ul>
   );
 }
+
+const SNSItem = ({ title, href }: { title: string; href: string }) => {
+  return (
+    <li>
+      <Tooltip>
+        <TooltipTrigger>
+          <a title={title} href={href}>
+            <Instagram />
+          </a>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>{title}</p>
+        </TooltipContent>
+      </Tooltip>
+    </li>
+  );
+};
+
+const SNSList = [
+  {
+    title: "Instagram",
+    href: "https://www.instagram.com/",
+  },
+  {
+    title: "Facebook",
+    href: "https://www.facebook.com/",
+  },
+  {
+    title: "X",
+    href: "https://www.x.com/",
+  },
+];
