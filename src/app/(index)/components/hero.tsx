@@ -20,7 +20,7 @@ export default function Hero() {
     }, 5000);
 
     return () => clearInterval(timer);
-  }, [isAutoPlaying, items.length]);
+  }, [isAutoPlaying]);
 
   // 次の画像に切り替える
   const nextSlide = () => {
