@@ -13,7 +13,6 @@ export default function Nav() {
       <ul className="flex items-center gap-4">
         <li>
           <a title="検索" href="#">
-            {/* test */}
             <Search className="size-4" />
           </a>
         </li>
