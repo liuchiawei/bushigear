@@ -31,7 +31,11 @@ export default function Sales() {
             <Image src={item.image} alt={item.name} width={480} height={480} className="w-full h-auto" />
             <div className="p-4 bg-white">
               <h2 className="text-lg font-bold">{item.name}</h2>
-              <p className="text-sm text-gray-500">￥{item.price}円(税込)</p>
+              <p className="text-sm text-center">
+                <span className="line-through text-gray-500">￥{item.price}</span>
+                <span className="text-red-500 font-bold">￥{item.price}円</span>
+                (税込)
+              </p>
             </div>
           </motion.div>
         ))}
