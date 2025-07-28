@@ -1,0 +1,99 @@
+{
+  "home": {
+    "cm": {
+      "title": "情報CMエリア",
+      "items": [
+        {
+          "id": 1,
+          "title": "フシギア夏祭りセール",
+          "description": "フシギア夏祭りセールの情報をお知らせします。",
+          "image": "/images/cm_img_01.png"
+        },
+        {
+          "id": 2,
+          "title": "フシギア夏祭りセール",
+          "description": "フシギア夏祭りセールの情報をお知らせします。",
+          "image": "/images/cm_img_02.png"
+        },
+        {
+          "id": 3,
+          "title": "フシギア夏祭りセール",
+          "description": "フシギア夏祭りセールの情報をお知らせします。",
+          "image": "/images/cm_img_03.png"
+        },
+        {
+          "id": 4,
+          "title": "フシギア夏祭りセール",
+          "description": "フシギア夏祭りセールの情報をお知らせします。",
+          "image": "/images/web_catalog.png"
+        }
+      ]
+    },
+    "sales": {
+      "title": "フシギア夏祭りセール",
+      "items": [
+        {
+          "id": 1,
+          "name": "Martial World ヘッドギア",
+          "price": 4990,
+          "image": "/images/protector_01.jpg"
+        },
+        {
+          "id": 2,
+          "name": "Amino Flight アミノフライト4000mg",
+          "price": 9350,
+          "image": "/images/fuku_01.jpg"
+        },
+        {
+          "id": 3,
+          "name": "Martial World マルチバンチングミット",
+          "price": 5415,
+          "image": "/images/mitt_01.jpg"
+        },
+        {
+          "id": 4,
+          "name": "Martial World グローブ",
+          "price": 7285,
+          "image": "/images/glove_04.jpg"
+        }
+      ]
+    },
+    "features": {
+      "title": "おすすめ商品",
+      "items": [
+        {
+          "id": 1,
+          "name": "商品1",
+          "price": 1000
+        }
+      ]
+    },
+    "ranking": {
+      "title": "Category Ranking",
+      "description": "各カテゴリーのピックアップ商品",
+      "categories": [
+        {
+          "id": 1,
+          "name": "グローブ"
+        },
+        {
+          "id": 2,
+          "name": "ミット"
+        },
+        {
+          "id": 3,
+          "name": "プロテクター"
+        },
+        {
+          "id": 4,
+          "name": "服"
+        }
+      ]
+    },
+    "about": {
+      "title": "格闘技用品店「フシギア」",
+      "description": "格闘技用品店「フシギア」は、格闘技用品を扱う店舗です。",
+      "button": "詳細を見る"
+    }
+  }
+}

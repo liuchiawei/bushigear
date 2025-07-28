@@ -1,6 +1,6 @@
 export default function Features() {
   return (
-    <div className="p-10 bg-gray-200">
+    <div className="p-10 bg-cover bg-center" style={{ backgroundImage: `url(/images/glove_area_bg.jpg)` }}>
       <h1 className="my-6 text-3xl font-bold text-center">
         おすすめ商品
       </h1>
