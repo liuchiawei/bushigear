@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useChat } from "@ai-sdk/react";
+import { useChat } from "ai/react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -16,8 +16,7 @@ export default function AiAssistant() {
   const handleOpen = () => {
     setIsOpen(!isOpen);
   };
-  const [input, setInput] = useState('');
-  const { messages, sendMessage } = useChat({
+  const { messages, input: chatInput, handleInputChange, handleSubmit } = useChat({
     maxSteps: 3,
   });
 
@@ -48,32 +47,20 @@ export default function AiAssistant() {
             {messages.map(message => (
               <div key={message.id} className="whitespace-pre-wrap">
                 {message.role === 'user' ? 'User: ' : 'AI: '}
-                {message.parts.map((part, i) => {
-                  switch (part.type) {
-                    case 'text':
-                      return <div key={`${message.id}-${i}`}>{part.text}</div>;
-                    case 'tool-weather':
-                      return (
-                        <pre key={`${message.id}-${i}`}>
-                          {JSON.stringify(part, null, 2)}
-                        </pre>
-                      );
-                  }
-                })}
+                {message.content}
+                {message.toolInvocations && message.toolInvocations.length > 0 && (
+                  <pre className="mt-2 text-sm text-gray-600">
+                    {JSON.stringify(message.toolInvocations, null, 2)}
+                  </pre>
+                )}
               </div>
             ))}
-            <form
-              onSubmit={e => {
-                e.preventDefault();
-                sendMessage({ text: input });
-                setInput('');
-              }}
-            >
+            <form onSubmit={handleSubmit}>
               <input
                 className="dark:bg-zinc-900 w-full p-2 border border-zinc-300 dark:border-zinc-800 focus:outline-none rounded"
-                value={input}
+                value={chatInput}
                 placeholder="何か入力してください..."
-                onChange={e => setInput(e.currentTarget.value)}
+                onChange={handleInputChange}
               />
             </form>
           </div>
