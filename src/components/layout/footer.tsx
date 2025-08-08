@@ -4,10 +4,12 @@ export default function Footer() {
   return (
     <footer className="flex flex-col w-full h-full bg-black">
       <div className="w-full max-w-7xl h-full mx-auto p-6 flex justify-between text-gray-300">
+        {/* TODO: ロゴを追加 */}
         <h1 className="mr-16 text-2xl font-bold text-center">LOGO</h1>
         <div className="text-xl w-full flex flex-col md:flex-row justify-between">
           <div className="border-l-1 border-gray-800 pb-4 pl-4">
             <h1 className="text-2xl font-bold mb-5 text-white">CATEGORY</h1>
+            {/* TODO: <Link> を使用して、各リンク先を設定 */}
             <ul className="">
               <li className="tracking-wide mb-3">
                 <a href="#">グローブ</a>

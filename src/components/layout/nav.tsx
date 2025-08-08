@@ -40,6 +40,7 @@ export default function Nav() {
           LOGO
         </Link>
       </div>
+      {/* TODO: ナビゲーションのリンク先を<Link> を使用して設定 */}
       <ul className="flex items-center gap-4">
         <li>
           <a href="#">HOME</a>
