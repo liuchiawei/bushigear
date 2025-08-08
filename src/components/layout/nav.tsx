@@ -27,14 +27,39 @@ export default function Nav() {
   }, [isHome]);
 
   return (
-    <nav className={`w-full p-3 fixed top-0 left-0 z-50 flex justify-between items-center transition-all duration-300
-    ${isHome && isScrolled ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-full"}`}>
+    <nav
+      className={`w-full p-3 fixed top-0 left-0 z-50 flex justify-between items-center transition-all duration-300
+    ${
+      isHome && isScrolled
+        ? "opacity-100 translate-y-0"
+        : "opacity-0 -translate-y-full"
+    }`}
+    >
       <div className="w-24">
-        <Link href="/" className="text-2xl font-bold text-center">LOGO</Link>
+        <Link href="/" className="text-2xl font-bold text-center">
+          LOGO
+        </Link>
       </div>
-      <div>
-        <h1 className="text-2xl font-bold text-center">ナビゲーション</h1>
-      </div>
+      <ul className="flex items-center gap-4">
+        <li>
+          <a href="#">HOME</a>
+        </li>
+        <li>
+          <a href="#">商品を探す</a>
+        </li>
+        <li>
+          <a href="#">ご利用ガイド</a>
+        </li>
+        <li>
+          <a href="#">送料ガイド</a>
+        </li>
+        <li>
+          <a href="#">ABOUT</a>
+        </li>
+        <li>
+          <a href="#">お問い合わせ</a>
+        </li>
+      </ul>
       <ul className="flex items-center gap-4">
         <li>
           <a title="検索" href="#">
@@ -43,12 +68,29 @@ export default function Nav() {
         </li>
         <li>
           <a href="#">
+            {" "}
+            <span className="material-symbols-outlined align-middle mr-1 text-sm">
+              person
+            </span>
             会員登録
           </a>
         </li>
         <li>
           <a href="#">
+            {" "}
+            <span className="material-symbols-outlined align-middle mr-1 text-sm">
+              lock
+            </span>
             ログイン
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            {" "}
+            <span className="material-symbols-outlined align-middle mr-1 text-sm">
+              favorite
+            </span>
+            お気に入り
           </a>
         </li>
         <li>
