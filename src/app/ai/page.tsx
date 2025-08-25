@@ -5,9 +5,7 @@ import { useState } from 'react';
 
 export default function Chat() {
   const [input, setInput] = useState('');
-  const { messages, sendMessage } = useChat({
-    maxSteps: 3,
-  });
+  const { messages, sendMessage } = useChat({});
   return (
     <section className="flex flex-col relative w-full max-w-md h-full min-h-screen py-24 mx-auto stretch">
       {messages.map(message => (
@@ -31,8 +29,10 @@ export default function Chat() {
       <form
         onSubmit={e => {
           e.preventDefault();
-          sendMessage({ text: input });
-          setInput('');
+          if (input.trim()) {
+            sendMessage({ text: input });
+            setInput('');
+          }
         }}
       >
         <input
