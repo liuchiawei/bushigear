@@ -5,7 +5,7 @@ import { useState } from 'react';
 
 export default function Chat() {
   const [input, setInput] = useState('');
-  const { messages, sendMessage } = useChat({});
+  const { messages, sendMessage } = useChat();
   return (
     <section className="flex flex-col relative w-full max-w-md h-full min-h-screen py-24 mx-auto stretch">
       {messages.map(message => (

@@ -1,0 +1,87 @@
+[
+  {
+    "id": 0,
+    "name": {
+      "en": "Product 0",
+      "jp": "商品0",
+      "cn": "商品0"
+    },
+    "category": "カテゴリ1",
+    "brand": "ブランド0",
+    "price": 1000,
+    "image": "/images/glove_01.jpg",
+    "description": {
+      "en": "Product 0 description",
+      "jp": "商品0の説明",
+      "cn": "商品0の説明"
+    }
+  },
+  {
+    "id": 1,
+    "name": {
+      "en": "Product 1",
+      "jp": "商品1",
+      "cn": "商品1"
+    },
+    "category": "カテゴリ1",
+    "brand": "ブランド1",
+    "price": 1000,
+    "image": "/images/glove_01.jpg",
+    "description": {
+      "en": "Product 1 description",
+      "jp": "商品1の説明",
+      "cn": "商品1の説明"
+    }
+  },
+  {
+    "id": 2,
+    "name": {
+      "en": "Product 2",
+      "jp": "商品2",
+      "cn": "商品2"
+    },
+    "category": "カテゴリ1",
+    "brand": "ブランド2",
+    "price": 1000,
+    "image": "/images/glove_01.jpg",
+    "description": {
+      "en": "Product 2 description",
+      "jp": "商品2の説明",
+      "cn": "商品2の説明"
+    }
+  },
+  {
+    "id": 3,
+    "name": {
+      "en": "Product 3",
+      "jp": "商品3",
+      "cn": "商品3"
+    },
+    "category": "カテゴリ1",
+    "brand": "ブランド3",
+    "price": 1000,
+    "image": "/images/glove_01.jpg",
+    "description": {
+      "en": "Product 3 description",
+      "jp": "商品3の説明",
+      "cn": "商品3の説明"
+    }
+  },
+  {
+    "id": 4,
+    "name": {
+      "en": "Product 4",
+      "jp": "商品4",
+      "cn": "商品4"
+    },
+    "category": "カテゴリ1",
+    "brand": "ブランド4",
+    "price": 1000,
+    "image": "/images/glove_01.jpg",
+    "description": {
+      "en": "Product 4 description",
+      "jp": "商品4の説明",
+      "cn": "商品4の説明"
+    }
+  }
+]
