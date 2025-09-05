@@ -120,39 +120,9 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
-exports.Prisma.ProductScalarFieldEnum = {
-  id: 'id',
-  name: 'name',
-  category: 'category',
-  brand: 'brand',
-  price: 'price',
-  image: 'image',
-  description: 'description'
-};
-
-exports.Prisma.SortOrder = {
-  asc: 'asc',
-  desc: 'desc'
-};
-
-exports.Prisma.JsonNullValueInput = {
-  JsonNull: Prisma.JsonNull
-};
-
-exports.Prisma.JsonNullValueFilter = {
-  DbNull: Prisma.DbNull,
-  JsonNull: Prisma.JsonNull,
-  AnyNull: Prisma.AnyNull
-};
-
-exports.Prisma.QueryMode = {
-  default: 'default',
-  insensitive: 'insensitive'
-};
-
 
 exports.Prisma.ModelName = {
-  Product: 'Product'
+
 };
 
 /**
