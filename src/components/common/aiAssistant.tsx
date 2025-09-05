@@ -17,9 +17,7 @@ export default function AiAssistant() {
     setIsOpen(!isOpen);
   };
   const [input, setInput] = useState('');
-  const { messages, sendMessage } = useChat({
-    maxSteps: 3,
-  });
+  const { messages, sendMessage } = useChat({});
 
   if (isAi) return null;
   return (
@@ -65,13 +63,16 @@ export default function AiAssistant() {
             <form
               onSubmit={e => {
                 e.preventDefault();
-                sendMessage({ text: input });
-                setInput('');
+                if (input.trim()) {
+                  sendMessage({ text: input });
+                  setInput('');
+                }
               }}
             >
               <input
-                className="dark:bg-zinc-900 w-full p-2 border border-zinc-300 dark:border-zinc-800 focus:outline-none rounded"
+                name="prompt"
                 value={input}
+                className="dark:bg-zinc-900 w-full p-2 border border-zinc-300 dark:border-zinc-800 focus:outline-none rounded"
                 placeholder="何か入力してください..."
                 onChange={e => setInput(e.currentTarget.value)}
               />

@@ -16,7 +16,8 @@ export const metadata: Metadata = {
     default: "ブシギア | 格闘用品専門店",
     template: "%s | ブシギア",
   },
-  description: "「ブシギア」は、高品質な日本製の格闘用品を中心に取り扱う専門ECサイトです。",
+  description:
+    "「ブシギア」は、高品質な日本製の格闘用品を中心に取り扱う専門ECサイトです。",
 };
 
 export default function RootLayout({
@@ -26,9 +27,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja" suppressHydrationWarning>
-      <body
-        className={`${notoSansJP.variable} antialiased`}
-      >
+      <head>
+        {/* Google Material Symbols */}
+        <link
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+          rel="stylesheet"
+        />
+      </head>
+      <body className={`${notoSansJP.variable} antialiased`}>
         <Nav />
         {children}
         <Footer />
