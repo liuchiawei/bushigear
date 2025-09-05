@@ -8,11 +8,13 @@ import { Product } from "@/lib/type";
 export default async function ProductDetailPage({
   params,
 }: {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }) {
+  // 接收動態路由參數(id)
   const { id } = await params;
-
+  // 根據id從資料庫中找到對應商品
   const product = productsData.find((c: Product) => c.id === parseInt(id));
+  // 如果找不到商品，則顯示404頁面
   if (!product) { notFound(); }
 
   return (
