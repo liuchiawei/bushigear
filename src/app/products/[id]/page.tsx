@@ -42,9 +42,3 @@ export async function generateStaticParams() {
     id: product.id.toString()
   }))
 }
-
-// 生成メタデータ
-type Props = {
-  params: Promise<{ id: string }>
-  searchParams?: { [key: string]: string | string[] | undefined }
-}

@@ -1,5 +1,3 @@
-import Image from "next/image";
-import Link from "next/link";
 import { Product } from "@/lib/type";
 import productsData from "@/data/products.json";
 import content from "@/data/content.json";
