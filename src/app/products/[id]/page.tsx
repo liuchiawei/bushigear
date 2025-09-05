@@ -7,9 +7,9 @@ import { Product } from "@/lib/type";
 export default async function ProductDetailPage({
   params,
 }: {
-  params: Promise<{ id: string }>
+  params: { id: string }
 }) {
-  const { id } = await params;
+  const { id } = params;
 
   const product = productsData.find((c: Product) => c.id === parseInt(id));
   if (!product) { notFound(); }
