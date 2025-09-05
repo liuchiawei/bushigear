@@ -30,9 +30,10 @@ export default function Nav() {
     <nav
       className={`w-full p-3 fixed top-0 left-0 z-50 flex justify-between items-center transition-all duration-300
     ${
-      isHome && isScrolled
-        ? "opacity-100 translate-y-0"
-        : "opacity-0 -translate-y-full"
+      isHome 
+      ? isScrolled ? "opacity-100 translate-y-0" // ホームページの場合、400px以上スクロールしたらナビゲーションを表示
+      : "opacity-0 -translate-y-full" // ホームページの場合、400px未満スクロールしたらナビゲーションを非表示
+      : "opacity-100 translate-y-0" // ホームページでない場合はナビゲーションを表示
     }`}
     >
       <div className="w-24">
