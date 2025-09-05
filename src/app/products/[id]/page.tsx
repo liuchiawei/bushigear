@@ -4,6 +4,8 @@ import Image from "next/image";
 import productsData from "@/data/products.json";
 import { Product } from "@/lib/type";
 
+// TODO: fetch data from database instead of products.json
+
 export default async function ProductDetailPage({
   params,
 }: {
@@ -42,7 +44,7 @@ export async function generateStaticParams() {
 
 // 生成メタデータ
 type Props = {
-  params: { id: string }
+  params: Promise<{ id: string }>
   searchParams?: { [key: string]: string | string[] | undefined }
 }
  
@@ -50,7 +52,7 @@ export async function generateMetadata(
   { params }: Props,
 ): Promise<Metadata> {
   // read route params
-  const { id } = params
+  const { id } = await params
  
   // fetch data
   const product = productsData.find((c: Product) => c.id === parseInt(id));
