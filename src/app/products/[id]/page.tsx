@@ -1,5 +1,4 @@
 import { notFound } from "next/navigation";
-import type { Metadata } from 'next'
 import Image from "next/image";
 import productsData from "@/data/products.json";
 import { Product } from "@/lib/type";
@@ -11,7 +10,7 @@ export default async function ProductDetailPage({
 }: {
   params: { id: string }
 }) {
-  const { id } = params;
+  const { id } = await params;
 
   const product = productsData.find((c: Product) => c.id === parseInt(id));
   if (!product) { notFound(); }
@@ -46,19 +45,4 @@ export async function generateStaticParams() {
 type Props = {
   params: Promise<{ id: string }>
   searchParams?: { [key: string]: string | string[] | undefined }
-}
- 
-export async function generateMetadata(
-  { params }: Props,
-): Promise<Metadata> {
-  // read route params
-  const { id } = await params
- 
-  // fetch data
-  const product = productsData.find((c: Product) => c.id === parseInt(id));
-  if (!product) { notFound(); }
- 
-  return {
-    title: product.name.jp + " | Bushigear",
-  }
 }
