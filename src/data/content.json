@@ -96,6 +96,46 @@
       "button": "詳細を見る"
     }
   },
+  "nav": {
+    "categories": [
+      {
+        "id": 1,
+        "slug": "glove",
+        "name": {
+          "en": "Glove",
+          "jp": "グローブ",
+          "cn": "手套"
+        }
+      },
+      {
+        "id": 2,
+        "slug": "mitt",
+        "name": {
+          "en": "Mitt",
+          "jp": "ミット",
+          "cn": "手靶"
+        }
+      },
+      {
+        "id": 3,
+        "slug": "protector",
+        "name": {
+          "en": "Protector",
+          "jp": "プロテクター",
+          "cn": "护具"
+        }
+      },
+      {
+        "id": 4,
+        "slug": "clothes",
+        "name": {
+          "en": "Clothes",
+          "jp": "服",
+          "cn": "服飾"
+        }
+      }
+    ]
+  },
   "products": {
     "title": "商品一覧",
     "description": "商品一覧の情報をお知らせします。"
