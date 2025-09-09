@@ -1,17 +1,13 @@
 export type Product = {
   id: number;
-  name: {
-    en: string;
-    jp: string;
-    cn: string;
-  };
+  name_en: string;
+  name_jp: string;
+  name_cn: string;
   category: string;
   brand: string;
   price: number;
   image: string;
-  description: {
-    en: string;
-    jp: string;
-    cn: string;
-  };
+  description_en: string;
+  description_jp: string;
+  description_cn: string;
 };
