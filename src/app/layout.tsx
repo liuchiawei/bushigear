@@ -1,40 +1,21 @@
-import type { Metadata } from "next";
-import { Noto_Sans_JP } from "next/font/google";
-import "./globals.css";
-import Nav from "@/components/layout/nav";
-import Footer from "@/components/layout/footer";
-import BackToTop from "@/components/common/backToTop";
-import AiAssistant from "@/components/common/aiAssistant";
-
-const notoSansJP = Noto_Sans_JP({
-  variable: "--font-noto-sans-jp",
-  subsets: ["latin"],
-});
+import '@/components/ui/global.css';
+import { inter } from '@/components/ui/fonts';
+import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: {
-    default: "ブシギア | 格闘用品専門店",
-    template: "%s | ブシギア",
-  },
-  description: "「ブシギア」は、高品質な日本製の格闘用品を中心に取り扱う専門ECサイトです。",
+  title: 'Acme Dashboard',
+  description: 'The official Next.js Course Dashboard, built with App Router.',
+  metadataBase: new URL('https://next-learn-dashboard.vercel.sh'),
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <html lang="ja" suppressHydrationWarning>
-      <body
-        className={`${notoSansJP.variable} antialiased`}
-      >
-        <Nav />
-        {children}
-        <Footer />
-        <BackToTop />
-        <AiAssistant />
-      </body>
+    <html lang="en">
+      <body className={`${inter.className} antialiased`}>{children}</body>
     </html>
   );
 }
