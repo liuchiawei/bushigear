@@ -1,33 +1,43 @@
 import { notFound } from "next/navigation";
-import type { Metadata } from 'next'
+import type { Metadata } from "next";
 import Image from "next/image";
-import productsData from "@/data/products.json";
-import { Product } from "@/lib/type";
+import prisma from "@/lib/prisma";
 
-// TODO: fetch data from database instead of products.json
+export const revalidate = 60;
 
 export default async function ProductDetailPage({
   params,
 }: {
-  params: { id: string }
+  params: { id: string };
 }) {
-  const { id } = params;
+  const productId = Number(params.id);
+  if (Number.isNaN(productId)) notFound();
 
-  const product = productsData.find((c: Product) => c.id === parseInt(id));
-  if (!product) { notFound(); }
+  const product = await prisma.product.findUnique({
+    where: { id: productId },
+  });
+  if (!product) notFound();
+
+  const name = product.name as { en: string; jp: string; cn: string };
+  const description = product.description as { en: string; jp: string; cn: string };
 
   return (
     <main className="w-full min-h-screen py-16">
       <div className="w-full max-w-6xl mx-auto">
         <div className="flex flex-col md:flex-row *:border">
           <div className="w-full">
-            <Image src={product.image} alt={product.name.en} width={500} height={500} />
+            <Image
+              src={product.image}
+              alt={name.en}
+              width={500}
+              height={500}
+            />
           </div>
-          <div className="w-full">
-            <h1 className="text-2xl font-bold">{product.name.jp}</h1>
+          <div className="w-full p-4">
+            <h1 className="text-2xl font-bold">{name.jp}</h1>
             <p className="text-sm text-gray-500">{product.brand}</p>
-            <p className="text-sm text-gray-500">{product.price}</p>
-            <p className="text-sm text-gray-500">{product.description.en}</p>
+            <p className="text-sm text-gray-500">¥{product.price.toLocaleString()}</p>
+            <p className="text-sm text-gray-500">{description.en}</p>
           </div>
         </div>
       </div>
@@ -35,30 +45,26 @@ export default async function ProductDetailPage({
   );
 }
 
-// 生成靜態參數
 export async function generateStaticParams() {
-  return productsData.map((product: Product) => ({
-    id: product.id.toString()
-  }))
+  const ids = await prisma.product.findMany({ select: { id: true } });
+  return ids.map((p) => ({ id: p.id.toString() }));
 }
 
-// 生成メタデータ
 type Props = {
-  params: { id: string }
-  searchParams?: { [key: string]: string | string[] | undefined }
-}
- 
-export async function generateMetadata(
-  { params }: Props,
-): Promise<Metadata> {
-  // read route params
-  const { id } = params
- 
-  // fetch data
-  const product = productsData.find((c: Product) => c.id === parseInt(id));
-  if (!product) { notFound(); }
- 
-  return {
-    title: product.name.jp + " | Bushigear",
-  }
+  params: { id: string };
+  searchParams?: Record<string, string | string[] | undefined>;
+};
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const productId = Number(params.id);
+  if (Number.isNaN(productId)) return { title: "Product | Bushigear" };
+
+  const product = await prisma.product.findUnique({
+    where: { id: productId },
+    select: { name: true },
+  });
+  if (!product) return { title: "Product | Bushigear" };
+
+  const name = product.name as { jp: string };
+  return { title: `${name.jp} | Bushigear` };
 }
