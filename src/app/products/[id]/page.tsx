@@ -18,9 +18,6 @@ export default async function ProductDetailPage({
   });
   if (!product) notFound();
 
-  const name = product.name as { en: string; jp: string; cn: string };
-  const description = product.description as { en: string; jp: string; cn: string };
-
   return (
     <main className="w-full min-h-screen py-16">
       <div className="w-full max-w-6xl mx-auto">
@@ -28,16 +25,16 @@ export default async function ProductDetailPage({
           <div className="w-full">
             <Image
               src={product.image}
-              alt={name.en}
+              alt={product.name_en}
               width={500}
               height={500}
             />
           </div>
           <div className="w-full p-4">
-            <h1 className="text-2xl font-bold">{name.jp}</h1>
+            <h1 className="text-2xl font-bold">{product.name_jp}</h1>
             <p className="text-sm text-gray-500">{product.brand}</p>
             <p className="text-sm text-gray-500">¥{product.price.toLocaleString()}</p>
-            <p className="text-sm text-gray-500">{description.en}</p>
+            <p className="text-sm text-gray-500">{product.description_jp}</p>
           </div>
         </div>
       </div>
@@ -61,10 +58,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const product = await prisma.product.findUnique({
     where: { id: productId },
-    select: { name: true },
+    select: { name_en: true },
   });
   if (!product) return { title: "Product | Bushigear" };
 
-  const name = product.name as { jp: string };
-  return { title: `${name.jp} | Bushigear` };
+  return { title: `${product.name_en} | Bushigear` };
 }

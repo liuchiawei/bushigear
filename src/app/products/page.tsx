@@ -23,13 +23,11 @@ export default async function Products() {
 
       <div className="w-full max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-4">
         {products.map((product) => {
-          const name = product.name as { en: string; jp: string; cn: string };
-
           return (
             <Link key={product.id} href={`/products/${product.id}`} className="border">
-              <Image src={product.image} alt={name.en} width={500} height={500} />
+              <Image src={product.image} alt={product.name_en} width={500} height={500} />
               <div className="p-4">
-                <h2 className="text-lg font-bold">{name.en}</h2>
+                <h2 className="text-lg font-bold">{product.name_jp}</h2>
                 <p className="text-sm text-gray-500">{product.brand}</p>
                 <p className="text-sm text-gray-500">¥{product.price.toLocaleString()}</p>
               </div>

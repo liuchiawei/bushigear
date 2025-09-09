@@ -2,13 +2,15 @@
   "name": "bushigear",
   "version": "0.1.0",
   "private": true,
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
+  },
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
-  "prisma": { "seed": "tsx prisma/seed.ts" },
   "dependencies": {
     "@ai-sdk/openai": "2.0.19",
     "@ai-sdk/react": "2.0.22",
@@ -21,6 +23,7 @@
     "ai": "5.0.22",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "dotenv": "^17.2.2",
     "embla-carousel-react": "^8.6.0",
     "lucide-react": "^0.525.0",
     "motion": "^12.23.3",
