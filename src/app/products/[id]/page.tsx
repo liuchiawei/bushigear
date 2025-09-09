@@ -1,5 +1,4 @@
 import { notFound } from "next/navigation";
-import type { Metadata } from "next";
 import Image from "next/image";
 import prisma from "@/lib/prisma";
 
@@ -10,11 +9,11 @@ export default async function ProductDetailPage({
 }: {
   params: { id: string };
 }) {
-  const productId = Number(params.id);
-  if (Number.isNaN(productId)) notFound();
+  const id = await Number(params.id);
+  if (Number.isNaN(id)) notFound();
 
   const product = await prisma.product.findUnique({
-    where: { id: productId },
+    where: { id: id },
   });
   if (!product) notFound();
 
@@ -40,27 +39,4 @@ export default async function ProductDetailPage({
       </div>
     </main>
   );
-}
-
-export async function generateStaticParams() {
-  const ids = await prisma.product.findMany({ select: { id: true } });
-  return ids.map((p) => ({ id: p.id.toString() }));
-}
-
-type Props = {
-  params: { id: string };
-  searchParams?: Record<string, string | string[] | undefined>;
-};
-
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const productId = Number(params.id);
-  if (Number.isNaN(productId)) return { title: "Product | Bushigear" };
-
-  const product = await prisma.product.findUnique({
-    where: { id: productId },
-    select: { name_en: true },
-  });
-  if (!product) return { title: "Product | Bushigear" };
-
-  return { title: `${product.name_en} | Bushigear` };
 }
