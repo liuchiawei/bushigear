@@ -7,13 +7,14 @@ export const revalidate = 60;
 export default async function ProductDetailPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const id = await Number(params.id);
-  if (Number.isNaN(id)) notFound();
+  const { id } = await params;
+  const ProductId = Number(id);
+  if (Number.isNaN(ProductId)) notFound();
 
   const product = await prisma.product.findUnique({
-    where: { id: id },
+    where: { id: ProductId },
   });
   if (!product) notFound();
 
