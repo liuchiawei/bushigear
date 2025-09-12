@@ -1,9 +1,15 @@
-import { Product } from "@/lib/type";
-import productsData from "@/data/products.json";
 import content from "@/data/content.json";
+import prisma from "@/lib/prisma";
 import Grid from "./components/Grid";
+import { Product } from "@/lib/type";
 
-export default function Products() {
+export const revalidate = 60;
+
+export default async function Products() {
+  const products = await prisma.product.findMany({
+    orderBy: { id: "asc" },
+  });
+
   return (
     <div className="w-full min-h-screen flex flex-col items-center justify-center gap-6">
       <div className="w-full max-w-8xl mx-auto text-center">
@@ -22,6 +28,7 @@ export default function Products() {
         {productsData.map((product: Product) => (
           <Grid key={product.id} product={product} />
         ))}
+      </div>
       </div>
     </div>
   );
