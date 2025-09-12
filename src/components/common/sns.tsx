@@ -4,12 +4,15 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
 
-export default function SNS() {
+export default function SNS(
+  {className, containerClassName}:
+  {className?: string, containerClassName?: string}) {
   return (
-    <ul className="flex justify-center items-center gap-2 [&_li]:cursor-pointer">
+    <ul className={cn("flex justify-center items-center gap-2 [&_li]:cursor-pointer", containerClassName)}>
       {SNSList.map((sns) => (
-        <SNSItem key={sns.title} title={sns.title} href={sns.href} icon={sns.icon} />
+        <SNSItem key={sns.title} title={sns.title} href={sns.href} icon={sns.icon} className={className} />
       ))}
     </ul>
   );
@@ -18,17 +21,19 @@ export default function SNS() {
 const SNSItem = (
   { title,
     href,
-    icon
+    icon,
+    className
   }:
   { title: string;
     href: string;
-    icon: React.ReactNode
+    icon: React.ReactNode;
+    className?: string;
   }) => {
   return (
     <li>
       <Tooltip>
         <TooltipTrigger>
-          <a title={title} href={href}>
+          <a title={title} href={href} target="_blank" className={className}>
             {icon}
           </a>
         </TooltipTrigger>

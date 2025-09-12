@@ -2,15 +2,15 @@ import SNS from "../common/sns";
 
 export default function Footer() {
   return (
-    <footer className="flex flex-col w-full h-full bg-black">
+    <footer className="flex flex-col gap-2 w-full h-full bg-black">
       <div className="w-full max-w-7xl h-full mx-auto p-6 flex justify-between text-gray-300">
         {/* TODO: ロゴを追加 */}
-        <h1 className="mr-16 text-2xl font-bold text-center">LOGO</h1>
-        <div className="text-xl w-full flex flex-col md:flex-row justify-between">
-          <div className="border-l-1 border-gray-800 pb-4 pl-4">
-            <h1 className="text-2xl font-bold mb-5 text-white">CATEGORY</h1>
+        <div className="w-full text-2xl font-bold">LOGO</div>
+        <div className="w-full flex flex-col md:flex-row justify-between gap-1">
+          <div className="hidden md:block border-l-1 border-gray-800 pb-4 pl-4">
+            <h1 className="text-xl font-bold mb-5 text-white">CATEGORY</h1>
             {/* TODO: <Link> を使用して、各リンク先を設定 */}
-            <ul className="">
+            <ul className="text-sm">
               <li className="tracking-wide mb-3">
                 <a href="#">グローブ</a>
               </li>
@@ -25,9 +25,9 @@ export default function Footer() {
               </li>
             </ul>
           </div>
-          <div className="border-l-1 border-gray-800 pb-4 pl-4">
-            <h1 className="text-2xl font-bold mb-5 text-white">MENU</h1>
-            <ul>
+          <div className="hidden md:block border-l-1 border-gray-800 pb-4 pl-4">
+            <h1 className="text-xl font-bold mb-5 text-white">MENU</h1>
+            <ul className="text-sm">
               <li className="tracking-wide mb-3">
                 <a href="#">商品を探す</a>
               </li>
@@ -46,8 +46,8 @@ export default function Footer() {
             </ul>
           </div>
           <div className="border-l-1 border-gray-800 pb-4 pl-4">
-            <h1 className="text-2xl font-bold mb-5 text-white">CONTACT US</h1>
-            <ul>
+            <h1 className="text-xl font-bold mb-5 text-white">CONTACT US</h1>
+            <ul className="text-sm">
               <li className="tracking-wide mb-3">
                 <h2 className="font-bold">Address</h2>
                 <p>〒160-0023　東京都新宿区西新宿1-7-3</p>
@@ -69,10 +69,13 @@ export default function Footer() {
           </div>
         </div>
       </div>
-      <div className="w-full max-w-7xl h-full mx-auto p-6">
-        <SNS />
+      <div className="w-full max-w-7xl h-full mx-auto">
+        <SNS className="text-white" />
       </div>
-      <h6 className="text-center text-sm">Copyright © 2025</h6>
+      <div className="w-full mx-auto mb-6">
+        <h4 className="text-center font-bold text-white">BUSHIGEAR</h4>
+        <h6 className="text-center text-xs text-white">COPYRIGHT © 2025</h6>
+      </div>
     </footer>
   );
 }
