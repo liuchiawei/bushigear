@@ -6,7 +6,7 @@
       "jp": "商品0",
       "cn": "商品0"
     },
-    "category": "カテゴリ1",
+    "category": "GLOVE",
     "brand": "ブランド0",
     "price": 1000,
     "image": "/images/glove_01.jpg",
@@ -23,10 +23,10 @@
       "jp": "商品1",
       "cn": "商品1"
     },
-    "category": "カテゴリ1",
+    "category": "GLOVE",
     "brand": "ブランド1",
     "price": 1000,
-    "image": "/images/glove_01.jpg",
+    "image": "/images/glove_02.jpg",
     "description": {
       "en": "Product 1 description",
       "jp": "商品1の説明",
@@ -40,10 +40,10 @@
       "jp": "商品2",
       "cn": "商品2"
     },
-    "category": "カテゴリ1",
+    "category": "GLOVE",
     "brand": "ブランド2",
     "price": 1000,
-    "image": "/images/glove_01.jpg",
+    "image": "/images/glove_03.jpg",
     "description": {
       "en": "Product 2 description",
       "jp": "商品2の説明",
@@ -57,10 +57,10 @@
       "jp": "商品3",
       "cn": "商品3"
     },
-    "category": "カテゴリ1",
+    "category": "GLOVE",
     "brand": "ブランド3",
     "price": 1000,
-    "image": "/images/glove_01.jpg",
+    "image": "/images/glove_04.jpg",
     "description": {
       "en": "Product 3 description",
       "jp": "商品3の説明",
@@ -74,14 +74,609 @@
       "jp": "商品4",
       "cn": "商品4"
     },
-    "category": "カテゴリ1",
+    "category": "GLOVE",
     "brand": "ブランド4",
     "price": 1000,
-    "image": "/images/glove_01.jpg",
+    "image": "/images/glove_05.jpg",
     "description": {
       "en": "Product 4 description",
       "jp": "商品4の説明",
       "cn": "商品4の説明"
+    }
+  },
+  {
+    "id": 5,
+    "name": {
+      "en": "Product 5",
+      "jp": "商品5",
+      "cn": "商品5"
+    },
+    "category": "GLOVE",
+    "brand": "ブランド5",
+    "price": 1000,
+    "image": "/images/glove_06.jpg",
+    "description": {
+      "en": "Product 5 description",
+      "jp": "商品5の説明",
+      "cn": "商品5の説明"
+    }
+  },
+  {
+    "id": 6,
+    "name": {
+      "en": "Product 6",
+      "jp": "商品6",
+      "cn": "商品6"
+    },
+    "category": "GLOVE",
+    "brand": "ブランド6",
+    "price": 1000,
+    "image": "/images/glove_07.jpg",
+    "description": {
+      "en": "Product 6 description",
+      "jp": "商品6の説明",
+      "cn": "商品6の説明"
+    }
+  },
+  {
+    "id": 7,
+    "name": {
+      "en": "Product 7",
+      "jp": "商品7",
+      "cn": "商品7"
+    },
+    "category": "GLOVE",
+    "brand": "ブランド7",
+    "price": 1000,
+    "image": "/images/glove_08.jpg",
+    "description": {
+      "en": "Product 7 description",
+      "jp": "商品7の説明",
+      "cn": "商品7の説明"
+    }
+  },  
+  {
+    "id": 8,
+    "name": {
+      "en": "Product 8",
+      "jp": "商品8",
+      "cn": "商品8"
+    },
+    "category": "GLOVE",
+    "brand": "ブランド8",
+    "price": 1000,
+    "image": "/images/glove_09.jpg",
+    "description": {
+      "en": "Product 8 description",
+      "jp": "商品8の説明",
+      "cn": "商品8の説明"
+    }
+  },
+  {
+    "id": 9,
+    "name": {
+      "en": "Product 9",
+      "jp": "商品9",
+      "cn": "商品9"
+    },
+    "category": "GLOVE",
+    "brand": "ブランド9",
+    "price": 1000,
+    "image": "/images/glove_10.jpg",
+    "description": {
+      "en": "Product 9 description",
+      "jp": "商品9の説明",
+      "cn": "商品9の説明"
+    }
+  },
+  {
+    "id": 10,
+    "name": {
+      "en": "Product 10",
+      "jp": "商品10",
+      "cn": "商品10"
+    },
+    "category": "MITT",
+    "brand": "ブランド10",
+    "price": 1000,
+    "image": "/images/mitt_01.jpg",
+    "description": {
+      "en": "Product 10 description",
+      "jp": "商品10の説明",
+      "cn": "商品10の説明"
+    }
+  },
+  {
+    "id": 11,
+    "name": {
+      "en": "Product 11",
+      "jp": "商品11",
+      "cn": "商品11"
+    },
+    "category": "MITT",
+    "brand": "ブランド11",
+    "price": 1000,
+    "image": "/images/mitt_02.jpg",
+    "description": {
+      "en": "Product 11 description",
+      "jp": "商品11の説明",
+      "cn": "商品11の説明"
+    }
+  },
+  {
+    "id": 12,
+    "name": {
+      "en": "Product 12",
+      "jp": "商品12",
+      "cn": "商品12"
+    },
+    "category": "MITT",
+    "brand": "ブランド12",
+    "price": 1000,
+    "image": "/images/mitt_03.jpg",
+    "description": {
+      "en": "Product 12 description",
+      "jp": "商品12の説明",
+      "cn": "商品12の説明"
+    }
+  },
+  {
+    "id": 13,
+    "name": {
+      "en": "Product 13",
+      "jp": "商品13",
+      "cn": "商品13"
+    },
+    "category": "MITT",
+    "brand": "ブランド13",
+    "price": 1000,
+    "image": "/images/mitt_04.jpg",
+    "description": {
+      "en": "Product 13 description",
+      "jp": "商品13の説明",
+      "cn": "商品13の説明"
+    }
+  },
+  {
+    "id": 14,
+    "name": {
+      "en": "Product 14",
+      "jp": "商品14",
+      "cn": "商品14"
+    },
+    "category": "MITT",
+    "brand": "ブランド14",
+    "price": 1000,
+    "image": "/images/mitt_05.jpg",
+    "description": {
+      "en": "Product 14 description",
+      "jp": "商品14の説明",
+      "cn": "商品14の説明"
+    }
+  },
+  {
+    "id": 15,
+    "name": {
+      "en": "Product 15",
+      "jp": "商品15",
+      "cn": "商品15"
+    },
+    "category": "MITT",
+    "brand": "ブランド15",
+    "price": 1000,
+    "image": "/images/mitt_06.jpg",
+    "description": {
+      "en": "Product 15 description",
+      "jp": "商品15の説明",
+      "cn": "商品15の説明"
+    }
+  },
+  {
+    "id": 16,
+    "name": {
+      "en": "Product 16",
+      "jp": "商品16",
+      "cn": "商品16"
+    },
+    "category": "MITT",
+    "brand": "ブランド16",
+    "price": 1000,
+    "image": "/images/mitt_07.jpg",
+    "description": {
+      "en": "Product 16 description",
+      "jp": "商品16の説明",
+      "cn": "商品16の説明"
+    }
+  },
+  {
+    "id": 17,
+    "name": {
+      "en": "Product 17",
+      "jp": "商品17",
+      "cn": "商品17"
+    },
+    "category": "MITT",
+    "brand": "ブランド17",
+    "price": 1000,
+    "image": "/images/mitt_08.jpg",
+    "description": {
+      "en": "Product 17 description",
+      "jp": "商品17の説明",
+      "cn": "商品17の説明"
+    }
+  },
+  {
+    "id": 18,
+    "name": {
+      "en": "Product 18",
+      "jp": "商品18",
+      "cn": "商品18"
+    },
+    "category": "MITT",
+    "brand": "ブランド18",
+    "price": 1000,
+    "image": "/images/mitt_09.jpg",
+    "description": {
+      "en": "Product 18 description",
+      "jp": "商品18の説明",
+      "cn": "商品18の説明"
+    }
+  },
+  {
+    "id": 19,
+    "name": {
+      "en": "Product 19",
+      "jp": "商品19",
+      "cn": "商品19"
+    },
+    "category": "MITT",
+    "brand": "ブランド19",
+    "price": 1000,
+    "image": "/images/mitt_10.jpg",
+    "description": {
+      "en": "Product 19 description",
+      "jp": "商品19の説明",
+      "cn": "商品19の説明"
+    }
+  },
+  {
+    "id": 20,
+    "name": {
+      "en": "Product 20",
+      "jp": "商品20",
+      "cn": "商品20"
+    },
+    "category": "PROTECTOR",
+    "brand": "ブランド20",
+    "price": 1000,
+    "image": "/images/protector_01.jpg",
+    "description": {
+      "en": "Product 20 description",
+      "jp": "商品20の説明",
+      "cn": "商品20の説明"
+    }
+  },
+  {
+    "id": 21,
+    "name": {
+      "en": "Product 21",
+      "jp": "商品21",
+      "cn": "商品21"
+    },
+    "category": "PROTECTOR",
+    "brand": "ブランド21",
+    "price": 1000,
+    "image": "/images/protector_02.jpg",
+    "description": {
+      "en": "Product 21 description",
+      "jp": "商品21の説明",
+      "cn": "商品21の説明"
+    }
+  },
+  {
+    "id": 22,
+    "name": {
+      "en": "Product 22",
+      "jp": "商品22",
+      "cn": "商品22"
+    },
+    "category": "PROTECTOR",
+    "brand": "ブランド22",
+    "price": 1000,
+    "image": "/images/protector_03.jpg",
+    "description": {
+      "en": "Product 22 description",
+      "jp": "商品22の説明",
+      "cn": "商品22の説明"
+    }
+  },
+  {
+    "id": 23,
+    "name": {
+      "en": "Product 23",
+      "jp": "商品23",
+      "cn": "商品23"
+    },
+    "category": "PROTECTOR",
+    "brand": "ブランド23",
+    "price": 1000,
+    "image": "/images/protector_04.jpg",
+    "description": {
+      "en": "Product 23 description",
+      "jp": "商品23の説明",
+      "cn": "商品23の説明"
+    }
+  },
+  {
+    "id": 24,
+    "name": {
+      "en": "Product 24",
+      "jp": "商品24",
+      "cn": "商品24"
+    },
+    "category": "PROTECTOR",
+    "brand": "ブランド24",
+    "price": 1000,
+    "image": "/images/protector_05.jpg",
+    "description": {
+      "en": "Product 24 description",
+      "jp": "商品24の説明",
+      "cn": "商品24の説明"
+    }
+  },
+  {
+    "id": 25,
+    "name": {
+      "en": "Product 25",
+      "jp": "商品25",
+      "cn": "商品25"
+    },
+    "category": "PROTECTOR",
+    "brand": "ブランド25",
+    "price": 1000,
+    "image": "/images/protector_06.jpg",
+    "description": {
+      "en": "Product 25 description",
+      "jp": "商品25の説明",
+      "cn": "商品25の説明"
+    }
+  },
+  {
+    "id": 26,
+    "name": {
+      "en": "Product 26",
+      "jp": "商品26",
+      "cn": "商品26"
+    },
+    "category": "PROTECTOR",
+    "brand": "ブランド26",
+    "price": 1000,
+    "image": "/images/protector_07.jpg",
+    "description": {
+      "en": "Product 26 description",
+      "jp": "商品26の説明",
+      "cn": "商品26の説明"
+    }
+  },
+  {
+    "id": 27,
+    "name": {
+      "en": "Product 27",
+      "jp": "商品27",
+      "cn": "商品27"
+    },
+    "category": "PROTECTOR",
+    "brand": "ブランド27",
+    "price": 1000,
+    "image": "/images/protector_08.jpg",
+    "description": {
+      "en": "Product 27 description",
+      "jp": "商品27の説明",
+      "cn": "商品27の説明"
+    }
+  },
+  {
+    "id": 28,
+    "name": {
+      "en": "Product 28",
+      "jp": "商品28",
+      "cn": "商品28"
+    },
+    "category": "PROTECTOR",
+    "brand": "ブランド28",
+    "price": 1000,
+    "image": "/images/protector_09.jpg",
+    "description": {
+      "en": "Product 28 description",
+      "jp": "商品28の説明",
+      "cn": "商品28の説明"
+    }
+  },
+  {
+    "id": 29,
+    "name": {
+      "en": "Product 29",
+      "jp": "商品29",
+      "cn": "商品29"
+    },
+    "category": "PROTECTOR",
+    "brand": "ブランド29",
+    "price": 1000,
+    "image": "/images/protector_10.jpg",
+    "description": {
+      "en": "Product 29 description",
+      "jp": "商品29の説明",
+      "cn": "商品29の説明"
+    }
+  },
+  {
+    "id": 30,
+    "name": {
+      "en": "Product 30",
+      "jp": "商品30",
+      "cn": "商品30"
+    },
+    "category": "SPORTSWEAR",
+    "brand": "ブランド30",
+    "price": 1000,
+    "image": "/images/fuku_01.jpg",
+    "description": {
+      "en": "Product 30 description",
+      "jp": "商品30の説明",
+      "cn": "商品30の説明"
+    }
+  },
+  {
+    "id": 31,
+    "name": {
+      "en": "Product 31",
+      "jp": "商品31",
+      "cn": "商品31"
+    },
+    "category": "SPORTSWEAR",
+    "brand": "ブランド31",
+    "price": 1000,
+    "image": "/images/fuku_02.jpg",
+    "description": {
+      "en": "Product 31 description",
+      "jp": "商品31の説明",
+      "cn": "商品31の説明"
+    }
+  },
+  {
+    "id": 32,
+    "name": {
+      "en": "Product 32",
+      "jp": "商品32",
+      "cn": "商品32"
+    },
+    "category": "SPORTSWEAR",
+    "brand": "ブランド32",
+    "price": 1000,
+    "image": "/images/fuku_03.jpg",
+    "description": {
+      "en": "Product 32 description",
+      "jp": "商品32の説明",
+      "cn": "商品32の説明"
+    }
+  },
+  {
+    "id": 33,
+    "name": {
+      "en": "Product 33",
+      "jp": "商品33",
+      "cn": "商品33"
+    },
+    "category": "SPORTSWEAR",
+    "brand": "ブランド33",
+    "price": 1000,
+    "image": "/images/fuku_04.jpg",
+    "description": {
+      "en": "Product 33 description",
+      "jp": "商品33の説明",
+      "cn": "商品33の説明"
+    }
+  },
+  {
+    "id": 34,
+    "name": {
+      "en": "Product 34",
+      "jp": "商品34",
+      "cn": "商品34"
+    },
+    "category": "SPORTSWEAR",
+    "brand": "ブランド34",
+    "price": 1000,
+    "image": "/images/fuku_05.jpg",
+    "description": {
+      "en": "Product 34 description",
+      "jp": "商品34の説明",
+      "cn": "商品34の説明"
+    }   
+  },
+  {
+    "id": 35,
+    "name": {
+      "en": "Product 35",
+      "jp": "商品35",
+      "cn": "商品35"
+    },
+    "category": "SPORTSWEAR",
+    "brand": "ブランド35",
+    "price": 1000,
+    "image": "/images/fuku_06.jpg",
+    "description": {
+      "en": "Product 35 description",
+      "jp": "商品35の説明",
+      "cn": "商品35の説明"
+    }
+  },
+  {
+    "id": 36,
+    "name": {
+      "en": "Product 36",
+      "jp": "商品36",
+      "cn": "商品36"
+    },
+    "category": "SPORTSWEAR",
+    "brand": "ブランド36",
+    "price": 1000,
+    "image": "/images/fuku_07.jpg",
+    "description": {
+      "en": "Product 36 description",
+      "jp": "商品36の説明",
+      "cn": "商品36の説明"
+    }
+  },
+  {
+    "id": 37,
+    "name": {
+      "en": "Product 37",
+      "jp": "商品37",
+      "cn": "商品37"
+    },
+    "category": "SPORTSWEAR",
+    "brand": "ブランド37",
+    "price": 1000,
+    "image": "/images/fuku_08.jpg",
+    "description": {
+      "en": "Product 37 description",
+      "jp": "商品37の説明",
+      "cn": "商品37の説明"
+    }     
+  },
+  {
+    "id": 38,
+    "name": {
+      "en": "Product 38",
+      "jp": "商品38",
+      "cn": "商品38"
+    },
+    "category": "SPORTSWEAR",
+    "brand": "ブランド38",
+    "price": 1000,
+    "image": "/images/fuku_09.jpg",
+    "description": {
+      "en": "Product 38 description",
+      "jp": "商品38の説明",
+      "cn": "商品38の説明"
+    }
+  },
+  {
+    "id": 39,
+    "name": {
+      "en": "Product 39",
+      "jp": "商品39",
+      "cn": "商品39"
+    },
+    "category": "SPORTSWEAR",
+    "brand": "ブランド39",
+    "price": 1000,
+    "image": "/images/fuku_10.jpg",
+    "description": {
+      "en": "Product 39 description",
+      "jp": "商品39の説明",
+      "cn": "商品39の説明"
     }
   }
 ]
