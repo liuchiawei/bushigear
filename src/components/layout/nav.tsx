@@ -38,7 +38,7 @@ export default function Nav() {
 
   return (
     <NavigationMenu viewport={false}
-      className={`fixed top-0 left-0 right-0 w-full px-4 py-2 z-50 transition-all duration-300
+      className={`fixed top-0 left-0 right-0 w-full px-4 py-2 z-50 bg-white/40 backdrop-blur-sm shadow-sm transition-all duration-300
     ${
       isHome 
       ? isScrolled ? "opacity-100 translate-y-0" // ホームページの場合、400px以上スクロールしたらナビゲーションを表示
