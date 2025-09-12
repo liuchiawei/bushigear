@@ -12,21 +12,23 @@ export default async function Products() {
 
   return (
     <div className="w-full min-h-screen flex flex-col items-center justify-center gap-6">
-      <div className="w-full max-w-6xl mx-auto text-center">
+      <div className="w-full max-w-8xl mx-auto text-center">
+        <div className="mb-6">
+          <img
+            src="/images/top_bg_01.jpg"
+            alt="products"
+            className="w-full max-w-7xl mx-auto mt-15"
+          />
+        </div>
         <h1 className="text-3xl font-bold text-center">
           {content.products.title}
         </h1>
-        <p className="w-full max-w-lg mx-auto text-sm text-gray-500 text-justify">
-          {content.products.description}
-        </p>
       </div>
-
-      <div className="w-full max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-4">
-        {products.map((product: Product) => {
-          return (
-            <Grid key={product.id} product={product} />
-          );
-        })}
+      <div className="w-full max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+        {productsData.map((product: Product) => (
+          <Grid key={product.id} product={product} />
+        ))}
+      </div>
       </div>
     </div>
   );
