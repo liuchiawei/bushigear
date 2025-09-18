@@ -12,8 +12,9 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Search, Languages, LogIn, Heart } from "lucide-react";
+import { Search, Languages, LogIn, Heart, ShoppingCart } from "lucide-react";
 import content from "@/data/content.json";
+import CartVolumeIndicator from "@/components/common/CartVolumeIndicator";
 
 export default function Nav() {
   const pathname = usePathname();
@@ -124,6 +125,21 @@ export default function Nav() {
               </TooltipTrigger>
               <TooltipContent>
                 <p>お気に入り</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </NavigationMenuItem>
+        <NavigationMenuItem>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link href="/cart" className="relative">
+                  <ShoppingCart className="size-4" />
+                  <CartVolumeIndicator />
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>カート</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>

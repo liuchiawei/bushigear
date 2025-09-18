@@ -5,6 +5,7 @@ import Nav from "@/components/layout/nav";
 import Footer from "@/components/layout/footer";
 import BackToTop from "@/components/common/backToTop";
 import AiAssistant from "@/components/common/aiAssistant";
+import { CartProvider } from "@/contexts/CartContext";
 
 const notoSansJP = Noto_Sans_JP({
   variable: "--font-noto-sans-jp",
@@ -35,11 +36,13 @@ export default function RootLayout({
         />
       </head>
       <body className={`${notoSansJP.variable} antialiased`}>
-        <Nav />
-        {children}
-        <Footer />
-        <BackToTop />
-        <AiAssistant />
+        <CartProvider>
+          <Nav />
+          {children}
+          <Footer />
+          <BackToTop />
+          <AiAssistant />
+        </CartProvider>
       </body>
     </html>
   );

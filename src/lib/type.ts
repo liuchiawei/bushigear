@@ -11,3 +11,13 @@ export type Product = {
   description_jp: string;
   description_cn: string;
 };
+
+export type CartItem = {
+  product: Product;
+  quantity: number;
+};
+
+export type Cart = {
+  items: CartItem[];
+  total: number;
+};
