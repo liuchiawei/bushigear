@@ -41,10 +41,12 @@ export default function AddToCart({
       className={`
         group
         relative
-        p-2
+        p-3
         rounded-full
-        bg-white/80 backdrop-blur-sm
-        hover:bg-white
+        cursor-pointer
+        bg-white/50 backdrop-blur-sm
+        hover:bg-primary/80
+        hover:*:text-white
         shadow-sm hover:shadow-md
         transition-all duration-200
         disabled:opacity-50
@@ -54,7 +56,7 @@ export default function AddToCart({
     >
       <ShoppingCart
         className={`
-          size-5
+          size-4
           text-gray-700
           group-hover:text-black
           transition-colors duration-200
