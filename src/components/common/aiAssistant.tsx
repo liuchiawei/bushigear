@@ -50,12 +50,35 @@ export default function AiAssistant() {
                   switch (part.type) {
                     case 'text':
                       return <div key={`${message.id}-${i}`}>{part.text}</div>;
-                    case 'tool-weather':
+                    case 'tool-call':
                       return (
-                        <pre key={`${message.id}-${i}`}>
-                          {JSON.stringify(part, null, 2)}
-                        </pre>
+                        <div key={`${message.id}-${i}`} className="text-blue-600 text-sm">
+                          🔧 Generating image...
+                        </div>
                       );
+                    case 'tool-result':
+                      const result = part.result as any;
+                      if (result.error) {
+                        return (
+                          <div key={`${message.id}-${i}`} className="text-red-600 text-sm">
+                            ❌ {result.error}
+                          </div>
+                        );
+                      } else if (result.imageUrl) {
+                        return (
+                          <div key={`${message.id}-${i}`} className="mt-2">
+                            <img 
+                              src={result.imageUrl} 
+                              alt={result.prompt}
+                              className="max-w-full h-auto rounded"
+                              style={{ maxHeight: '200px' }}
+                            />
+                          </div>
+                        );
+                      }
+                      return null;
+                    default:
+                      return null;
                   }
                 })}
               </div>
