@@ -22,7 +22,7 @@ export default function CartVolumeIndicator({ className = "" }: CartVolumeIndica
         rounded-full
         min-w-[14px] aspect-square
         flex items-center justify-center
-        px-1
+        p-1
         ${className}
       `}
     >

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
 import {
   NavigationMenu,
@@ -20,7 +20,6 @@ import CartSheet from "@/components/common/CartSheet";
 
 export default function Nav() {
   const pathname = usePathname();
-  const router = useRouter();
   const isHome = pathname === "/";
   const [isScrolled, setIsScrolled] = useState(false);
 
