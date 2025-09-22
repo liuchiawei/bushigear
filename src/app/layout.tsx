@@ -6,6 +6,8 @@ import Footer from "@/components/layout/footer";
 import BackToTop from "@/components/common/backToTop";
 import AiAssistant from "@/components/common/aiAssistant";
 import { CartProvider } from "@/contexts/CartContext";
+import AppSidebar from "@/components/layout/app-sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 
 const notoSansJP = Noto_Sans_JP({
   variable: "--font-noto-sans-jp",
@@ -28,20 +30,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja" suppressHydrationWarning>
-      <head>
-        {/* Google Material Symbols */}
-        <link
-          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
-          rel="stylesheet"
-        />
-      </head>
-      <body className={`${notoSansJP.variable} antialiased`}>
+      <body
+        className={`${notoSansJP.variable} bg-neutral-100 bg-dot-32-s-2-neutral-300 antialiased`}
+      >
         <CartProvider>
-          <Nav />
-          {children}
-          <Footer />
-          <BackToTop />
-          <AiAssistant />
+          <SidebarProvider defaultOpen={false}>
+            <AppSidebar />
+            <Nav />
+            <main>{children}</main>
+            <Footer />
+            <BackToTop />
+            <AiAssistant />
+          </SidebarProvider>
         </CartProvider>
       </body>
     </html>

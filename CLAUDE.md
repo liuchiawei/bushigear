@@ -55,7 +55,7 @@ Two main models:
 
 ### Product Data Structure
 
-Products support three languages with separate fields for names and descriptions. Categories include gloves, mitts, protectors, and martial arts uniforms (fuku).
+Products support three languages with separate fields for names and descriptions. Categories include gloves, mitts, protectors, and martial arts cloth (fuku).
 
 ### AI Features
 

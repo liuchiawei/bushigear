@@ -8,7 +8,8 @@ export default function Grid({ product }: { product: Product }) {
     <div className="relative group">
       <Link key={product.id} href={`/products/${product.id}`}>
         <div
-          className="image-with-tag relative"
+          data-category={product.category}
+          className="relative before:content-[var(--category)] before:absolute before:top-0 before:left-0 before:p-2 before:text-white before:font-bold before:bg-primary before:uppercase before:z-0"
           style={
             { "--category": `"${product.category}"` } as React.CSSProperties
           }
