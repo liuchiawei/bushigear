@@ -30,13 +30,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja" suppressHydrationWarning>
-      <head>
-        {/* Google Material Symbols */}
-        <link
-          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
-          rel="stylesheet"
-        />
-      </head>
       <body
         className={`${notoSansJP.variable} bg-neutral-100 bg-dot-32-s-2-neutral-300 antialiased`}
       >
@@ -44,9 +37,7 @@ export default function RootLayout({
           <SidebarProvider defaultOpen={false}>
             <AppSidebar />
             <Nav />
-            <main>
-              {children}
-            </main>
+            <main>{children}</main>
             <Footer />
             <BackToTop />
             <AiAssistant />

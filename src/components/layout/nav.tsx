@@ -5,11 +5,8 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import {
   NavigationMenu,
-  NavigationMenuContent,
   NavigationMenuItem,
-  NavigationMenuLink,
   NavigationMenuList,
-  NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import {
@@ -19,7 +16,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Search, Languages, LogIn, Heart, ShoppingCart } from "lucide-react";
-import content from "@/data/content.json";
 import CartVolumeIndicator from "@/components/common/CartVolumeIndicator";
 
 export default function Nav() {
