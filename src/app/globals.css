@@ -122,10 +122,6 @@
   }
 }
 
-.image-with-tag {
-  position: relative;
-}
-
 .image-with-tag::before {
   content: var(--category, "NEW");
   position: absolute;
@@ -137,7 +133,6 @@
   font-size: 10px;
   font-weight: bold;
   border-radius: 3px;
-  z-index: 1000;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   font-family: Arial, sans-serif;
