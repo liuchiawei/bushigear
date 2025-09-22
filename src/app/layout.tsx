@@ -35,7 +35,9 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className={`${notoSansJP.variable} antialiased`}>
+      <body
+        className={`${notoSansJP.variable} bg-neutral-100 bg-dot-32-s-2-neutral-300 antialiased`}
+      >
         <CartProvider>
           <Nav />
           {children}

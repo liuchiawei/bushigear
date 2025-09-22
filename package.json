@@ -17,6 +17,7 @@
   "dependencies": {
     "@ai-sdk/openai": "2.0.19",
     "@ai-sdk/react": "2.0.22",
+    "@nauverse/tailwind-dot-grid-backgrounds": "^1.2.13",
     "@neondatabase/serverless": "^1.0.1",
     "@prisma/client": "6.15.0",
     "@radix-ui/react-dialog": "^1.1.14",
