@@ -1,6 +1,7 @@
+import Image from "next/image";
 import content from "@/data/content.json";
 import prisma from "@/lib/prisma";
-import Grid from "./components/Grid";
+import Grid from "@/components/common/Grid";
 import { Product } from "@/lib/type";
 
 export const revalidate = 60;
@@ -14,7 +15,9 @@ export default async function Products() {
     <div className="w-full min-h-screen flex flex-col items-center justify-center gap-6">
       <div className="w-full max-w-8xl mx-auto text-center">
         <div className="mb-6">
-          <img
+          <Image
+            width={1000}
+            height={1000}
             src="/images/top_bg_01.jpg"
             alt="products"
             className="w-full max-w-7xl mx-auto mt-15"
