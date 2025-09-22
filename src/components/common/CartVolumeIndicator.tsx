@@ -20,7 +20,7 @@ export default function CartVolumeIndicator({ className = "" }: CartVolumeIndica
         bg-red-500 text-white
         text-xs font-bold
         rounded-full
-        min-w-[20px] h-5
+        min-w-[14px] aspect-square
         flex items-center justify-center
         px-1
         ${className}

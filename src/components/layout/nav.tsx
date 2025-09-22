@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   NavigationMenu,
@@ -15,11 +15,12 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Search, Languages, LogIn, Heart, ShoppingCart } from "lucide-react";
-import CartVolumeIndicator from "@/components/common/CartVolumeIndicator";
+import { Search, Languages, LogIn, Heart } from "lucide-react";
+import CartSheet from "@/components/common/CartSheet";
 
 export default function Nav() {
   const pathname = usePathname();
+  const router = useRouter();
   const isHome = pathname === "/";
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -99,19 +100,7 @@ export default function Nav() {
           </TooltipProvider>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Link href="/cart" className="relative">
-                  <ShoppingCart className="size-4" />
-                  <CartVolumeIndicator />
-                </Link>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>カート</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <CartSheet />
         </NavigationMenuItem>
         <NavigationMenuItem>
           <TooltipProvider>
