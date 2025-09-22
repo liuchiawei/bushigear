@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import prisma from "@/lib/prisma";
+import AddToCartButton from "./AddToCartButton";
 
 export const revalidate = 60;
 
@@ -33,8 +34,9 @@ export default async function ProductDetailPage({
           <div className="w-full p-4">
             <h1 className="text-2xl font-bold">{product.name_jp}</h1>
             <p className="text-sm text-gray-500">{product.brand}</p>
-            <p className="text-sm text-gray-500">¥{product.price.toLocaleString()}</p>
-            <p className="text-sm text-gray-500">{product.description_jp}</p>
+            <p className="text-xl font-semibold text-green-600 mb-4">¥{product.price.toLocaleString()}</p>
+            <p className="text-sm text-gray-700 mb-6">{product.description_jp}</p>
+            <AddToCartButton product={product} />
           </div>
         </div>
       </div>
