@@ -18,15 +18,19 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import { ShoppingBag, Store, Mail, ChevronDown } from "lucide-react";
 
 export default function AppSidebar() {
   return (
-    <Sidebar>
-      <SidebarHeader className="w-full px-4 py-2">
+    <Sidebar collapsible="icon">
+      <SidebarHeader className="w-full">
         <SidebarTrigger />
-        <Link href="/" className="text-3xl md:text-5xl font-bold text-center">
-          Bushi Gear
-        </Link>
+        <SidebarMenuButton asChild>
+          <Link href="/" className="text-lg md:text-2xl font-bold text-center">
+            B
+            <span>Bushi Gear</span>
+          </Link>
+        </SidebarMenuButton>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
@@ -34,8 +38,14 @@ export default function AppSidebar() {
             <Collapsible defaultOpen className="group/collapsible">
               <SidebarMenuItem>
                 <CollapsibleTrigger asChild>
-                  <SidebarMenuButton>
-                    <Link href="/products">PRODUCTS</Link>
+                  <SidebarMenuButton asChild>
+                    <Link href="/products">
+                      <ShoppingBag />
+                      <span className="flex justify-between w-full">
+                        PRODUCTS
+                        <ChevronDown className="transition-transform group-data-[state=open]/collapsible:rotate-180" />
+                      </span>
+                    </Link>
                   </SidebarMenuButton>
                 </CollapsibleTrigger>
                 <CollapsibleContent>
@@ -65,13 +75,19 @@ export default function AppSidebar() {
               </SidebarMenuItem>
             </Collapsible>
             <SidebarMenuItem>
-              <SidebarMenuButton>
-                <Link href="/">ABOUT</Link>
+              <SidebarMenuButton asChild>
+                <Link href="/">
+                  <Store />
+                  <span>ABOUT</span>
+                </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
-              <SidebarMenuButton>
-                <Link href="/">CONTACT</Link>
+              <SidebarMenuButton asChild>
+                <Link href="/">
+                  <Mail />
+                  <span>CONTACT</span>
+                </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>

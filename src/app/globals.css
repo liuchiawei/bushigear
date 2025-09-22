@@ -121,19 +121,3 @@
     @apply bg-background text-foreground;
   }
 }
-
-.image-with-tag::before {
-  content: var(--category, "NEW");
-  position: absolute;
-  top: 5px;
-  left: 5px;
-  background: linear-gradient(135deg, #222222, #222222);
-  color: white;
-  padding: 1px 18px;
-  font-size: 10px;
-  font-weight: bold;
-  border-radius: 3px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  font-family: Arial, sans-serif;
-}
