@@ -27,8 +27,7 @@ export default function AppSidebar() {
         <SidebarTrigger />
         <SidebarMenuButton asChild>
           <Link href="/" className="text-lg md:text-2xl font-bold text-center">
-            B
-            <span>Bushi Gear</span>
+            B<span>Bushi Gear</span>
           </Link>
         </SidebarMenuButton>
       </SidebarHeader>
@@ -51,23 +50,23 @@ export default function AppSidebar() {
                 <CollapsibleContent>
                   <SidebarMenuSub>
                     <SidebarMenuSubItem>
-                      <SidebarMenuSubButton>
-                        <Link href="/products/gloves">GLOVES</Link>
+                      <SidebarMenuSubButton asChild>
+                        <Link href="/category/gloves">GLOVES</Link>
                       </SidebarMenuSubButton>
                     </SidebarMenuSubItem>
                     <SidebarMenuSubItem>
-                      <SidebarMenuSubButton>
-                        <Link href="/products/mitts">MITTS</Link>
+                      <SidebarMenuSubButton asChild>
+                        <Link href="/category/mit">MITTS</Link>
                       </SidebarMenuSubButton>
                     </SidebarMenuSubItem>
                     <SidebarMenuSubItem>
-                      <SidebarMenuSubButton>
-                        <Link href="/products/protectors">PROTECTORS</Link>
+                      <SidebarMenuSubButton asChild>
+                        <Link href="/category/protectors">PROTECTORS</Link>
                       </SidebarMenuSubButton>
                     </SidebarMenuSubItem>
                     <SidebarMenuSubItem>
-                      <SidebarMenuSubButton>
-                        <Link href="/products/clothes">CLOTHES</Link>
+                      <SidebarMenuSubButton asChild>
+                        <Link href="/category/clothes">CLOTHES</Link>
                       </SidebarMenuSubButton>
                     </SidebarMenuSubItem>
                   </SidebarMenuSub>
