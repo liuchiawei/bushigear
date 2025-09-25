@@ -55,34 +55,34 @@
       "description": "燃える夏、熱い戦い！フシギア夏祭りセール開催中。プレミアム格闘技用品が最大30%OFF。武者の魂を燃やす本格装備で、この夏の勝負を決めろ！限定商品も多数登場。",
       "items": [
         {
-          "id": 1,
+          "id": 2,
           "name": "Martial World ヘッドギア",
           "price": 4990,
-          "image": "/images/protector_01.jpg"
+          "image": "/images/glove_02.png"
         },
         {
-          "id": 2,
+          "id": 22,
           "name": "Amino Flight アミノフライト4000mg",
           "price": 9350,
-          "image": "/images/fuku_01.jpg"
+          "image": "/images/fuku_02.png"
         },
         {
-          "id": 3,
+          "id": 31,
           "name": "Martial World マルチバンチングミット",
           "price": 5415,
-          "image": "/images/mitt_01.jpg"
+          "image": "/images/mitt_01.png"
         },
         {
           "id": 4,
           "name": "Martial World グローブ",
           "price": 7285,
-          "image": "/images/glove_04.jpg"
+          "image": "/images/glove_04.png"
         },
         {
-          "id": 5,
+          "id": 21,
           "name": "Martial World プロテクター",
           "price": 10000,
-          "image": "/images/protector_01.jpg"
+          "image": "/images/protector_01.png"
         }
       ]
     },

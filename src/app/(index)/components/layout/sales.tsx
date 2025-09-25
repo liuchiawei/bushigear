@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import * as motion from "motion/react-client";
 import type { Variants } from "motion/react";
 import content from "@/data/content.json";
@@ -29,35 +30,42 @@ export default function Sales() {
         <p className="w-full self-end mt-6 col-start-2 text-xs md:text-sm font-sans font-[300] text-neutral-400 text-justify leading-6 tracking-wide">
           {content.home.sales.description}
         </p>
-        <motion.div className="grid grid-cols-subgrid col-start-1 md:col-start-3 mx-auto col-span-2 md:col-span-4">
+        <motion.div className="grid grid-cols-subgrid col-start-1 md:col-start-3 mx-auto col-span-2 md:col-span-4 gap-2">
           {content.home.sales.items.map((item, index) => (
             <motion.div
               key={item.id}
               variants={itemVariants}
-              className="w-full"
+              className={`w-full border ${
+                index === 0 ? "col-span-2 row-span-2" : "col-span-1"
+              }`}
               initial="hidden"
               whileInView="visible"
               transition={{ delay: 0.1 * index, type: "spring", duration: 0.5 }}
             >
-              <Image
-                src={item.image}
-                alt={item.name}
-                width={480}
-                height={480}
-                className="w-full h-auto"
-              />
-              <div className="p-4 bg-white">
-                <h2 className="text-lg font-bold">{item.name}</h2>
-                <p className="text-sm text-center">
-                  <span className="line-through text-gray-500">
-                    ￥{item.price}
-                  </span>
-                  <span className="text-red-500 font-bold">
-                    ￥{item.price}円
-                  </span>
-                  (税込)
-                </p>
-              </div>
+              <Link
+                href={`/products/${item.id}`}
+                className="w-full h-full flex flex-col justify-center items-center hover:bg-card/50 transition-colors duration-200"
+              >
+                <Image
+                  src={item.image}
+                  alt={item.name}
+                  width={300}
+                  height={300}
+                  className="object-cover"
+                />
+                <div className="p-4 bg-background/40 backdrop-blur-sm shadow-lg rounded-xl">
+                  <h2 className="text-lg font-bold">{item.name}</h2>
+                  <p className="text-sm text-center">
+                    <span className="line-through text-gray-500">
+                      ￥{item.price}
+                    </span>
+                    <span className="text-red-500 font-bold">
+                      ￥{item.price}円
+                    </span>
+                    (税込)
+                  </p>
+                </div>
+              </Link>
             </motion.div>
           ))}
         </motion.div>
