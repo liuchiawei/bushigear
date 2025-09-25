@@ -19,11 +19,10 @@ import CartSheet from "@/components/common/CartSheet";
 
 export default function Nav() {
   const [isScrolled, setIsScrolled] = useState(false);
-
-  // 240px以上スクロールしたらナビゲーションを表示
+  // 0px以上スクロールしたらナビゲーションを表示
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 240);
+      setIsScrolled(window.scrollY > 0);
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -37,19 +36,17 @@ export default function Nav() {
   return (
     <NavigationMenu
       viewport={false}
-      className={`fixed top-0 left-0 right-0 w-full px-4 py-2 z-10 bg-white/40 backdrop-blur-sm shadow-sm transition-all duration-300
+      className={`fixed top-0 left-0 right-0 w-full px-4 py-2 z-20 bg-white/40 backdrop-blur-sm shadow-sm transition-all duration-300
     ${
-      isScrolled
-        ? "opacity-100 translate-y-0" // ホームページの場合、240px以上スクロールしたらナビゲーションを表示
-        : "opacity-0 -translate-y-full" // ホームページの場合、240px未満スクロールしたらナビゲーションを非表示
+      isScrolled ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-full"
     }`}
     >
       <SidebarTrigger />
       <Link
         href="/"
-        className="absolute left-1/2 -translate-x-1/2 w-24 text-xl font-bold text-center"
+        className="absolute left-1/2 -translate-x-1/2 w-24 text-xl font-[900] font-roboto text-center uppercase"
       >
-        ブシギア
+        BUSHIGEAR
       </Link>
       <NavigationMenuList className="gap-4">
         <NavigationMenuItem>

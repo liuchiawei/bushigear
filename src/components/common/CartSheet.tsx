@@ -89,7 +89,7 @@ export default function CartSheet() {
                     <p className="text-xs text-gray-500">
                       {item.product.brand}
                     </p>
-                    <p className="text-sm font-medium text-green-600">
+                    <p className="text-sm font-medium text-ring">
                       ¥{item.product.price.toLocaleString()}
                     </p>
                   </div>
@@ -120,10 +120,9 @@ export default function CartSheet() {
                 </div>
               ))}
               <Button
-                variant="outline"
                 size="sm"
                 onClick={clearCart}
-                className="w-full text-red-600 hover:text-red-700"
+                className="w-full bg-foreground text-background"
               >
                 カートを空にする
               </Button>
@@ -132,19 +131,19 @@ export default function CartSheet() {
             <div className="mt-4 p-4 bg-gray-50 rounded-lg">
               <div className="flex justify-between items-center mb-4">
                 <span className="text-lg font-semibold">合計:</span>
-                <span className="text-xl font-bold text-green-600">
+                <span className="text-2xl font-bold text-foreground">
                   ¥{cart.total.toLocaleString()}
                 </span>
               </div>
 
               <div className="flex flex-col space-y-2">
                 <Link href="/products">
-                  <Button variant="outline" className="w-full" size="sm">
+                  <Button variant="outline" className="w-full hover:bg-foreground/50 hover:text-background" size="sm">
                     買い物を続ける
                   </Button>
                 </Link>
 
-                <Button onClick={handleCheckout} className="w-full" size="sm">
+                <Button onClick={handleCheckout} className="w-full bg-foreground text-background" size="sm">
                   レジに進む
                 </Button>
               </div>

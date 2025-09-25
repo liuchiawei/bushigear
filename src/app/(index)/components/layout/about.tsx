@@ -1,10 +1,16 @@
 import content from "@/data/content.json";
+import SectionHeader from "../common/SectionHeader";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
 export default function About() {
   return (
-    <div className="flex flex-col items-center justify-center w-full h-full min-h-screen bg-black text-white" style={{ backgroundImage: `url(/images/top_bg_03.jpg)` }}>
+    <section className="w-full max-w-5xl mx-auto px-4 md:px-0 py-4">
+      <SectionHeader
+        title_en={content.home.about.section_info.title.en}
+        title_jp={content.home.about.section_info.title.jp}
+        description={content.home.about.section_info.description.jp}
+      />
       <div className="w-full max-w-xl h-full mx-auto flex flex-col items-center justify-center">
         <h1 className="text-2xl font-bold text-center">
           {content.home.about.title}
@@ -18,6 +24,6 @@ export default function About() {
           </Link>
         </Button>
       </div>
-    </div>
+    </section>
   );
 }
