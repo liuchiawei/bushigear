@@ -3,6 +3,7 @@
 import { useChat } from "@ai-sdk/react";
 import { useState } from "react";
 import ReactMarkdown from "react-markdown";
+import Image from "next/image";
 
 export default function Chat() {
   const [input, setInput] = useState("");
@@ -65,11 +66,12 @@ export default function Chat() {
                       <div className="text-green-600 text-sm mb-2">
                         ✅ Image generated!
                       </div>
-                      <img
+                      <Image
+                        width={400}
+                        height={400}
                         src={output.imageUrl}
                         alt={output.prompt}
-                        className="max-w-full h-auto rounded"
-                        style={{ maxHeight: "400px" }}
+                        className="max-w-full h-auto max-h-[400px] rounded"
                         onLoad={() => console.log("Image loaded successfully")}
                         onError={(e) => console.log("Image failed to load:", e)}
                       />

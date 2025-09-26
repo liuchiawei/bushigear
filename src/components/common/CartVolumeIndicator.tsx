@@ -17,7 +17,7 @@ export default function CartVolumeIndicator({ className = "" }: CartVolumeIndica
     <span
       className={`
         absolute -top-2 -right-2
-        bg-red-500 text-white
+        bg-accent text-white
         text-xs font-bold
         rounded-full
         min-w-[14px] aspect-square
