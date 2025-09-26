@@ -1,4 +1,3 @@
-import content from "@/data/content.json";
 import prisma from "@/lib/prisma";
 import Grid from "@/components/common/Grid";
 import { Product } from "@/lib/type";
