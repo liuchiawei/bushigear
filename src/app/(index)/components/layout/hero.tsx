@@ -19,7 +19,7 @@ export default function Hero() {
           />
         </div>
         <div className="relative w-full h-full">
-          <h1 className="text-[160px] md:text-[18vw] text-center font-roboto-condensed font-[900] text-foreground uppercase tracking-[-0.075em] leading-none w-full absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+          <h1 className="text-[160px] md:text-[16vw] text-center font-roboto-condensed font-[900] text-foreground uppercase tracking-[-0.075em] leading-none w-full absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
             Bushi Gear
           </h1>
           <motion.h1
