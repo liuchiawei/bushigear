@@ -1,74 +1,118 @@
 {
   "home": {
+    "catchcopy": {
+      "en": "Fight with Honor. Train with BushiGear.",
+      "jp": "世界の闘志に、日本の誇りを。",
+      "cn": "武魂上身，榮耀出征"
+    },
     "cm": {
       "title": "情報CMエリア",
       "items": [
         {
           "id": 1,
-          "title": "フシギア夏祭りセール",
-          "description": "フシギア夏祭りセールの情報をお知らせします。",
+          "title": "ブシギア夏祭りセール",
+          "description": "燃える夏、熱い戦い！フシギア夏祭りセール開催中。プレミアム格闘技用品が最大30%OFF。武者の魂を燃やす本格装備で、この夏の勝負を決めろ！限定商品も多数登場。",
           "image": "/images/cm_img_01.png"
         },
         {
           "id": 2,
           "title": "フシギア夏祭りセール",
-          "description": "フシギア夏祭りセールの情報をお知らせします。",
+          "description": "燃える夏、熱い戦い！フシギア夏祭りセール開催中。プレミアム格闘技用品が最大30%OFF。武者の魂を燃やす本格装備で、この夏の勝負を決めろ！限定商品も多数登場。",
           "image": "/images/cm_img_02.png"
         },
         {
           "id": 3,
           "title": "フシギア夏祭りセール",
-          "description": "フシギア夏祭りセールの情報をお知らせします。",
+          "description": "燃える夏、熱い戦い！フシギア夏祭りセール開催中。プレミアム格闘技用品が最大30%OFF。武者の魂を燃やす本格装備で、この夏の勝負を決めろ！限定商品も多数登場。",
           "image": "/images/cm_img_03.png"
         },
         {
           "id": 4,
           "title": "フシギア夏祭りセール",
-          "description": "フシギア夏祭りセールの情報をお知らせします。",
+          "description": "燃える夏、熱い戦い！フシギア夏祭りセール開催中。プレミアム格闘技用品が最大30%OFF。武者の魂を燃やす本格装備で、この夏の勝負を決めろ！限定商品も多数登場。",
           "image": "/images/web_catalog.png"
         }
       ]
     },
     "sales": {
-      "title": "フシギア夏祭りセール",
+      "section_info": {
+        "title": {
+          "en": "Sales",
+          "jp": "セール情報",
+          "cn": "销售信息"
+        },
+        "description": {
+          "en": "Check out our latest sales and promotions!",
+          "jp": "最新のセール情報をチェック！",
+          "cn": "查看我们的最新销售和促销信息！"
+        }
+      },
+      "campaign_name": {
+        "en": "Summer Sale",
+        "jp": "夏祭りセール",
+        "cn": "夏季特卖"
+      },
+      "description": "燃える夏、熱い戦い！フシギア夏祭りセール開催中。プレミアム格闘技用品が最大30%OFF。武者の魂を燃やす本格装備で、この夏の勝負を決めろ！限定商品も多数登場。",
       "items": [
         {
-          "id": 1,
+          "id": 2,
           "name": "Martial World ヘッドギア",
           "price": 4990,
-          "image": "/images/protector_01.jpg"
+          "image": "/images/glove_02.png"
         },
         {
-          "id": 2,
+          "id": 22,
           "name": "Amino Flight アミノフライト4000mg",
           "price": 9350,
-          "image": "/images/fuku_01.jpg"
+          "image": "/images/fuku_02.png"
         },
         {
-          "id": 3,
+          "id": 31,
           "name": "Martial World マルチバンチングミット",
           "price": 5415,
-          "image": "/images/mitt_01.jpg"
+          "image": "/images/mitt_01.png"
         },
         {
           "id": 4,
           "name": "Martial World グローブ",
           "price": 7285,
-          "image": "/images/glove_04.jpg"
+          "image": "/images/glove_04.png"
+        },
+        {
+          "id": 21,
+          "name": "Martial World プロテクター",
+          "price": 10000,
+          "image": "/images/protector_01.png"
         }
       ]
     },
     "features": {
-      "title": "おすすめ商品",
-      "items": [
-        {
-          "id": 1,
-          "name": "商品1",
-          "price": 1000
+      "section_info": {
+        "title": {
+          "en": "Features",
+          "jp": "おすすめ商品",
+          "cn": "推荐商品"
+        },
+        "description": {
+          "en": "Our Feature Fighting Goods",
+          "jp": "店長のおすすめ商品",
+          "cn": "店长推荐商品"
         }
-      ]
+      }
     },
     "ranking": {
+      "section_info": {
+        "title": {
+          "en": "Ranking",
+          "jp": "カテゴリーランキング",
+          "cn": "排行榜"
+        },
+        "description": {
+          "en": "Category Ranking Products",
+          "jp": "各カテゴリーの人気商品",
+          "cn": "各分类的人气商品"
+        }
+      },
       "title": "Category Ranking",
       "description": "各カテゴリーのピックアップ商品",
       "categories": [
@@ -91,9 +135,35 @@
       ]
     },
     "about": {
-      "title": "格闘技用品店「フシギア」",
-      "description": "格闘技用品店「フシギア」は、格闘技用品を扱う店舗です。",
+      "section_info": {
+        "title": {
+          "en": "About",
+          "jp": "ブシギアについて",
+          "cn": "关于我们"
+        },
+        "description": {
+          "en": "BushiGear Shop is a online shop that deals in Japanese martial arts equipment.",
+          "jp": "格闘技用品店「ブシギア」は、格闘技用品を扱う店舗です。",
+          "cn": "BushiGear格斗技用品店是一家專門經營格鬥技用品的商店。"
+        }
+      },
+      "title": "格闘技用品店「ブシギア」",
+      "description": "格闘技用品店「ブシギア」は、格闘技用品を扱う店舗です。",
       "button": "詳細を見る"
+    },
+    "news": {
+      "section_info": {
+        "title": {
+          "en": "News",
+          "jp": "ニュース",
+          "cn": "新闻"
+        },
+        "description": {
+          "en": "Latest News About Bushigear",
+          "jp": "ブシギアの最新情報",
+          "cn": "BushiGear的最新消息"
+        }
+      }
     }
   },
   "nav": {
@@ -139,5 +209,42 @@
   "products": {
     "title": "商品一覧",
     "description": "商品一覧の情報をお知らせします。"
+  },
+  "products_detail": {
+    "price": {
+      "jp": "円（税込）",
+      "en": "Yen (Tax included)",
+      "cn": "日元 (含税)"
+    },
+    "quantity": {
+      "jp": "数量",
+      "en": "Quantity",
+      "cn": "数量"
+    },
+    "directly_buy": {
+      "jp": "直接購入",
+      "en": "Directly Buy",
+      "cn": "直接购买"
+    },
+    "options": {
+      "jp": {
+        "favorite": "お気に入り",
+        "share": "シェア",
+        "comment": "コメント",
+        "add_to_cart": "カートに追加"
+      },
+      "en": {
+        "favorite": "Favorite",
+        "share": "Share",
+        "comment": "Comment",
+        "add_to_cart": "Add to Cart"
+      },
+      "cn": {
+        "favorite": "收藏",
+        "share": "分享",
+        "comment": "评论",
+        "add_to_cart": "添加到购物车"
+      }
+    }
   }
 }

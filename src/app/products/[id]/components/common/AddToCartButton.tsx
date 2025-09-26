@@ -2,8 +2,11 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import OptionButtons from "./OptionButtons";
 import { useCart } from "@/contexts/CartContext";
 import { Product } from "@/lib/type";
+import content from "@/data/content.json";
+import Link from "next/link";
 
 interface AddToCartButtonProps {
   product: Product;
@@ -27,10 +30,10 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
   };
 
   return (
-    <div className="flex flex-col space-y-4">
+    <div className="grid grid-cols-2 gap-2">
       <div className="flex items-center space-x-4">
         <label htmlFor="quantity" className="text-sm font-medium">
-          数量:
+          {content.products_detail.quantity.jp}:
         </label>
         <select
           id="quantity"
@@ -45,14 +48,16 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
           ))}
         </select>
       </div>
+      <OptionButtons handleAddToCart={handleAddToCart} />
 
       <Button
         onClick={handleAddToCart}
         disabled={isAdding}
-        size="lg"
-        className="w-full"
+        asChild
       >
-        {isAdding ? "カートに追加中..." : "カートに追加"}
+        <Link href="/cart" className="w-full col-span-2">
+          {isAdding ? "カートに追加中..." : content.products_detail.directly_buy.jp}
+        </Link>
       </Button>
     </div>
   );

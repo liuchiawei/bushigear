@@ -1,15 +1,16 @@
+import SectionHeader from "../common/SectionHeader";
+import FeatureCarousel from "../common/FeatureCarousel";
+import content from "@/data/content.json";
+
 export default function Features() {
   return (
-    <div className="p-10 bg-cover bg-center" style={{ backgroundImage: `url(/images/glove_area_bg.jpg)` }}>
-      <h1 className="my-6 text-3xl font-bold text-center">
-        おすすめ商品
-      </h1>
-      <div className="flex flex-col md:flex-row items-center justify-center gap-6 w-full max-w-7xl h-full mx-auto p-6">
-        <div className="bg-gray-400 w-full h-96" />
-        <div className="bg-gray-400 w-full h-96" />
-        <div className="bg-gray-400 w-full h-96" />
-        <div className="bg-gray-400 w-full h-96" />
-      </div>
-    </div>
+    <section className="w-full max-w-5xl mx-auto py-4">
+      <SectionHeader
+        title_en={content.home.features.section_info.title.en}
+        title_jp={content.home.features.section_info.title.jp}
+        description={content.home.features.section_info.description.jp}
+      />
+      <FeatureCarousel />
+    </section>
   );
 }

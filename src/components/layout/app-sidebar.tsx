@@ -22,15 +22,23 @@ import { ShoppingBag, Store, Mail, ChevronDown } from "lucide-react";
 
 export default function AppSidebar() {
   return (
-    <Sidebar collapsible="icon">
-      <SidebarHeader className="w-full">
-        <SidebarTrigger />
-        <SidebarMenuButton asChild>
-          <Link href="/" className="text-lg md:text-2xl font-bold text-center">
-            B
-            <span>Bushi Gear</span>
+    <Sidebar className="backdrop-blur-sm bg-sidebar/40">
+      <SidebarHeader>
+        <div className="flex-none flex items-center justify-between overflow-hidden">
+          <SidebarTrigger />
+          <Link
+            href="/"
+            className="w-full text-center text-lg md:text-xl font-sans font-[900] uppercase whitespace-nowrap transition-all opacity-100 group-data-[collapsible=icon]:opacity-0 group-data-[collapsible=icon]:hidden"
+          >
+            Bushi Gear
           </Link>
-        </SidebarMenuButton>
+        </div>
+        <div className="flex items-center justify-center p-8 relative transition-all opacity-100 group-data-[collapsible=icon]:opacity-0 group-data-[collapsible=icon]:hidden select-none">
+          <div className="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 size-20 bg-secondary rounded-full z-0" />
+          <h3 className="text-center text-foreground text-5xl font-sans font-[900] tracking-[-0.1em] [writing-mode:vertical-lr] whitespace-nowrap z-10">
+            ブシギア
+          </h3>
+        </div>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
@@ -38,11 +46,11 @@ export default function AppSidebar() {
             <Collapsible defaultOpen className="group/collapsible">
               <SidebarMenuItem>
                 <CollapsibleTrigger asChild>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton tooltip="商品一覧" asChild>
                     <Link href="/products">
                       <ShoppingBag />
-                      <span className="flex justify-between w-full">
-                        PRODUCTS
+                      <span className="flex justify-between items-center w-full hover:text-background font-bold">
+                        商品一覧
                         <ChevronDown className="transition-transform group-data-[state=open]/collapsible:rotate-180" />
                       </span>
                     </Link>
@@ -51,23 +59,23 @@ export default function AppSidebar() {
                 <CollapsibleContent>
                   <SidebarMenuSub>
                     <SidebarMenuSubItem>
-                      <SidebarMenuSubButton>
-                        <Link href="/products/gloves">GLOVES</Link>
+                      <SidebarMenuSubButton asChild>
+                        <Link href="/category/glove">グローブ</Link>
                       </SidebarMenuSubButton>
                     </SidebarMenuSubItem>
                     <SidebarMenuSubItem>
-                      <SidebarMenuSubButton>
-                        <Link href="/products/mitts">MITTS</Link>
+                      <SidebarMenuSubButton asChild>
+                        <Link href="/category/mitt">ミット</Link>
                       </SidebarMenuSubButton>
                     </SidebarMenuSubItem>
                     <SidebarMenuSubItem>
-                      <SidebarMenuSubButton>
-                        <Link href="/products/protectors">PROTECTORS</Link>
+                      <SidebarMenuSubButton asChild>
+                        <Link href="/category/protector">プロテクター</Link>
                       </SidebarMenuSubButton>
                     </SidebarMenuSubItem>
                     <SidebarMenuSubItem>
-                      <SidebarMenuSubButton>
-                        <Link href="/products/clothes">CLOTHES</Link>
+                      <SidebarMenuSubButton asChild>
+                        <Link href="/category/cloth">服</Link>
                       </SidebarMenuSubButton>
                     </SidebarMenuSubItem>
                   </SidebarMenuSub>
@@ -75,18 +83,22 @@ export default function AppSidebar() {
               </SidebarMenuItem>
             </Collapsible>
             <SidebarMenuItem>
-              <SidebarMenuButton asChild>
+              <SidebarMenuButton tooltip="ブシギアについて" asChild>
                 <Link href="/">
                   <Store />
-                  <span>ABOUT</span>
+                  <span className="font-bold hover:text-background">
+                    ブシギアについて
+                  </span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
-              <SidebarMenuButton asChild>
+              <SidebarMenuButton tooltip="お問い合わせ" asChild>
                 <Link href="/">
                   <Mail />
-                  <span>CONTACT</span>
+                  <span className="font-bold hover:text-background">
+                    お問い合わせ
+                  </span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>

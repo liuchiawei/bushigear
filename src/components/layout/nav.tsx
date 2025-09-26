@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
 import Link from "next/link";
 import {
   NavigationMenu,
@@ -19,16 +18,11 @@ import { Search, Languages, LogIn, Heart } from "lucide-react";
 import CartSheet from "@/components/common/CartSheet";
 
 export default function Nav() {
-  const pathname = usePathname();
-  const isHome = pathname === "/";
   const [isScrolled, setIsScrolled] = useState(false);
-
-  // ホームページの場合、400px以上スクロールしたらナビゲーションを表示
+  // 0px以上スクロールしたらナビゲーションを表示
   useEffect(() => {
-    if (!isHome) return;
-
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 400);
+      setIsScrolled(window.scrollY > 0);
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -37,23 +31,22 @@ export default function Nav() {
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, [isHome]);
+  }, []);
 
   return (
     <NavigationMenu
       viewport={false}
-      className={`fixed top-0 left-0 right-0 w-full px-4 py-2 z-10 bg-white/40 backdrop-blur-sm shadow-sm transition-all duration-300
+      className={`fixed top-0 left-0 right-0 w-full px-4 py-2 z-20 bg-white/40 backdrop-blur-sm shadow-sm transition-all duration-300
     ${
-      isHome
-        ? isScrolled
-          ? "opacity-100 translate-y-0" // ホームページの場合、400px以上スクロールしたらナビゲーションを表示
-          : "opacity-0 -translate-y-full" // ホームページの場合、400px未満スクロールしたらナビゲーションを非表示
-        : "opacity-100 translate-y-0" // ホームページでない場合はナビゲーションを表示
+      isScrolled ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-full"
     }`}
     >
       <SidebarTrigger />
-      <Link href="/" className="absolute left-1/2 -translate-x-1/2 w-24 text-2xl font-bold text-center">
-        LOGO
+      <Link
+        href="/"
+        className="absolute left-1/2 -translate-x-1/2 w-24 text-xl font-[900] font-roboto text-center uppercase"
+      >
+        BUSHIGEAR
       </Link>
       <NavigationMenuList className="gap-4">
         <NavigationMenuItem>
