@@ -1,107 +1,61 @@
 "use client";
-
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "motion/react";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
-import { ArrowLeft, ArrowRight } from "lucide-react";
-import items from "@/data/heroImageList.json";
+import { motion } from "motion/react";
+import KatakanaTitle from "../common/KatakanaTitle";
+import content from "@/data/content.json";
+import { CardContainer, CardBody, CardItem } from "@/components/ui/3d-card";
 
 export default function Hero() {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
-
-  useEffect(() => {
-    if (!isAutoPlaying) return;
-
-    // 自動再生(5秒ごとに次の画像に切り替える)
-    const timer = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % items.length);
-    }, 5000);
-
-    return () => clearInterval(timer);
-  }, [isAutoPlaying]);
-
-  // 次の画像に切り替える
-  const nextSlide = () => {
-    setCurrentIndex((prev) => (prev + 1) % items.length);
-    setIsAutoPlaying(false);
-  };
-
-  // 前の画像に切り替える
-  const prevSlide = () => {
-    setCurrentIndex((prev) => (prev - 1 + items.length) % items.length);
-    setIsAutoPlaying(false);
-  };
-
   return (
-    <div className="relative w-full h-screen overflow-hidden bg-black">
-      <motion.h1
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-40 text-5xl font-bold text-white text-center uppercase drop-shadow-lg"
-      >
-        Bushi Gear
-      </motion.h1>
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={currentIndex}
-          initial={{ opacity: 0, x: "100%" }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: "-100%" }}
-          transition={{ duration: 0.8 }}
-          className="absolute inset-0 w-full h-full"
-        >
-          <Image
-            src={items[currentIndex].image}
-            alt={items[currentIndex].title}
-            width={1920}
-            height={1080}
-            className="w-full h-full object-cover"
+    <header className="w-full h-full relative select-none">
+      <div className="w-full max-w-5xl mx-auto h-full min-h-screen flex flex-col items-center justify-between px-4 md:px-0 py-4">
+        <div className="w-full flex items-center gap-2 uppercase">
+          <h1 className="text-xl md:text-2xl font-sans font-[900] bg-accent text-white p-2">
+            武
+          </h1>
+          <KatakanaTitle
+            text="BUSHIGEAR"
+            className="text-2xl md:text-4xl font-roboto font-[900] text-foreground"
           />
-        </motion.div>
-      </AnimatePresence>
-
-      {/* Navigation Buttons */}
-      <Button
-        variant="ghost"
-        size="icon"
-        className="absolute left-4 top-1/2 -translate-y-1/2 bg-background/20 rounded-full hover:bg-background/80 cursor-pointer"
-        onClick={prevSlide}
-        title="previous"
-      >
-        <ArrowLeft className="size-4" />
-      </Button>
-      <Button
-        variant="ghost"
-        size="icon"
-        className="absolute right-4 top-1/2 -translate-y-1/2 bg-background/20 rounded-full hover:bg-background/80 cursor-pointer"
-        onClick={nextSlide}
-        title="next"
-      >
-        <ArrowRight className="size-4" />
-      </Button>
-
-      {/* Indicators */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
-        {items.map((_, index) => (
-          <button
-            key={index}
-            className={`w-2 h-2 rounded-full transition-all duration-300
-              ${index === currentIndex
-              ? "bg-primary w-4"
-              : "bg-foreground/30 hover:bg-foreground/50"
-            }`}
-            onClick={() => {
-              setCurrentIndex(index);
-              setIsAutoPlaying(false);
-            }}
-            title={`Switch to the ${index + 1}th slide`}
-            aria-label={`Switch to the ${index + 1}th slide`}
-          />
-        ))}
+        </div>
+        <div className="relative w-full h-full">
+          <h1 className="text-[160px] md:text-[16vw] text-center font-roboto-condensed font-[900] text-foreground uppercase tracking-[-0.075em] leading-none w-full absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+            Bushi Gear
+          </h1>
+          <motion.h1
+            initial={{ opacity: 0, y: 5, filter: "blur(10px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rotate-[-20deg] text-[66px] md:text-[108px] text-center font-calligraphy text-accent tracking-wider leading-none break-keep z-0"
+          >
+            武士ギア
+          </motion.h1>
+          <CardContainer className="absolute top-[55%] left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 object-cover">
+            <CardBody className="flex items-center justify-center">
+              <CardItem translateZ={50}>
+                <Image
+                  src="/images/protector_10.png"
+                  alt="bushigear"
+                  width={200}
+                  height={200}
+                  className="object-cover"
+                />
+              </CardItem>
+            </CardBody>
+          </CardContainer>
+        </div>
+        <div className="w-full flex flex-col gap-2 text-neutral-400 text-sm font-[200] tracking-wider text-border uppercase">
+          <h3 className="text-xl md:text-4xl font-roboto">
+            Tokyo Fighting Gear Shop
+          </h3>
+          <h4 className="text-sm md:text-lg font-sans">
+            {content.home.catchcopy.jp}
+          </h4>
+        </div>
+        <h6 className="hidden md:block absolute top-1/2 right-4 -translate-y-1/2 text-2xl text-neutral-400 font-roboto font-[200] tracking-[0.1em] [writing-mode:vertical-lr] uppercase">
+          since 2025
+        </h6>
       </div>
-    </div>
+    </header>
   );
 }
