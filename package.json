@@ -36,13 +36,13 @@
     "motion": "^12.23.3",
     "next": "15.3.5",
     "next-theme": "^0.1.5",
+    "openai-zod-to-json-schema": "^1.1.2",
     "prisma": "^6.15.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-markdown": "^10.1.0",
     "tailwind-merge": "^3.3.1",
-    "zod": "^4.1.5",
-    "zod-to-json-schema": "^3.24.6"
+    "zod": "^4.1.5"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
