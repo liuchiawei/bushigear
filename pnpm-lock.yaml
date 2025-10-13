@@ -10,10 +10,10 @@ importers:
     dependencies:
       '@ai-sdk/openai':
         specifier: 2.0.19
-        version: 2.0.19(zod@4.1.5)
+        version: 2.0.19(zod@3.25.76)
       '@ai-sdk/react':
         specifier: 2.0.22
-        version: 2.0.22(react@19.1.0)(zod@4.1.5)
+        version: 2.0.22(react@19.1.0)(zod@3.25.76)
       '@nauverse/tailwind-dot-grid-backgrounds':
         specifier: ^1.2.13
         version: 1.2.13(tailwindcss@4.1.11)
@@ -43,7 +43,7 @@ importers:
         version: 1.2.7(@types/react-dom@19.1.6(@types/react@19.1.8))(@types/react@19.1.8)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       ai:
         specifier: 5.0.22
-        version: 5.0.22(zod@4.1.5)
+        version: 5.0.22(zod@3.25.76)
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -71,6 +71,9 @@ importers:
       next-theme:
         specifier: ^0.1.5
         version: 0.1.5(next@15.3.5(@opentelemetry/api@1.9.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      openai-zod-to-json-schema:
+        specifier: ^1.1.2
+        version: 1.1.2(zod@3.25.76)
       prisma:
         specifier: ^6.15.0
         version: 6.15.0(typescript@5.8.3)
@@ -2522,6 +2525,12 @@ packages:
   ohash@2.0.11:
     resolution: {integrity: sha512-RdR9FQrFwNBNXAr4GixM8YaRZRJ5PUWbKYbE5eOsrwAjJW0q2REGcf79oYPsLyskQCZG1PLN+S/K1V00joZAoQ==}
 
+  openai-zod-to-json-schema@1.1.2:
+    resolution: {integrity: sha512-c23mG4XutId7WAQmmB/TRMF7sY1Y7Z78bEqJUpgAzBXGxlGAWU56a0eqoGVqPCqjOpSuHFC2uT2WMHn6/molsg==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      zod: ^3.23.8
+
   optionator@0.9.4:
     resolution: {integrity: sha512-6IpQ7mKUxRcZNLIObR0hz7lxsapSSIYNZJwXPGeF0mTVqGKFIXj1DQcMoT22S3ROcLyY/rz0PWaWZ9ayWmad9g==}
     engines: {node: '>= 0.8.0'}
@@ -3093,47 +3102,47 @@ packages:
     peerDependencies:
       zod: ^3.24.1
 
-  zod@4.1.5:
-    resolution: {integrity: sha512-rcUUZqlLJgBC33IT3PNMgsCq6TzLQEG/Ei/KTCU0PedSWRMAXoOUN+4t/0H+Q8bdnLPdqUYnvboJT0bn/229qg==}
+  zod@3.25.76:
+    resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
 
   zwitch@2.0.4:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
 
 snapshots:
 
-  '@ai-sdk/gateway@1.0.11(zod@4.1.5)':
+  '@ai-sdk/gateway@1.0.11(zod@3.25.76)':
     dependencies:
       '@ai-sdk/provider': 2.0.0
-      '@ai-sdk/provider-utils': 3.0.5(zod@4.1.5)
-      zod: 4.1.5
+      '@ai-sdk/provider-utils': 3.0.5(zod@3.25.76)
+      zod: 3.25.76
 
-  '@ai-sdk/openai@2.0.19(zod@4.1.5)':
+  '@ai-sdk/openai@2.0.19(zod@3.25.76)':
     dependencies:
       '@ai-sdk/provider': 2.0.0
-      '@ai-sdk/provider-utils': 3.0.5(zod@4.1.5)
-      zod: 4.1.5
+      '@ai-sdk/provider-utils': 3.0.5(zod@3.25.76)
+      zod: 3.25.76
 
-  '@ai-sdk/provider-utils@3.0.5(zod@4.1.5)':
+  '@ai-sdk/provider-utils@3.0.5(zod@3.25.76)':
     dependencies:
       '@ai-sdk/provider': 2.0.0
       '@standard-schema/spec': 1.0.0
       eventsource-parser: 3.0.3
-      zod: 4.1.5
-      zod-to-json-schema: 3.24.6(zod@4.1.5)
+      zod: 3.25.76
+      zod-to-json-schema: 3.24.6(zod@3.25.76)
 
   '@ai-sdk/provider@2.0.0':
     dependencies:
       json-schema: 0.4.0
 
-  '@ai-sdk/react@2.0.22(react@19.1.0)(zod@4.1.5)':
+  '@ai-sdk/react@2.0.22(react@19.1.0)(zod@3.25.76)':
     dependencies:
-      '@ai-sdk/provider-utils': 3.0.5(zod@4.1.5)
-      ai: 5.0.22(zod@4.1.5)
+      '@ai-sdk/provider-utils': 3.0.5(zod@3.25.76)
+      ai: 5.0.22(zod@3.25.76)
       react: 19.1.0
       swr: 2.3.4(react@19.1.0)
       throttleit: 2.1.0
     optionalDependencies:
-      zod: 4.1.5
+      zod: 3.25.76
 
   '@alloc/quick-lru@5.2.0': {}
 
@@ -4132,13 +4141,13 @@ snapshots:
 
   acorn@8.15.0: {}
 
-  ai@5.0.22(zod@4.1.5):
+  ai@5.0.22(zod@3.25.76):
     dependencies:
-      '@ai-sdk/gateway': 1.0.11(zod@4.1.5)
+      '@ai-sdk/gateway': 1.0.11(zod@3.25.76)
       '@ai-sdk/provider': 2.0.0
-      '@ai-sdk/provider-utils': 3.0.5(zod@4.1.5)
+      '@ai-sdk/provider-utils': 3.0.5(zod@3.25.76)
       '@opentelemetry/api': 1.9.0
-      zod: 4.1.5
+      zod: 3.25.76
 
   ajv@6.12.6:
     dependencies:
@@ -5625,6 +5634,10 @@ snapshots:
 
   ohash@2.0.11: {}
 
+  openai-zod-to-json-schema@1.1.2(zod@3.25.76):
+    dependencies:
+      zod: 3.25.76
+
   optionator@0.9.4:
     dependencies:
       deep-is: 0.1.4
@@ -6345,10 +6358,10 @@ snapshots:
 
   yocto-queue@0.1.0: {}
 
-  zod-to-json-schema@3.24.6(zod@4.1.5):
+  zod-to-json-schema@3.24.6(zod@3.25.76):
     dependencies:
-      zod: 4.1.5
+      zod: 3.25.76
 
-  zod@4.1.5: {}
+  zod@3.25.76: {}
 
   zwitch@2.0.4: {}
