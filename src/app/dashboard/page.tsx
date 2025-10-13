@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { Product } from '@/lib/type';
+import Link from 'next/link';
+
 
 export default function Dashboard() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -15,6 +17,7 @@ export default function Dashboard() {
     category: '',
     brand: '',
     price: '',
+    stock: '',
     image: '',
     description_en: '',
     description_jp: '',
@@ -44,14 +47,29 @@ export default function Dashboard() {
       const url = editingProduct ? `/api/products/${editingProduct.id}` : '/api/products';
       const method = editingProduct ? 'PUT' : 'POST';
 
+      const payload: any = {
+        ...formData,
+        price: Number(formData.price),
+      };
+
+      if (!formData.image && editingProduct) {
+        payload.image = editingProduct.image;
+      }
+
+      if (formData.stock !== '') {
+        payload.stock = Number(formData.stock);
+      } else if (!editingProduct) {
+        payload.stock = 0;
+      }
+
       const response = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       });
 
       if (response.ok) {
-        fetchProducts();
+        await fetchProducts();
         resetForm();
       }
     } catch (error) {
@@ -68,6 +86,7 @@ export default function Dashboard() {
       category: product.category,
       brand: product.brand,
       price: product.price.toString(),
+      stock: product.stock.toString(),
       image: product.image,
       description_en: product.description_en,
       description_jp: product.description_jp,
@@ -100,6 +119,7 @@ export default function Dashboard() {
       category: '',
       brand: '',
       price: '',
+      stock: '',
       image: '',
       description_en: '',
       description_jp: '',
@@ -117,12 +137,22 @@ export default function Dashboard() {
     <div className="p-8 max-w-6xl mx-auto">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">商品管理ダッシュボード</h1>
-        <button
-          onClick={() => setShowForm(true)}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-        >
-          新しい商品を追加
-        </button>
+
+        <div className="flex gap-2">
+          <Link
+            href="/orders"
+            className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700"
+          >
+            注文管理ダッシュボード
+          </Link>
+
+          <button
+            onClick={() => setShowForm(true)}
+            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          >
+            新しい商品を追加
+          </button>
+        </div>
       </div>
 
       {showForm && (
@@ -211,14 +241,26 @@ export default function Dashboard() {
               />
             </div>
 
+            <div>
+              <label className="block text-sm font-medium mb-1">在庫</label>
+              <input
+                type="number"
+                value={formData.stock}
+                onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
+                className="w-full border rounded px-3 py-2"
+                min={0}
+              />
+            </div>
+
+
             <div className="md:col-span-2">
               <label className="block text-sm font-medium mb-1">画像URL</label>
               <input
-                type="url"
+                type="text"
                 value={formData.image}
                 onChange={(e) => setFormData({ ...formData, image: e.target.value })}
                 className="w-full p-2 border rounded"
-                required
+                required={!editingProduct}
               />
             </div>
 
@@ -280,6 +322,7 @@ export default function Dashboard() {
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">カテゴリー</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ブランド</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">価格</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">在庫</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">画像</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">操作</th>
             </tr>
@@ -302,6 +345,7 @@ export default function Dashboard() {
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                   ¥{product.price.toLocaleString()}
                 </td>
+                <td className="px-6 py-4 whitespace-nowrap">{product.stock}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   <img src={product.image} alt={product.name_jp} className="w-12 h-12 object-cover rounded" />
                 </td>
