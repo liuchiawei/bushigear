@@ -10,6 +10,7 @@ export type Product = {
   description_en: string;
   description_jp: string;
   description_cn: string;
+  stock: number;
 };
 
 export type CartItem = {
@@ -20,4 +21,13 @@ export type CartItem = {
 export type Cart = {
   items: CartItem[];
   total: number;
+};
+
+export type Order = {
+  id: number;
+  userId?: number | null;
+  productId: number;
+  quantity: number;
+  createdAt: string;
+  product?: Product;
 };

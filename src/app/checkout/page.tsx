@@ -21,29 +21,37 @@ export default function CheckoutPage() {
   // 6. Implement order tracking functionality
 
   const handlePlaceOrder = async () => {
+    if (!cart || cart.items.length === 0) {
+      alert("カートが空です");
+      return;
+    }
+
     setIsProcessing(true);
-
     try {
-      // TODO: Replace with actual order processing
-      // - Validate cart items and availability
-      // - Process payment
-      // - Create order in database
-      // - Send confirmation email
-      // - Clear cart after successful order
-
-      // Simulated processing delay
-      await new Promise(resolve => setTimeout(resolve, 2000));
-
-      alert("注文が完了しました！（デモ機能）");
+      for (const item of cart.items) {
+        const res = await fetch("/api/orders", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            productId: item.product.id,
+            quantity: item.quantity,
+            // userId: 任意（未ログインなら省略可）
+          }),
+        });
+        if (!res.ok) {
+          const msg = await res.text();
+          throw new Error(`注文失敗: ${msg}`);
+        }
+      }
       clearCart();
-
-    } catch (error) {
-      console.error("Order processing error:", error);
-      alert("注文処理中にエラーが発生しました。");
+      alert("ご注文ありがとうございます！");
+    } catch (e: any) {
+      alert(e?.message ?? "注文に失敗しました");
     } finally {
       setIsProcessing(false);
     }
   };
+
 
   if (cart.items.length === 0) {
     return (

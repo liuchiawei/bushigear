@@ -1,41 +1,47 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { motion } from "motion/react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  type CarouselApi,
+} from "@/components/ui/carousel";
 import items from "@/data/heroImageList.json";
 
 export default function Cm() {
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [api, setApi] = useState<CarouselApi>();
+  const [current, setCurrent] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
 
   useEffect(() => {
-    if (!isAutoPlaying) return;
+    if (!api) return;
 
-    // 自動再生(5秒ごとに次の画像に切り替える)
+    setCurrent(api.selectedScrollSnap());
+
+    api.on("select", () => {
+      setCurrent(api.selectedScrollSnap());
+    });
+  }, [api]);
+
+  // 自動再生（5秒ごとに次の画像に切り替える）
+  useEffect(() => {
+    if (!api || !isAutoPlaying) return;
+
     const timer = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % items.length);
+      api.scrollNext();
     }, 5000);
 
     return () => clearInterval(timer);
-  }, [isAutoPlaying]);
-
-  // 次の画像に切り替える
-  const nextSlide = () => {
-    setCurrentIndex((prev) => (prev + 1) % items.length);
-    setIsAutoPlaying(false);
-  };
-
-  // 前の画像に切り替える
-  const prevSlide = () => {
-    setCurrentIndex((prev) => (prev - 1 + items.length) % items.length);
-    setIsAutoPlaying(false);
-  };
+  }, [api, isAutoPlaying]);
 
   return (
     <div className="relative w-full h-screen overflow-hidden bg-black">
+      {/* Title Overlay */}
       <motion.h1
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
@@ -44,58 +50,71 @@ export default function Cm() {
       >
         Bushi Gear
       </motion.h1>
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={currentIndex}
-          initial={{ opacity: 0, x: "100%" }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: "-100%" }}
-          transition={{ duration: 0.8 }}
-          className="absolute inset-0 w-full h-full"
-        >
-          <Image
-            src={items[currentIndex].image}
-            alt={items[currentIndex].title}
-            width={1920}
-            height={1080}
-            className="w-full h-full object-cover"
-          />
-        </motion.div>
-      </AnimatePresence>
+
+      {/* Carousel */}
+      <Carousel
+        setApi={setApi}
+        className="w-full h-full"
+        opts={{
+          loop: true,
+          align: "start",
+          slidesToScroll: 1,
+        }}
+      >
+        <CarouselContent className="h-screen">
+          {items.map((item) => (
+            <CarouselItem key={item.id} className=" basis-1/3 relative h-screen">
+              <div className="w-full h-full">
+                <Image
+                  src={item.image}
+                  alt={item.title}
+                  fill
+                  className="object-cover"
+                  priority
+                />
+              </div>
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+      </Carousel>
 
       {/* Navigation Buttons */}
       <Button
         variant="ghost"
         size="icon"
-        className="absolute left-4 top-1/2 -translate-y-1/2 bg-background/20 rounded-full hover:bg-background/80 cursor-pointer"
-        onClick={prevSlide}
-        title="previous"
+        className="absolute left-4 top-1/2 -translate-y-1/2 z-50 bg-white/20 hover:bg-white/80 rounded-full border-none"
+        onClick={() => {
+          api?.scrollPrev();
+          setIsAutoPlaying(false);
+        }}
+        title="Previous"
       >
-        <ArrowLeft className="size-4" />
+        <ArrowLeft className="size-6 text-white" />
       </Button>
       <Button
         variant="ghost"
         size="icon"
-        className="absolute right-4 top-1/2 -translate-y-1/2 bg-background/20 rounded-full hover:bg-background/80 cursor-pointer"
-        onClick={nextSlide}
-        title="next"
+        className="absolute right-4 top-1/2 -translate-y-1/2 z-50 bg-white/20 hover:bg-white/80 rounded-full border-none"
+        onClick={() => {
+          api?.scrollNext();
+          setIsAutoPlaying(false);
+        }}
+        title="Next"
       >
-        <ArrowRight className="size-4" />
+        <ArrowRight className="size-6 text-white" />
       </Button>
 
       {/* Indicators */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-50">
         {items.map((_, index) => (
           <button
             key={index}
-            className={`w-2 h-2 rounded-full transition-all duration-300
-              ${
-                index === currentIndex
-                  ? "bg-primary w-4"
-                  : "bg-foreground/30 hover:bg-foreground/50"
+            className={`h-2 rounded-full transition-all duration-300 ${index === current
+              ? "bg-primary w-8"
+              : "bg-white/30 hover:bg-white/50 w-2"
               }`}
             onClick={() => {
-              setCurrentIndex(index);
+              api?.scrollTo(index);
               setIsAutoPlaying(false);
             }}
             title={`Switch to the ${index + 1}th slide`}
