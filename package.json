@@ -15,8 +15,14 @@
     "db:migrate": "prisma migrate dev"
   },
   "dependencies": {
+<<<<<<< Updated upstream
     "@ai-sdk/openai": "2.0.19",
     "@ai-sdk/react": "2.0.22",
+=======
+    "@ai-sdk/openai": "2.0.52",
+    "@ai-sdk/react": "2.0.70",
+    "@auth/prisma-adapter": "^2.11.0",
+>>>>>>> Stashed changes
     "@nauverse/tailwind-dot-grid-backgrounds": "^1.2.13",
     "@neondatabase/serverless": "^1.0.1",
     "@prisma/client": "6.15.0",
@@ -26,7 +32,12 @@
     "@radix-ui/react-separator": "^1.1.7",
     "@radix-ui/react-slot": "^1.2.3",
     "@radix-ui/react-tooltip": "^1.2.7",
+<<<<<<< Updated upstream
     "ai": "5.0.22",
+=======
+    "ai": "5.0.70",
+    "bcryptjs": "^3.0.2",
+>>>>>>> Stashed changes
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "dotenv": "^17.2.2",
@@ -56,5 +67,10 @@
     "tsx": "^4.20.5",
     "tw-animate-css": "^1.3.5",
     "typescript": "^5"
+  },
+  "overrides": {
+    "openai-zod-to-json-schema": {
+      "zod": "3.25.76"
+    }
   }
 }
