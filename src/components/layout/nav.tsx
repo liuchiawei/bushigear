@@ -67,9 +67,9 @@ export default function Nav() {
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <a href="#">
+                <Link href="/login">
                   <LogIn className="size-4" />
-                </a>
+                </Link>
               </TooltipTrigger>
               <TooltipContent>
                 <p>会員登録 | ログイン</p>

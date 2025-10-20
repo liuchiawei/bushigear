@@ -93,6 +93,7 @@ export default function Dashboard() {
       description_cn: product.description_cn,
     });
     setShowForm(true);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleDelete = async (id: number) => {
@@ -143,7 +144,10 @@ export default function Dashboard() {
             href="/orders"
             className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700"
           >
-            注文管理ダッシュボード
+            注文管理
+          </Link>
+          <Link href="/members" className="bg-emerald-600 text-white px-4 py-2 rounded hover:opacity-90">
+            会員管理
           </Link>
 
           <button
@@ -216,10 +220,10 @@ export default function Dashboard() {
                 required
               >
                 <option value="">選択してください</option>
-                <option value="gloves">グローブ</option>
-                <option value="mitts">ミット</option>
-                <option value="protectors">プロテクター</option>
-                <option value="fuku">道着</option>
+                <option value="glove">グローブ</option>
+                <option value="mitt">ミット</option>
+                <option value="protector">プロテクター</option>
+                <option value="cloth">シャツ</option>
               </select>
             </div>
 
