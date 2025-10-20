@@ -62,9 +62,24 @@ export default function MembersDashboardPage() {
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">会員管理ダッシュボード</h1>
         <div className="flex gap-2">
-          <Link href="/dashboard" className="bg-slate-700 text-white px-4 py-2 rounded hover:opacity-90">商品管理</Link>
-          <Link href="/orders" className="bg-indigo-600 text-white px-4 py-2 rounded hover:opacity-90">注文管理</Link>
-          <Link href="/members" className="bg-emerald-600 text-white px-4 py-2 rounded hover:opacity-90">会員管理</Link>
+          <Link
+            href="/dashboard"
+            className="bg-slate-700 text-white px-4 py-2 rounded hover:opacity-90"
+          >
+            商品管理
+          </Link>
+          <Link
+            href="/orders"
+            className="bg-indigo-600 text-white px-4 py-2 rounded hover:opacity-90"
+          >
+            注文管理
+          </Link>
+          <Link
+            href="/members"
+            className="bg-emerald-600 text-white px-4 py-2 rounded hover:opacity-90"
+          >
+            会員管理
+          </Link>
         </div>
       </div>
 
@@ -74,13 +89,27 @@ export default function MembersDashboardPage() {
         <table className="w-full min-w-[1100px]">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">メール</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">性別</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">誕生日</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">住所</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">更新日時</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">操作</th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                ID
+              </th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                メール
+              </th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                性別
+              </th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                誕生日
+              </th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                住所
+              </th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                更新日時
+              </th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                操作
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
@@ -91,13 +120,31 @@ export default function MembersDashboardPage() {
                   <td className="px-4 py-3">{u.id}</td>
                   <td className="px-4 py-3">{u.email}</td>
                   <td className="px-4 py-3">{labelGender(u.gender)}</td>
-                  <td className="px-4 py-3">{u.birthday ? new Date(u.birthday).toLocaleDateString("ja-JP") : "-"}</td>
+                  <td className="px-4 py-3">
+                    {u.birthday
+                      ? new Date(u.birthday).toLocaleDateString("ja-JP")
+                      : "-"}
+                  </td>
                   <td className="px-4 py-3">{address || "-"}</td>
-                  <td className="px-4 py-3">{u.updatedAt ? new Date(u.updatedAt).toLocaleString("ja-JP") : "-"}</td>
+                  <td className="px-4 py-3">
+                    {u.updatedAt
+                      ? new Date(u.updatedAt).toLocaleString("ja-JP")
+                      : "-"}
+                  </td>
                   <td className="px-4 py-3">
                     <div className="flex gap-3">
-                      <button className="text-blue-600 hover:underline" onClick={() => setEditing(u)}>編集</button>
-                      <button className="text-red-600 hover:underline" onClick={() => onDelete(u.id)}>削除</button>
+                      <button
+                        className="text-blue-600 hover:underline"
+                        onClick={() => setEditing(u)}
+                      >
+                        編集
+                      </button>
+                      <button
+                        className="text-red-600 hover:underline"
+                        onClick={() => onDelete(u.id)}
+                      >
+                        削除
+                      </button>
                     </div>
                   </td>
                 </tr>
@@ -107,7 +154,9 @@ export default function MembersDashboardPage() {
         </table>
 
         {users.length === 0 && (
-          <div className="text-center py-8 text-gray-500">会員がまだいません</div>
+          <div className="text-center py-8 text-gray-500">
+            会員がまだいません
+          </div>
         )}
       </div>
 
@@ -132,7 +181,9 @@ function labelGender(g?: string | null) {
   return "-";
 }
 function buildFullAddress(u: Partial<UserRow>) {
-  const pc = u.postalCode ? `〒${String(u.postalCode).slice(0,3)}-${String(u.postalCode).slice(3)}` : "";
+  const pc = u.postalCode
+    ? `〒${String(u.postalCode).slice(0, 3)}-${String(u.postalCode).slice(3)}`
+    : "";
   const main = `${u.prefecture ?? ""}${u.city ?? ""}${u.street ?? ""}`.trim();
   const opt = [u.building, u.room].filter(Boolean).join(" ");
   return [pc, main, opt].filter(Boolean).join(" ");
@@ -161,18 +212,25 @@ function EditUserDialog({
   const [saving, setSaving] = useState(false);
   const [err, setErr] = useState("");
 
-  const onChange = (e: React.ChangeEvent<HTMLInputElement|HTMLSelectElement>) => {
+  const onChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   const save = async () => {
     setErr("");
-    if (!form.email.trim()) { setErr("メールは必須です"); return; }
+    if (!form.email.trim()) {
+      setErr("メールは必須です");
+      return;
+    }
     if (form.postalCode && !/^\d{3}-?\d{4}$/.test(form.postalCode)) {
-      setErr("郵便番号は 123-4567 の形式（半角）で入力してください。"); return;
+      setErr("郵便番号は 123-4567 の形式（半角）で入力してください。");
+      return;
     }
     if (/[０-９]/.test(form.street)) {
-      setErr("丁目・番地・号の数字は半角で入力してください。"); return;
+      setErr("丁目・番地・号の数字は半角で入力してください。");
+      return;
     }
 
     setSaving(true);
@@ -201,11 +259,23 @@ function EditUserDialog({
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block text-sm mb-1">メール</label>
-            <input name="email" value={form.email} onChange={onChange} className="w-full p-2 border rounded" />
+            <input
+              title="email"
+              name="email"
+              value={form.email}
+              onChange={onChange}
+              className="w-full p-2 border rounded"
+            />
           </div>
           <div>
             <label className="block text-sm mb-1">性別</label>
-            <select name="gender" value={form.gender} onChange={onChange} className="w-full p-2 border rounded">
+            <select
+              title="gender"
+              name="gender"
+              value={form.gender}
+              onChange={onChange}
+              className="w-full p-2 border rounded"
+            >
               <option value="">未設定</option>
               <option value="male">男性</option>
               <option value="female">女性</option>
@@ -214,32 +284,85 @@ function EditUserDialog({
           </div>
           <div>
             <label className="block text-sm mb-1">誕生日</label>
-            <input type="date" name="birthday" value={form.birthday} onChange={onChange} className="w-full p-2 border rounded" />
+            <input
+              title="birthday"
+              type="date"
+              name="birthday"
+              value={form.birthday}
+              onChange={onChange}
+              className="w-full p-2 border rounded"
+            />
           </div>
 
           <div className="col-span-2 mt-2">
             <h3 className="font-semibold mb-2">住所</h3>
             <label className="block text-sm mb-1">郵便番号（半角）</label>
-            <input name="postalCode" value={form.postalCode} onChange={onChange} placeholder="123-4567" className="w-full p-2 border rounded mb-2" />
+            <input
+              name="postalCode"
+              value={form.postalCode}
+              onChange={onChange}
+              placeholder="123-4567"
+              className="w-full p-2 border rounded mb-2"
+            />
             <label className="block text-sm mb-1">都道府県</label>
-            <select name="prefecture" value={form.prefecture} onChange={onChange} className="w-full p-2 border rounded mb-2">
+            <select
+              title="prefecture"
+              name="prefecture"
+              value={form.prefecture}
+              onChange={onChange}
+              className="w-full p-2 border rounded mb-2"
+            >
               <option value="">選択してください</option>
-              {PREFECTURES.map(p => <option key={p} value={p}>{p}</option>)}
+              {PREFECTURES.map((p) => (
+                <option key={p} value={p}>
+                  {p}
+                </option>
+              ))}
             </select>
             <label className="block text-sm mb-1">市区町村</label>
-            <input name="city" value={form.city} onChange={onChange} className="w-full p-2 border rounded mb-2" />
+            <input
+              title="city"
+              name="city"
+              value={form.city}
+              onChange={onChange}
+              className="w-full p-2 border rounded mb-2"
+            />
             <label className="block text-sm mb-1">丁目・番地・号（半角）</label>
-            <input name="street" value={form.street} onChange={onChange} className="w-full p-2 border rounded mb-2" />
+            <input
+              title="street"
+              name="street"
+              value={form.street}
+              onChange={onChange}
+              className="w-full p-2 border rounded mb-2"
+            />
             <label className="block text-sm mb-1">建物名／会社名（任意）</label>
-            <input name="building" value={form.building} onChange={onChange} className="w-full p-2 border rounded mb-2" />
+            <input
+              title="building"
+              name="building"
+              value={form.building}
+              onChange={onChange}
+              className="w-full p-2 border rounded mb-2"
+            />
             <label className="block text-sm mb-1">部屋番号（任意）</label>
-            <input name="room" value={form.room} onChange={onChange} className="w-full p-2 border rounded" />
+            <input
+              title="room"
+              name="room"
+              value={form.room}
+              onChange={onChange}
+              className="w-full p-2 border rounded"
+            />
           </div>
         </div>
 
         <div className="mt-6 flex justify-end gap-3">
-          <button onClick={onClose} className="px-4 py-2 rounded border">キャンセル</button>
-          <button onClick={save} disabled={saving} className="px-4 py-2 rounded bg-blue-600 text-white disabled:opacity-60">
+          <button onClick={onClose} className="px-4 py-2 rounded border">
+            キャンセル
+          </button>
+          <button
+            onClick={save}
+            disabled={saving}
+            className="px-4 py-2 rounded bg-blue-600 text-white disabled:opacity-60"
+          >
             {saving ? "保存中..." : "保存"}
           </button>
         </div>

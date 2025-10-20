@@ -33,6 +33,7 @@ export default function LoginPage() {
         <div>
           <label className="block text-sm mb-1">Email</label>
           <input
+            title="email"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -43,6 +44,7 @@ export default function LoginPage() {
         <div>
           <label className="block text-sm mb-1">Password</label>
           <input
+            title="password"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -65,7 +67,10 @@ export default function LoginPage() {
         Googleでログイン
       </button>
       <p className="mt-4 text-center">
-        新規登録は <a href="/register" className="text-blue-600 underline">こちら</a>
+        新規登録は{" "}
+        <a href="/register" className="text-blue-600 underline">
+          こちら
+        </a>
       </p>
     </main>
   );
