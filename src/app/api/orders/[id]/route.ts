@@ -23,7 +23,8 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
-    const orderId = parseInt(id);
+    const orderId = parseInt(id, 10);
+    if (Number.isNaN(orderId)) return new Response("Invalid id", { status: 400 });
 
     const result = await prisma.$transaction(async (tx) => {
       const ord = await tx.order.findUnique({ where: { id: orderId } });
