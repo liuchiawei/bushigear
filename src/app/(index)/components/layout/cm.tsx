@@ -40,7 +40,7 @@ export default function Cm() {
   }, [api, isAutoPlaying]);
 
   return (
-    <div className="relative w-full h-screen overflow-hidden bg-black">
+    <div className="relative w-full h-screen overflow-hidden flex items-center justify-center">
       {/* Title Overlay */}
       <motion.h1
         initial={{ opacity: 0, y: 50 }}
@@ -54,17 +54,17 @@ export default function Cm() {
       {/* Carousel */}
       <Carousel
         setApi={setApi}
-        className="w-full h-full"
+        className="w-full max-w-6xl"
         opts={{
           loop: true,
           align: "start",
           slidesToScroll: 1,
         }}
       >
-        <CarouselContent className="h-screen">
+        <CarouselContent className="h-[28rem]">
           {items.map((item) => (
-            <CarouselItem key={item.id} className=" basis-1/3 relative h-screen">
-              <div className="w-full h-full">
+            <CarouselItem key={item.id} className="basis-1/3 pl-4">
+              <div className="w-full h-full relative rounded-xl overflow-hidden">
                 <Image
                   src={item.image}
                   alt={item.title}
@@ -82,26 +82,26 @@ export default function Cm() {
       <Button
         variant="ghost"
         size="icon"
-        className="absolute left-4 top-1/2 -translate-y-1/2 z-50 bg-white/20 hover:bg-white/80 rounded-full border-none"
+        className="absolute left-4 top-1/2 -translate-y-1/2 z-50 bg-black/20 hover:bg-black/80 rounded-full border-none"
         onClick={() => {
           api?.scrollPrev();
           setIsAutoPlaying(false);
         }}
         title="Previous"
       >
-        <ArrowLeft className="size-6 text-white" />
+        <ArrowLeft className="size-6 text-black" />
       </Button>
       <Button
         variant="ghost"
         size="icon"
-        className="absolute right-4 top-1/2 -translate-y-1/2 z-50 bg-white/20 hover:bg-white/80 rounded-full border-none"
+        className="absolute right-4 top-1/2 -translate-y-1/2 z-50 bg-black/20 hover:bg-black/80 rounded-full border-none"
         onClick={() => {
           api?.scrollNext();
           setIsAutoPlaying(false);
         }}
         title="Next"
       >
-        <ArrowRight className="size-6 text-white" />
+        <ArrowRight className="size-6 text-black" />
       </Button>
 
       {/* Indicators */}
