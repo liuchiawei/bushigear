@@ -6,7 +6,7 @@ export default function SectionHeader({
 }: {
   title_en: string;
   title_jp: string;
-  description: string;
+  description?: string;
   reverse?: boolean;
 }) {
   return (
@@ -31,9 +31,11 @@ export default function SectionHeader({
         >
           {title_en}
         </h1>
-        <p className="self-end md:self-start w-1/4 md:w-[10%] my-2 md:my-6 text-xs md:text-sm font-robot font-[300] text-neutral-400">
-          {description}
-        </p>
+        {description && (
+          <p className="self-end md:self-start w-1/4 md:w-[10%] my-2 md:my-6 text-xs md:text-sm font-robot font-[300] text-neutral-400">
+            {description}
+          </p>
+        )}
       </div>
     </div>
   );

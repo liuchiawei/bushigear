@@ -7,7 +7,6 @@ export default function News() {
       <SectionHeader
         title_en={content.home.news.section_info.title.en}
         title_jp={content.home.news.section_info.title.jp}
-        description={content.home.news.section_info.description.jp}
         reverse={true}
       />
       <ul className="flex flex-col gap-2 text-lg [&_li]:flex [&_li]:gap-6 ">

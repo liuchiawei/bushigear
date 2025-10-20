@@ -9,7 +9,6 @@ export default function About() {
       <SectionHeader
         title_en={content.home.about.section_info.title.en}
         title_jp={content.home.about.section_info.title.jp}
-        description={content.home.about.section_info.description.jp}
       />
       <div className="w-full max-w-xl h-full mx-auto flex flex-col items-center justify-center">
         <h1 className="text-2xl font-bold text-center">

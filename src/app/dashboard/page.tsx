@@ -177,6 +177,7 @@ export default function Dashboard() {
             <div>
               <label className="block text-sm font-medium mb-1">英語名</label>
               <input
+                title='english name'
                 type="text"
                 value={formData.name_en}
                 onChange={(e) => setFormData({ ...formData, name_en: e.target.value })}
@@ -188,6 +189,7 @@ export default function Dashboard() {
             <div>
               <label className="block text-sm font-medium mb-1">日本語名</label>
               <input
+                title='japanese name'
                 type="text"
                 value={formData.name_jp}
                 onChange={(e) => setFormData({ ...formData, name_jp: e.target.value })}
@@ -199,6 +201,7 @@ export default function Dashboard() {
             <div>
               <label className="block text-sm font-medium mb-1">中国語名</label>
               <input
+                title='chinese name'
                 type="text"
                 value={formData.name_cn}
                 onChange={(e) => setFormData({ ...formData, name_cn: e.target.value })}
@@ -210,6 +213,7 @@ export default function Dashboard() {
             <div>
               <label className="block text-sm font-medium mb-1">カテゴリー</label>
               <select
+                title='category'
                 value={formData.category}
                 onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                 className="w-full p-2 border rounded"
@@ -226,6 +230,7 @@ export default function Dashboard() {
             <div>
               <label className="block text-sm font-medium mb-1">ブランド</label>
               <input
+                title='brand'
                 type="text"
                 value={formData.brand}
                 onChange={(e) => setFormData({ ...formData, brand: e.target.value })}
@@ -237,6 +242,7 @@ export default function Dashboard() {
             <div>
               <label className="block text-sm font-medium mb-1">価格 (円)</label>
               <input
+                title='price'
                 type="number"
                 value={formData.price}
                 onChange={(e) => setFormData({ ...formData, price: e.target.value })}
@@ -248,6 +254,7 @@ export default function Dashboard() {
             <div>
               <label className="block text-sm font-medium mb-1">在庫</label>
               <input
+                title='stock'
                 type="number"
                 value={formData.stock}
                 onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
@@ -260,6 +267,7 @@ export default function Dashboard() {
             <div className="md:col-span-2">
               <label className="block text-sm font-medium mb-1">画像URL</label>
               <input
+                title='image'
                 type="text"
                 value={formData.image}
                 onChange={(e) => setFormData({ ...formData, image: e.target.value })}
@@ -271,6 +279,7 @@ export default function Dashboard() {
             <div>
               <label className="block text-sm font-medium mb-1">英語説明</label>
               <textarea
+                title='english description'
                 value={formData.description_en}
                 onChange={(e) => setFormData({ ...formData, description_en: e.target.value })}
                 className="w-full p-2 border rounded h-24"
@@ -281,6 +290,7 @@ export default function Dashboard() {
             <div>
               <label className="block text-sm font-medium mb-1">日本語説明</label>
               <textarea
+                title='japanese description'
                 value={formData.description_jp}
                 onChange={(e) => setFormData({ ...formData, description_jp: e.target.value })}
                 className="w-full p-2 border rounded h-24"
@@ -291,6 +301,7 @@ export default function Dashboard() {
             <div className="md:col-span-2">
               <label className="block text-sm font-medium mb-1">中国語説明</label>
               <textarea
+                title='chinese description'
                 value={formData.description_cn}
                 onChange={(e) => setFormData({ ...formData, description_cn: e.target.value })}
                 className="w-full p-2 border rounded h-24"
