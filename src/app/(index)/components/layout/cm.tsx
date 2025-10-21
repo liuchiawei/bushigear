@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import {
   Carousel,
   CarouselContent,
@@ -80,28 +80,28 @@ export default function Cm() {
 
       {/* Navigation Buttons */}
       <Button
-        variant="ghost"
+        variant="outline"
         size="icon"
-        className="absolute left-4 top-1/2 -translate-y-1/2 z-50 bg-black/20 hover:bg-black/80 rounded-full border-none"
+        className="absolute left-4 top-1/2 -translate-y-1/2 z-50 size-12 rounded-full hover:bg-primary hover:text-background cursor-pointer"
         onClick={() => {
           api?.scrollPrev();
           setIsAutoPlaying(false);
         }}
         title="Previous"
       >
-        <ArrowLeft className="size-6 text-black" />
+        <ChevronLeft className="size-6" />
       </Button>
       <Button
-        variant="ghost"
+        variant="outline"
         size="icon"
-        className="absolute right-4 top-1/2 -translate-y-1/2 z-50 bg-black/20 hover:bg-black/80 rounded-full border-none"
+        className="absolute right-4 top-1/2 -translate-y-1/2 z-50 size-12 rounded-full hover:bg-primary hover:text-background cursor-pointer"
         onClick={() => {
           api?.scrollNext();
           setIsAutoPlaying(false);
         }}
         title="Next"
       >
-        <ArrowRight className="size-6 text-black" />
+        <ChevronRight className="size-6" />
       </Button>
 
       {/* Indicators */}
@@ -109,10 +109,11 @@ export default function Cm() {
         {items.map((_, index) => (
           <button
             key={index}
-            className={`h-2 rounded-full transition-all duration-300 ${index === current
-              ? "bg-primary w-8"
-              : "bg-white/30 hover:bg-white/50 w-2"
-              }`}
+            className={`h-2 rounded-full transition-all duration-300 ${
+              index === current
+                ? "bg-primary w-8"
+                : "bg-white/30 hover:bg-white/50 w-2"
+            }`}
             onClick={() => {
               api?.scrollTo(index);
               setIsAutoPlaying(false);
