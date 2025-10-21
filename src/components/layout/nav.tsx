@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/tooltip";
 import { Search, Languages, LogIn, Heart } from "lucide-react";
 import CartSheet from "@/components/common/CartSheet";
+import Image from "next/image";
 
 export default function Nav() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -44,9 +45,9 @@ export default function Nav() {
       <SidebarTrigger />
       <Link
         href="/"
-        className="absolute left-1/2 -translate-x-1/2 w-24 text-xl font-[900] font-roboto text-center uppercase"
+        className="absolute left-1/2 -translate-x-1/2 w-24 md:w-36"
       >
-        BUSHIGEAR
+        <Image src="/logo/logo_text.svg" alt="logo" width={200} height={200} objectFit="cover"/>
       </Link>
       <NavigationMenuList className="gap-4">
         <NavigationMenuItem>
