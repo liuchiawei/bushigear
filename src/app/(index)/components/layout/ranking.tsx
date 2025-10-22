@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import content from "@/data/content.json";
 import SectionHeader from "../common/SectionHeader";
 import Image from "next/image";
@@ -21,27 +21,30 @@ export default function Ranking() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const fetchProducts = async (categoryName: string) => {
-    setLoading(true);
-    try {
-      const categorySlug = categoryMapping[categoryName];
-      // モバイルの場合は5個、デスクトップの場合は10個取得
-      const limit = isMobile ? 3 : 10;
-      const response = await fetch(
-        `/api/products?category=${categorySlug}&limit=${limit}`
-      );
-      const data = await response.json();
-      setProducts(data);
-    } catch (error) {
-      console.error("Failed to fetch products:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const fetchProducts = useCallback(
+    async (categoryName: string) => {
+      setLoading(true);
+      try {
+        const categorySlug = categoryMapping[categoryName];
+        // モバイルの場合は5個、デスクトップの場合は10個取得
+        const limit = isMobile ? 3 : 10;
+        const response = await fetch(
+          `/api/products?category=${categorySlug}&limit=${limit}`
+        );
+        const data = await response.json();
+        setProducts(data);
+      } catch (error) {
+        console.error("Failed to fetch products:", error);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [isMobile]
+  );
 
   useEffect(() => {
     fetchProducts(selectedCategory);
-  }, [selectedCategory, isMobile]);
+  }, [selectedCategory, fetchProducts]);
 
   const handleCategoryClick = (categoryName: string) => {
     setSelectedCategory(categoryName);
@@ -92,7 +95,11 @@ export default function Ranking() {
                 key={product.id}
                 className="col-span-2 md:col-span-1 flex flex-col items-center justify-center relative"
               >
-                <div className={`flex items-center self-start text-primary-foreground text-xs px-2 py-1 ${index + 1 === 1 ? "bg-accent" : "bg-primary"}`}>
+                <div
+                  className={`flex items-center self-start text-primary-foreground text-xs px-2 py-1 ${
+                    index + 1 === 1 ? "bg-accent" : "bg-primary"
+                  }`}
+                >
                   {index + 1}位
                 </div>
                 <div className="w-full aspect-square flex items-center justify-center mb-6">

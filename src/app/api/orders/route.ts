@@ -1,9 +1,25 @@
 import prisma from "@/lib/prisma";
+import { auth } from "@/auth";
+
 
 export async function GET() {
   try {
     const orders = await prisma.order.findMany({
-      include: { product: true },
+      include: { product: true,
+      user: {
+          select: {
+            id: true,
+            email: true,
+            postalCode: true,
+            prefecture: true,
+            city: true,
+            street: true,
+            building: true,
+            room: true,
+            address: true,
+          },
+        },
+      },
       orderBy: { id: "desc" },
     });
     return Response.json(orders);
@@ -14,6 +30,10 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
+    const session = await auth();
+    const currentUserId = session?.user?.id
+      ? parseInt(String(session.user.id))
+      : null;
     const body = await request.json();
     const productId = parseInt(String(body.productId));
     const quantity = parseInt(String(body.quantity));
@@ -33,7 +53,7 @@ export async function POST(request: Request) {
         data: {
           productId,
           quantity,
-          userId: body.userId ? parseInt(String(body.userId)) : null,
+          userId: currentUserId,
         },
         include: { product: true },
       });

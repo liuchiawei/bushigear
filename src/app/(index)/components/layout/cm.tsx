@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import {
   Carousel,
   CarouselContent,
@@ -40,7 +40,7 @@ export default function Cm() {
   }, [api, isAutoPlaying]);
 
   return (
-    <div className="relative w-full h-screen overflow-hidden bg-black">
+    <div className="relative w-full h-screen overflow-hidden flex items-center justify-center">
       {/* Title Overlay */}
       <motion.h1
         initial={{ opacity: 0, y: 50 }}
@@ -54,17 +54,17 @@ export default function Cm() {
       {/* Carousel */}
       <Carousel
         setApi={setApi}
-        className="w-full h-full"
+        className="w-full max-w-6xl"
         opts={{
           loop: true,
           align: "start",
           slidesToScroll: 1,
         }}
       >
-        <CarouselContent className="h-screen">
+        <CarouselContent className="h-[28rem]">
           {items.map((item) => (
-            <CarouselItem key={item.id} className=" basis-1/3 relative h-screen">
-              <div className="w-full h-full">
+            <CarouselItem key={item.id} className="basis-1/3 pl-4">
+              <div className="w-full h-full relative rounded-xl overflow-hidden">
                 <Image
                   src={item.image}
                   alt={item.title}
@@ -80,28 +80,28 @@ export default function Cm() {
 
       {/* Navigation Buttons */}
       <Button
-        variant="ghost"
+        variant="outline"
         size="icon"
-        className="absolute left-4 top-1/2 -translate-y-1/2 z-50 bg-white/20 hover:bg-white/80 rounded-full border-none"
+        className="absolute left-4 top-1/2 -translate-y-1/2 z-50 size-12 rounded-full hover:bg-primary hover:text-background cursor-pointer"
         onClick={() => {
           api?.scrollPrev();
           setIsAutoPlaying(false);
         }}
         title="Previous"
       >
-        <ArrowLeft className="size-6 text-white" />
+        <ChevronLeft className="size-6" />
       </Button>
       <Button
-        variant="ghost"
+        variant="outline"
         size="icon"
-        className="absolute right-4 top-1/2 -translate-y-1/2 z-50 bg-white/20 hover:bg-white/80 rounded-full border-none"
+        className="absolute right-4 top-1/2 -translate-y-1/2 z-50 size-12 rounded-full hover:bg-primary hover:text-background cursor-pointer"
         onClick={() => {
           api?.scrollNext();
           setIsAutoPlaying(false);
         }}
         title="Next"
       >
-        <ArrowRight className="size-6 text-white" />
+        <ChevronRight className="size-6" />
       </Button>
 
       {/* Indicators */}
@@ -109,10 +109,11 @@ export default function Cm() {
         {items.map((_, index) => (
           <button
             key={index}
-            className={`h-2 rounded-full transition-all duration-300 ${index === current
-              ? "bg-primary w-8"
-              : "bg-white/30 hover:bg-white/50 w-2"
-              }`}
+            className={`h-2 rounded-full transition-all duration-300 ${
+              index === current
+                ? "bg-primary w-8"
+                : "bg-white/30 hover:bg-white/50 w-2"
+            }`}
             onClick={() => {
               api?.scrollTo(index);
               setIsAutoPlaying(false);

@@ -35,7 +35,7 @@ export default function Sales() {
             <motion.div
               key={item.id}
               variants={itemVariants}
-              className={`w-full border ${
+              className={`w-full ${
                 index === 0 ? "col-span-2 row-span-2" : "col-span-1"
               }`}
               initial="hidden"
@@ -44,16 +44,16 @@ export default function Sales() {
             >
               <Link
                 href={`/products/${item.id}`}
-                className="w-full h-full flex flex-col justify-center items-center hover:bg-card/50 transition-colors duration-200"
+                className="group w-full h-full flex flex-col justify-center items-center hover:bg-card/40 transition-colors duration-200"
               >
                 <Image
                   src={item.image}
                   alt={item.name}
                   width={300}
                   height={300}
-                  className="object-cover"
+                  className="object-cover group-hover:scale-105 transition-transform duration-200"
                 />
-                <div className="p-4 bg-background/40 backdrop-blur-sm shadow-lg rounded-xl">
+                <div className="p-4 bg-background/50 backdrop-blur-sm shadow-lg rounded-xl">
                   <h2 className="text-lg font-bold">{item.name}</h2>
                   <p className="text-sm text-center">
                     <span className="line-through text-gray-500">

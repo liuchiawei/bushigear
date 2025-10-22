@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import {
   Sidebar,
   SidebarContent,
@@ -24,13 +25,19 @@ export default function AppSidebar() {
   return (
     <Sidebar className="backdrop-blur-sm bg-sidebar/40">
       <SidebarHeader>
-        <div className="flex-none flex items-center justify-between overflow-hidden">
+        <div className="flex-none flex items-center justify-between gap-2 overflow-hidden">
           <SidebarTrigger />
           <Link
             href="/"
             className="w-full text-center text-lg md:text-xl font-sans font-[900] uppercase whitespace-nowrap transition-all opacity-100 group-data-[collapsible=icon]:opacity-0 group-data-[collapsible=icon]:hidden"
           >
-            Bushi Gear
+            <Image
+              src="/logo/logo_text.svg"
+              alt="logo"
+              width={120}
+              height={40}
+              objectFit="cover"
+            />
           </Link>
         </div>
         <div className="flex items-center justify-center p-8 relative transition-all opacity-100 group-data-[collapsible=icon]:opacity-0 group-data-[collapsible=icon]:hidden select-none">

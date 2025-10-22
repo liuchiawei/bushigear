@@ -1,7 +1,6 @@
 "use client";
 import Image from "next/image";
 import { motion } from "motion/react";
-import KatakanaTitle from "../common/KatakanaTitle";
 import content from "@/data/content.json";
 import { CardContainer, CardBody, CardItem } from "@/components/ui/3d-card";
 
@@ -10,18 +9,30 @@ export default function Hero() {
     <header className="w-full h-full relative select-none">
       <div className="w-full max-w-5xl mx-auto h-full min-h-screen flex flex-col items-center justify-between px-4 md:px-0 py-4">
         <div className="w-full flex items-center gap-2 uppercase">
-          <h1 className="text-xl md:text-2xl font-sans font-[900] bg-accent text-white p-2">
-            武
-          </h1>
-          <KatakanaTitle
-            text="BUSHIGEAR"
-            className="text-2xl md:text-4xl font-roboto font-[900] text-foreground"
+          <Image
+            src="/logo/logo_icon.svg"
+            alt="logo"
+            width={40}
+            height={40}
+            objectFit="cover"
+          />
+          <Image
+            src="/logo/logo_text.svg"
+            alt="logo"
+            width={200}
+            height={40}
+            objectFit="cover"
           />
         </div>
         <div className="relative w-full h-full">
-          <h1 className="text-[160px] md:text-[16vw] text-center font-roboto-condensed font-[900] text-foreground uppercase tracking-[-0.075em] leading-none w-full absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-            Bushi Gear
-          </h1>
+          <Image
+            src="/logo/logo_text.svg"
+            alt="logo"
+            width={1000}
+            height={120}
+            objectFit="cover"
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+          />
           <motion.h1
             initial={{ opacity: 0, y: 5, filter: "blur(10px)" }}
             animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}

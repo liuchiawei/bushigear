@@ -1,11 +1,14 @@
 import SNS from "../common/sns";
+import Link from "next/link";
+import Image from "next/image";
 
 export default function Footer() {
   return (
     <footer className="flex flex-col gap-2 w-full h-full bg-black">
       <div className="w-full max-w-7xl h-full mx-auto p-6 flex justify-between text-gray-300">
-        {/* TODO: ロゴを追加 */}
-        <div className="w-full text-2xl font-bold">LOGO</div>
+        <Link href="/" className="w-full">
+          <Image src="/logo/logo_dark.svg" alt="logo" width={450} height={300} />
+        </Link>
         <div className="w-full flex flex-col md:flex-row justify-between gap-1">
           <div className="hidden md:block border-l-1 border-gray-800 pb-4 pl-4">
             <h1 className="text-xl font-bold mb-5 text-white">CATEGORY</h1>
