@@ -1,7 +1,6 @@
 "use client";
 import Image from "next/image";
 import { motion } from "motion/react";
-import KatakanaTitle from "../common/KatakanaTitle";
 import content from "@/data/content.json";
 import { CardContainer, CardBody, CardItem } from "@/components/ui/3d-card";
 

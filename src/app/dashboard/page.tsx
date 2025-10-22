@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Product } from '@/lib/type';
 import Link from 'next/link';
+import Image from 'next/image';
 
 
 export default function Dashboard() {
@@ -362,7 +363,7 @@ export default function Dashboard() {
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">{product.stock}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  <img src={product.image} alt={product.name_jp} className="w-12 h-12 object-cover rounded" />
+                  <Image src={product.image} alt={product.name_jp} width={48} height={48} className="w-12 h-12 object-cover rounded" />
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   <button
