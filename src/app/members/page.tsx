@@ -7,6 +7,8 @@ import { PREFECTURES } from "@/constants/prefectures";
 type UserRow = {
   id: number;
   email: string | null;
+  lastName?: string | null;
+  firstName?: string | null;
   gender: string | null;
   birthday: string | null;
   postalCode?: string | null;
@@ -96,6 +98,9 @@ export default function MembersDashboardPage() {
                 メール
               </th>
               <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                氏名
+              </th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                 性別
               </th>
               <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
@@ -115,10 +120,12 @@ export default function MembersDashboardPage() {
           <tbody className="divide-y divide-gray-200">
             {users.map((u) => {
               const address = u.address ?? buildFullAddress(u);
+              const fullName = ((u.lastName ?? "") + (u.firstName ?? "")).trim();
               return (
                 <tr key={u.id}>
                   <td className="px-4 py-3">{u.id}</td>
                   <td className="px-4 py-3">{u.email}</td>
+                  <td className="px-4 py-3">{fullName || "-"}</td>
                   <td className="px-4 py-3">{labelGender(u.gender)}</td>
                   <td className="px-4 py-3">
                     {u.birthday
@@ -200,6 +207,8 @@ function EditUserDialog({
 }) {
   const [form, setForm] = useState({
     email: initial.email ?? "",
+    lastName: initial.lastName ?? "",
+    firstName: initial.firstName ?? "",
     gender: initial.gender ?? "",
     birthday: initial.birthday ? initial.birthday.substring(0, 10) : "",
     postalCode: initial.postalCode ?? "",
@@ -222,6 +231,14 @@ function EditUserDialog({
     setErr("");
     if (!form.email.trim()) {
       setErr("メールは必須です");
+      return;
+    }
+    if (!form.lastName.trim()) {
+      setErr("姓を入力してください");
+      return;
+    }
+    if (!form.firstName.trim()) {
+      setErr("名を入力してください");
       return;
     }
     if (form.postalCode && !/^\d{3}-?\d{4}$/.test(form.postalCode)) {
@@ -281,6 +298,26 @@ function EditUserDialog({
               <option value="female">女性</option>
               <option value="other">その他</option>
             </select>
+          </div>
+          <div>
+            <label className="block text-sm mb-1">姓（漢字）</label>
+            <input
+              title="lastName"
+              name="lastName"
+              value={form.lastName}
+              onChange={onChange}
+              className="w-full p-2 border rounded"
+            />
+          </div>
+          <div>
+            <label className="block text-sm mb-1">名（漢字）</label>
+            <input
+              title="firstName"
+              name="firstName"
+              value={form.firstName}
+              onChange={onChange}
+              className="w-full p-2 border rounded"
+            />
           </div>
           <div>
             <label className="block text-sm mb-1">誕生日</label>

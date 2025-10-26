@@ -8,6 +8,8 @@ import { PREFECTURES } from "@/constants/prefectures";
 export default function RegisterPage() {
   const router = useRouter();
   const [form, setForm] = useState({
+    lastName: "",
+    firstName: "",
     email: "",
     password: "",
     gender: "",
@@ -44,6 +46,14 @@ export default function RegisterPage() {
     e.preventDefault();
     setError("");
 
+    if (!form.lastName.trim()) {
+      setError("姓を入力してください。");
+      return;
+    }
+    if (!form.firstName.trim()) {
+      setError("名を入力してください。");
+      return;
+    }
     if (!/^\d{3}-?\d{4}$/.test(form.postalCode)) {
       setError("郵便番号は 123-4567 の形式（半角）で入力してください。");
       return;
@@ -66,6 +76,8 @@ export default function RegisterPage() {
     }
 
     const payload = {
+      lastName: sanitize(form.lastName) ?? undefined,
+      firstName: sanitize(form.firstName) ?? undefined,
       email: form.email.trim(),
       password: form.password,
       gender: sanitize(form.gender),
@@ -96,6 +108,30 @@ export default function RegisterPage() {
       <h1 className="text-2xl font-bold mb-4">新規登録</h1>
       {error && <p className="text-red-600 mb-4">{error}</p>}
       <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label className="block text-sm mb-1">姓</label>
+          <input
+            title="lastName"
+            name="lastName"
+            type="text"
+            value={form.lastName}
+            onChange={onChange}
+            className="w-full p-2 border rounded"
+            required
+          />
+        </div>
+        <div>
+          <label className="block text-sm mb-1">名</label>
+          <input
+            title="firstName"
+            name="firstName"
+            type="text"
+            value={form.firstName}
+            onChange={onChange}
+            className="w-full p-2 border rounded"
+            required
+          />
+        </div>
         <div>
           <label className="block text-sm mb-1">Email</label>
           <input

@@ -31,6 +31,8 @@ export async function PATCH(req: Request) {
 
     const body = await req.json();
 
+    const lastName = toNullIfBlank(body.lastName) as string | null;
+    const firstName = toNullIfBlank(body.firstName) as string | null;
     const postalCode = toNullIfBlank(body.postalCode) as string | null;
     const prefecture = toNullIfBlank(body.prefecture) as string | null;
     const city       = toNullIfBlank(body.city) as string | null;
@@ -64,6 +66,8 @@ export async function PATCH(req: Request) {
     const user = await prisma.user.update({
       where: { id: Number(session.user.id) },
       data: {
+        lastName,
+        firstName,
         postalCode,
         prefecture,
         city,
@@ -76,6 +80,8 @@ export async function PATCH(req: Request) {
       },
       select: {
         id: true, email: true,
+        lastName: true,
+        firstName: true,
         postalCode: true, prefecture: true, city: true, street: true, building: true, room: true,
         address: true, gender: true, birthday: true,
       },
@@ -86,4 +92,30 @@ export async function PATCH(req: Request) {
     const msg = e?.message ?? "Internal Server Error";
     return NextResponse.json({ message: msg }, { status: 500 });
   }
+}
+
+export async function GET() {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+  }
+  const me = await prisma.user.findUnique({
+    where: { id: Number(session.user.id) },
+    select: {
+      id: true,
+      email: true,
+      lastName: true,
+      firstName: true,
+      postalCode: true,
+      prefecture: true,
+      city: true,
+      street: true,
+      building: true,
+      room: true,
+      address: true,
+      gender: true,
+      birthday: true,
+    },
+  });
+  return NextResponse.json({ user: me });
 }
