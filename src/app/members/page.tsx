@@ -300,7 +300,7 @@ function EditUserDialog({
             </select>
           </div>
           <div>
-            <label className="block text-sm mb-1">姓（漢字）</label>
+            <label className="block text-sm mb-1">氏</label>
             <input
               title="lastName"
               name="lastName"
@@ -310,7 +310,7 @@ function EditUserDialog({
             />
           </div>
           <div>
-            <label className="block text-sm mb-1">名（漢字）</label>
+            <label className="block text-sm mb-1">名</label>
             <input
               title="firstName"
               name="firstName"

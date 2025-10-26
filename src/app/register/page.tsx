@@ -109,7 +109,7 @@ export default function RegisterPage() {
       {error && <p className="text-red-600 mb-4">{error}</p>}
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm mb-1">姓</label>
+          <label className="block text-sm mb-1">氏</label>
           <input
             title="lastName"
             name="lastName"
