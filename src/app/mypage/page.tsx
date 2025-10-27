@@ -44,7 +44,9 @@ export default function MyPage() {
   const router = useRouter();
   const { cart, removeFromCart, updateQuantity, clearCart } = useCart();
 
-  const [activeTab, setActiveTab] = useState<"profile" | "cart" | "orders">("profile");
+  const [activeTab, setActiveTab] = useState<"profile" | "cart" | "orders">(
+    "profile"
+  );
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [orders, setOrders] = useState<OrderItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -93,7 +95,9 @@ export default function MyPage() {
           lastName: data.user.lastName || "",
           firstName: data.user.firstName || "",
           gender: data.user.gender || "",
-          birthday: data.user.birthday ? data.user.birthday.substring(0, 10) : "",
+          birthday: data.user.birthday
+            ? data.user.birthday.substring(0, 10)
+            : "",
           postalCode: data.user.postalCode || "",
           prefecture: data.user.prefecture || "",
           city: data.user.city || "",
@@ -206,7 +210,13 @@ export default function MyPage() {
         <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
           <h1 className="text-3xl font-bold text-gray-900">マイページ</h1>
           <p className="text-gray-600 mt-2">
-            ようこそ、{profile?.email || session?.user?.email} さん
+            ようこそ、
+            {/* 名前が設定されている場合は名前を表示、設定されていない場合はメールアドレスを表示 */}
+            {profile?.lastName || profile?.firstName
+              ? `${profile?.lastName || ""} ${profile?.firstName || ""}`.trim()
+              : profile?.email || session?.user?.email}{" "}
+            {/* 名前が設定されている場合は”さん”を表示、設定されていない場合は空文字列を表示 */}
+            {profile?.lastName || profile?.firstName ? "さん" : ""}
           </p>
         </div>
 
@@ -465,7 +475,9 @@ export default function MyPage() {
                         <p className="text-sm text-gray-500">氏名</p>
                         <p className="text-lg font-medium">
                           {profile?.lastName || profile?.firstName
-                            ? `${profile?.lastName || ""} ${profile?.firstName || ""}`.trim()
+                            ? `${profile?.lastName || ""} ${
+                                profile?.firstName || ""
+                              }`.trim()
                             : "未設定"}
                         </p>
                       </div>
@@ -485,7 +497,9 @@ export default function MyPage() {
                         <p className="text-sm text-gray-500">誕生日</p>
                         <p className="text-lg font-medium">
                           {profile?.birthday
-                            ? new Date(profile.birthday).toLocaleDateString("ja-JP")
+                            ? new Date(profile.birthday).toLocaleDateString(
+                                "ja-JP"
+                              )
                             : "未設定"}
                         </p>
                       </div>
@@ -505,7 +519,9 @@ export default function MyPage() {
             {/* Cart Tab */}
             {activeTab === "cart" && (
               <div>
-                <h2 className="text-2xl font-semibold mb-6">ショッピングカート</h2>
+                <h2 className="text-2xl font-semibold mb-6">
+                  ショッピングカート
+                </h2>
 
                 {cart.items.length === 0 ? (
                   <div className="text-center py-12">
@@ -652,7 +668,9 @@ export default function MyPage() {
                                   数量: {order.quantity}
                                 </p>
                                 <p className="text-lg font-bold text-gray-900 mt-1">
-                                  {formatPrice(order.product.price * order.quantity)}
+                                  {formatPrice(
+                                    order.product.price * order.quantity
+                                  )}
                                 </p>
                               </div>
                             </div>
