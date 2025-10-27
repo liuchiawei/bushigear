@@ -19,6 +19,8 @@ model User {
   email     String   @unique
   password  String
   gender    String?
+  lastName   String?
+  firstName  String?
   address   String?
   postalCode String?
   prefecture String?
@@ -54,6 +56,10 @@ model Order {
   productId  Int
   quantity   Int
   createdAt  DateTime @default(now())
+  lastName   String?
+  firstName  String?
+  email      String?
+  address    String?
   product    Product  @relation(fields: [productId], references: [id], onDelete: Restrict)
   user       User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
   @@index([productId])

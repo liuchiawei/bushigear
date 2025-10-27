@@ -5,11 +5,14 @@ import { auth } from "@/auth";
 export async function GET() {
   try {
     const orders = await prisma.order.findMany({
-      include: { product: true,
-      user: {
+      include: {
+        product: true,
+        user: {
           select: {
             id: true,
             email: true,
+            lastName: true,
+            firstName: true,
             postalCode: true,
             prefecture: true,
             city: true,
@@ -37,6 +40,10 @@ export async function POST(request: Request) {
     const body = await request.json();
     const productId = parseInt(String(body.productId));
     const quantity = parseInt(String(body.quantity));
+    const lastName: string | null = body.lastName ? String(body.lastName).trim() || null : null;
+    const firstName: string | null = body.firstName ? String(body.firstName).trim() || null : null;
+    const email: string | null = body.email ? String(body.email).trim() || null : null;
+    const address: string | null = body.address ? String(body.address).trim() || null : null;
 
     if (!productId || !quantity || quantity <= 0) {
       return new Response("Invalid productId or quantity", { status: 400 });
@@ -54,6 +61,10 @@ export async function POST(request: Request) {
           productId,
           quantity,
           userId: currentUserId,
+          lastName,
+          firstName,
+          email,
+          address,
         },
         include: { product: true },
       });
