@@ -230,6 +230,7 @@ export default function CheckoutPage() {
                 <div>
                   <label className="block text-sm font-medium mb-2">支払い方法 *</label>
                     <select
+                      title="paymentMethod"
                       name="paymentMethod"
                       className="w-full p-3 border rounded-md"
                       value={customer.paymentMethod}
