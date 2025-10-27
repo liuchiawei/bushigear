@@ -66,7 +66,7 @@ export default function News() {
                   <span className="text-sm font-sans text-foreground w-48">{item.title}</span>
                   <button
                     onClick={() => toggleExpanded(item.id)}
-                    className="text-xs font-sans text-foreground border border-foreground px-3 py-1 hover:bg-foreground hover:text-background transition-colors"
+                    className="text-xs font-sans text-foreground border border-foreground px-3 py-1 hover:bg-foreground hover:text-background transition-colors cursor-pointer"
                   >
                     {expandedItems.includes(item.id) ? "CLOSE" : "MORE"}
                   </button>
