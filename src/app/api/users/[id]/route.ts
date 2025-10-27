@@ -22,7 +22,8 @@ export async function GET(
     const user = await prisma.user.findUnique({
       where: { id: Number(id) },
       select: {
-        id: true, email: true, gender: true, birthday: true,
+        id: true, email: true, lastName: true,
+        firstName: true, gender: true, birthday: true,
         postalCode: true, prefecture: true, city: true, street: true, building: true, room: true,
         address: true, createdAt: true, updatedAt: true,
       },
@@ -47,6 +48,9 @@ export async function PATCH(
     const bd = body.birthday ? new Date(body.birthday) : undefined;
     if (bd && isNaN(bd.getTime())) return new Response("Invalid birthday", { status: 400 });
 
+    const lastName = toNull(body.lastName) as string | null | undefined;
+    const firstName = toNull(body.firstName) as string | null | undefined;
+
     const postalCode = normalizePostal(toNull(body.postalCode) as string | null);
     const prefecture = toNull(body.prefecture) as string | null;
     const city = toNull(body.city) as string | null;
@@ -67,11 +71,14 @@ export async function PATCH(
         email,
         gender,
         birthday: bd ?? undefined,
+        lastName,
+        firstName,
         postalCode, prefecture, city, street, building, room,
         address: fullAddress || null,
       },
       select: {
-        id: true, email: true, gender: true, birthday: true,
+        id: true, email: true, lastName: true,
+        firstName: true, gender: true, birthday: true,
         postalCode: true, prefecture: true, city: true, street: true, building: true, room: true,
         address: true, updatedAt: true,
       },

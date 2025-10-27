@@ -13,6 +13,7 @@ import AiAssistant from "@/components/common/aiAssistant";
 import { CartProvider } from "@/contexts/CartContext";
 import AppSidebar from "@/components/layout/app-sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
+import Providers from "./providers";
 
 const notoSansJP = Noto_Sans_JP({
   variable: "--font-noto-sans-jp",
@@ -54,16 +55,18 @@ export default function RootLayout({
       <body
         className={`${notoSansJP.variable} ${roboto.variable} ${robotoCondensed.variable} ${yujiSyuku.variable} bg-background bg-dot-32-s-2-neutral-400 antialiased`}
       >
-        <CartProvider>
-          <SidebarProvider defaultOpen={false}>
-            <AppSidebar />
-            <Nav />
-            <main>{children}</main>
-            <Footer />
-            <BackToTop />
-            <AiAssistant />
-          </SidebarProvider>
-        </CartProvider>
+        <Providers>
+          <CartProvider>
+            <SidebarProvider defaultOpen={false}>
+              <AppSidebar />
+              <Nav />
+              <main>{children}</main>
+              <Footer />
+              <BackToTop />
+              <AiAssistant />
+            </SidebarProvider>
+          </CartProvider>
+        </Providers>
       </body>
     </html>
   );
