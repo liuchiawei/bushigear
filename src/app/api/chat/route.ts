@@ -51,10 +51,9 @@ function searchProducts(query: string, limit: number = 3) {
 
 export async function POST(req: Request) {
   const { messages }: { messages: UIMessage[] } = await req.json();
-  
+
   console.log("=== API CALL DEBUG ===");
-  console.log("Received messages:", JSON.stringify(messages, null, 2));
-  console.log("Last message content:", messages[messages.length - 1]?.content);
+  console.log("Received messages count:", messages.length);
   console.log("API Key exists:", !!process.env.OPENAI_API_KEY);
   console.log("Products available:", products.length);
   console.log("=== END DEBUG ===");
