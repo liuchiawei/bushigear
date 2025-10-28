@@ -7,6 +7,14 @@ import { useCart } from "@/contexts/CartContext";
 import { PREFECTURES } from "@/constants/prefectures";
 import Image from "next/image";
 import Link from "next/link";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Trash2, Eye } from "lucide-react";
 
 type UserProfile = {
   id: number;
@@ -208,16 +216,41 @@ export default function MyPage() {
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-          <h1 className="text-3xl font-bold text-gray-900">マイページ</h1>
-          <p className="text-gray-600 mt-2">
-            ようこそ、
-            {/* 名前が設定されている場合は名前を表示、設定されていない場合はメールアドレスを表示 */}
-            {profile?.lastName || profile?.firstName
-              ? `${profile?.lastName || ""} ${profile?.firstName || ""}`.trim()
-              : profile?.email || session?.user?.email}{" "}
-            {/* 名前が設定されている場合は”さん”を表示、設定されていない場合は空文字列を表示 */}
-            {profile?.lastName || profile?.firstName ? "さん" : ""}
-          </p>
+          <div className="flex items-center gap-4">
+            <Avatar className="size-16">
+              <AvatarImage
+                // TODO: add image from profile (profile.image)
+                src={session?.user?.image || ""}
+                alt={
+                  profile?.lastName || profile?.firstName
+                    ? `${profile?.lastName || ""} ${
+                        profile?.firstName || ""
+                      }`.trim()
+                    : session?.user?.email || ""
+                }
+              />
+              <AvatarFallback className="text-xl font-bold bg-primary text-primary-foreground">
+                {profile?.lastName?.[0] ||
+                  profile?.firstName?.[0] ||
+                  session?.user?.email?.[0].toUpperCase() ||
+                  "U"}
+              </AvatarFallback>
+            </Avatar>
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">マイページ</h1>
+              <p className="text-gray-600 mt-2">
+                ようこそ、
+                {/* 名前が設定されている場合は名前を表示、設定されていない場合はメールアドレスを表示 */}
+                {profile?.lastName || profile?.firstName
+                  ? `${profile?.lastName || ""} ${
+                      profile?.firstName || ""
+                    }`.trim()
+                  : profile?.email || session?.user?.email}{" "}
+                {/* 名前が設定されている場合は"さん"を表示、設定されていない場合は空文字列を表示 */}
+                {profile?.lastName || profile?.firstName ? "さん" : ""}
+              </p>
+            </div>
+          </div>
         </div>
 
         {/* Tabs */}
@@ -226,9 +259,9 @@ export default function MyPage() {
             <nav className="flex -mb-px">
               <button
                 onClick={() => setActiveTab("profile")}
-                className={`px-6 py-4 text-sm font-medium border-b-2 transition-colors ${
+                className={`px-6 py-4 text-sm font-medium border-b-2 transition-colors cursor-pointer ${
                   activeTab === "profile"
-                    ? "border-blue-500 text-blue-600"
+                    ? "border-accent text-primary"
                     : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                 }`}
               >
@@ -236,9 +269,9 @@ export default function MyPage() {
               </button>
               <button
                 onClick={() => setActiveTab("cart")}
-                className={`px-6 py-4 text-sm font-medium border-b-2 transition-colors ${
+                className={`px-6 py-4 text-sm font-medium border-b-2 transition-colors cursor-pointer ${
                   activeTab === "cart"
-                    ? "border-blue-500 text-blue-600"
+                    ? "border-accent text-primary"
                     : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                 }`}
               >
@@ -246,9 +279,9 @@ export default function MyPage() {
               </button>
               <button
                 onClick={() => setActiveTab("orders")}
-                className={`px-6 py-4 text-sm font-medium border-b-2 transition-colors ${
+                className={`px-6 py-4 text-sm font-medium border-b-2 transition-colors cursor-pointer ${
                   activeTab === "orders"
-                    ? "border-blue-500 text-blue-600"
+                    ? "border-accent text-primary"
                     : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                 }`}
               >
@@ -265,12 +298,7 @@ export default function MyPage() {
                 <div className="flex justify-between items-center mb-6">
                   <h2 className="text-2xl font-semibold">プロフィール情報</h2>
                   {!editing && (
-                    <button
-                      onClick={() => setEditing(true)}
-                      className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-                    >
-                      編集
-                    </button>
+                    <Button onClick={() => setEditing(true)}>編集</Button>
                   )}
                 </div>
 
@@ -299,7 +327,7 @@ export default function MyPage() {
                           name="lastName"
                           value={form.lastName}
                           onChange={handleInputChange}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                         />
                       </div>
                       <div>
@@ -312,7 +340,7 @@ export default function MyPage() {
                           name="firstName"
                           value={form.firstName}
                           onChange={handleInputChange}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                         />
                       </div>
                     </div>
@@ -327,7 +355,7 @@ export default function MyPage() {
                           name="gender"
                           value={form.gender}
                           onChange={handleInputChange}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                         >
                           <option value="">選択してください</option>
                           <option value="male">男性</option>
@@ -345,7 +373,7 @@ export default function MyPage() {
                           name="birthday"
                           value={form.birthday}
                           onChange={handleInputChange}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                         />
                       </div>
                     </div>
@@ -364,7 +392,7 @@ export default function MyPage() {
                             value={form.postalCode}
                             onChange={handleInputChange}
                             placeholder="123-4567"
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                           />
                         </div>
 
@@ -377,7 +405,7 @@ export default function MyPage() {
                             name="prefecture"
                             value={form.prefecture}
                             onChange={handleInputChange}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                           >
                             <option value="">選択してください</option>
                             {PREFECTURES.map((p) => (
@@ -398,7 +426,7 @@ export default function MyPage() {
                             name="city"
                             value={form.city}
                             onChange={handleInputChange}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                           />
                         </div>
 
@@ -412,7 +440,7 @@ export default function MyPage() {
                             name="street"
                             value={form.street}
                             onChange={handleInputChange}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                           />
                         </div>
 
@@ -426,7 +454,7 @@ export default function MyPage() {
                             name="building"
                             value={form.building}
                             onChange={handleInputChange}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                           />
                         </div>
 
@@ -440,19 +468,14 @@ export default function MyPage() {
                             name="room"
                             value={form.room}
                             onChange={handleInputChange}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                           />
                         </div>
                       </div>
                     </div>
 
                     <div className="flex gap-3 pt-4">
-                      <button
-                        onClick={handleSaveProfile}
-                        className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-                      >
-                        保存
-                      </button>
+                      <Button onClick={handleSaveProfile}>保存</Button>
                       <button
                         onClick={() => {
                           setEditing(false);
@@ -465,49 +488,58 @@ export default function MyPage() {
                     </div>
                   </div>
                 ) : (
-                  <div className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div>
-                        <p className="text-sm text-gray-500">メールアドレス</p>
-                        <p className="text-lg font-medium">{profile?.email}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm text-gray-500">氏名</p>
-                        <p className="text-lg font-medium">
-                          {profile?.lastName || profile?.firstName
-                            ? `${profile?.lastName || ""} ${
-                                profile?.firstName || ""
-                              }`.trim()
-                            : "未設定"}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-sm text-gray-500">性別</p>
-                        <p className="text-lg font-medium">
-                          {profile?.gender === "male"
-                            ? "男性"
-                            : profile?.gender === "female"
-                            ? "女性"
-                            : profile?.gender === "other"
-                            ? "その他"
-                            : "未設定"}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-sm text-gray-500">誕生日</p>
-                        <p className="text-lg font-medium">
-                          {profile?.birthday
-                            ? new Date(profile.birthday).toLocaleDateString(
-                                "ja-JP"
-                              )
-                            : "未設定"}
-                        </p>
-                      </div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <Avatar className="size-60 row-span-2 mx-auto">
+                      <AvatarImage
+                        // TODO: add image from profile (src={profile?.image || ""})
+                        src={session?.user?.image || ""}
+                        alt={profile?.lastName || profile?.firstName || ""}
+                      />
+                      <AvatarFallback>
+                        {profile?.lastName?.[0] ||
+                          profile?.firstName?.[0] ||
+                          "U"}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <p className="mb-2 text-sm text-gray-500">メールアドレス</p>
+                      <p className="text-lg md:text-2xl">{profile?.email}</p>
                     </div>
-
-                    <div className="border-t pt-4 mt-4">
-                      <h3 className="text-lg font-semibold mb-3">住所</h3>
-                      <p className="text-gray-700">
+                    <div>
+                      <p className="mb-2 text-sm text-gray-500">氏名</p>
+                      <p className="text-lg md:text-2xl">
+                        {profile?.lastName || profile?.firstName
+                          ? `${profile?.lastName || ""} ${
+                              profile?.firstName || ""
+                            }`.trim()
+                          : "未設定"}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="mb-2 text-sm text-gray-500">性別</p>
+                      <p className="text-lg md:text-2xl">
+                        {profile?.gender === "male"
+                          ? "男性"
+                          : profile?.gender === "female"
+                          ? "女性"
+                          : profile?.gender === "other"
+                          ? "その他"
+                          : "未設定"}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="mb-2text-sm text-gray-500">誕生日</p>
+                      <p className="text-lg md:text-2xl">
+                        {profile?.birthday
+                          ? new Date(profile.birthday).toLocaleDateString(
+                              "ja-JP"
+                            )
+                          : "未設定"}
+                      </p>
+                    </div>
+                    <div className="col-span-1 md:col-span-3 border-t">
+                      <h3 className="mt-4 mb-2 text-sm text-gray-500">住所</h3>
+                      <p className="text-gray-700 text-md md:text-xl">
                         {profile?.address || "未設定"}
                       </p>
                     </div>
@@ -526,12 +558,9 @@ export default function MyPage() {
                 {cart.items.length === 0 ? (
                   <div className="text-center py-12">
                     <p className="text-gray-500 mb-4">カートは空です</p>
-                    <Link
-                      href="/products"
-                      className="inline-block bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-                    >
-                      商品を見る
-                    </Link>
+                    <Button asChild>
+                      <Link href="/products">商品を見る</Link>
+                    </Button>
                   </div>
                 ) : (
                   <div>
@@ -550,17 +579,17 @@ export default function MyPage() {
                             />
                           </div>
                           <div className="flex-grow">
-                            <h3 className="font-semibold text-lg">
+                            <h3 className="font-semibold text-lg md:text-2xl">
                               {item.product.name_jp}
                             </h3>
-                            <p className="text-gray-600 text-sm">
+                            <p className="text-gray-500 text-sm">
                               {item.product.brand}
                             </p>
-                            <p className="text-blue-600 font-semibold mt-1">
+                            <p className="text-secondary font-semibold mt-1">
                               {formatPrice(item.product.price)}
                             </p>
                           </div>
-                          <div className="flex items-center gap-3">
+                          <div className="flex flex-col md:flex-row items-center gap-2">
                             <input
                               title="quantity"
                               type="number"
@@ -573,14 +602,43 @@ export default function MyPage() {
                                   parseInt(e.target.value) || 1
                                 )
                               }
-                              className="w-20 px-3 py-2 border border-gray-300 rounded-lg text-center"
+                              className="w-full md:w-20 px-3 py-2 border border-gray-300 rounded-lg text-center"
                             />
-                            <button
-                              onClick={() => removeFromCart(item.product.id)}
-                              className="text-red-600 hover:text-red-700 px-3 py-2"
-                            >
-                              削除
-                            </button>
+                            <div className="flex items-center gap-1">
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    variant="outline"
+                                    size="icon"
+                                    className="hover:bg-primary hover:text-background"
+                                    asChild
+                                  >
+                                    <Link href={`/products/${item.product.id}`}>
+                                      <Eye className="size-4" />
+                                    </Link>
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>商品詳細</p>
+                                </TooltipContent>
+                              </Tooltip>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    onClick={() =>
+                                      removeFromCart(item.product.id)
+                                    }
+                                    variant="outline"
+                                    size="icon"
+                                  >
+                                    <Trash2 className="size-4" />
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>カートから削除</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </div>
                           </div>
                         </div>
                       ))}
@@ -589,23 +647,22 @@ export default function MyPage() {
                     <div className="border-t pt-4">
                       <div className="flex justify-between items-center mb-4">
                         <span className="text-xl font-semibold">合計:</span>
-                        <span className="text-2xl font-bold text-blue-600">
+                        <span className="text-2xl md:text-5xl font-bold text-secondary-600">
                           {formatPrice(calculateCartTotal())}
                         </span>
                       </div>
-                      <div className="flex gap-3">
-                        <Link
-                          href="/checkout"
-                          className="flex-1 bg-blue-600 text-white text-center px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-semibold"
-                        >
-                          購入手続きへ
-                        </Link>
-                        <button
+                      <div className="flex w-full justify-between gap-3">
+                        <Button
+                          size="lg"
+                          variant="outline"
+                          className="w-full shrink bg-gray-200 text-gray-700 hover:bg-gray-300 transition-colors"
                           onClick={clearCart}
-                          className="bg-gray-200 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-300 transition-colors"
                         >
                           カートを空にする
-                        </button>
+                        </Button>
+                        <Button asChild size="lg" className="w-full shrink">
+                          <Link href="/checkout">購入手続きへ</Link>
+                        </Button>
                       </div>
                     </div>
                   </div>
@@ -621,12 +678,9 @@ export default function MyPage() {
                 {orders.length === 0 ? (
                   <div className="text-center py-12">
                     <p className="text-gray-500 mb-4">購入履歴がありません</p>
-                    <Link
-                      href="/products"
-                      className="inline-block bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-                    >
-                      商品を見る
-                    </Link>
+                    <Button asChild>
+                      <Link href="/products">商品を見る</Link>
+                    </Button>
                   </div>
                 ) : (
                   <div className="space-y-4">
@@ -661,7 +715,7 @@ export default function MyPage() {
                                 </p>
                               </div>
                               <div className="text-right">
-                                <p className="text-blue-600 font-semibold">
+                                <p className="text-secondary-600 font-semibold">
                                   {formatPrice(order.product.price)}
                                 </p>
                                 <p className="text-sm text-gray-600 mt-1">
