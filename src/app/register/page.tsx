@@ -21,6 +21,8 @@ export default function RegisterPage() {
     room: "",
     birthday: "",
   });
+  const [avatarUrl, setAvatarUrl] = useState("");
+  const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
 
   const onChange = (
@@ -40,6 +42,46 @@ export default function RegisterPage() {
   const sanitize = (v: string) => {
     const t = v.trim();
     return t === "" ? null : t;
+  };
+
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      setError("画像ファイルを選択してください");
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      setError("ファイルサイズは5MB以下にしてください");
+      return;
+    }
+
+    setUploading(true);
+    setError("");
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch("/api/upload/avatar", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || "アップロードに失敗しました");
+      }
+
+      const data = await res.json();
+      setAvatarUrl(data.url);
+    } catch (err: any) {
+      setError(err.message || "アップロードに失敗しました");
+    } finally {
+      setUploading(false);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -80,6 +122,7 @@ export default function RegisterPage() {
       firstName: sanitize(form.firstName) ?? undefined,
       email: form.email.trim(),
       password: form.password,
+      image: avatarUrl || null,
       gender: sanitize(form.gender),
       birthday: form.birthday || null,
       postalCode: normalizePostal(form.postalCode),
@@ -108,6 +151,27 @@ export default function RegisterPage() {
       <h1 className="text-2xl font-bold mb-4">新規登録</h1>
       {error && <p className="text-red-600 mb-4">{error}</p>}
       <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label className="block text-sm mb-1">プロフィール画像（任意）</label>
+          {avatarUrl && (
+            <div className="mb-2">
+              <img
+                src={avatarUrl}
+                alt="Avatar preview"
+                className="w-24 h-24 rounded-full object-cover"
+              />
+            </div>
+          )}
+          <input
+            title="avatar"
+            type="file"
+            accept="image/*"
+            onChange={handleAvatarUpload}
+            disabled={uploading}
+            className="w-full p-2 border rounded"
+          />
+          {uploading && <p className="text-sm text-gray-500 mt-1">アップロード中...</p>}
+        </div>
         <div>
           <label className="block text-sm mb-1">氏</label>
           <input

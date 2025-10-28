@@ -19,6 +19,7 @@ import { Trash2, Eye } from "lucide-react";
 type UserProfile = {
   id: number;
   email: string;
+  image?: string | null;
   lastName?: string | null;
   firstName?: string | null;
   gender?: string | null;
@@ -61,8 +62,10 @@ export default function MyPage() {
   const [editing, setEditing] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [uploading, setUploading] = useState(false);
 
   const [form, setForm] = useState({
+    image: "",
     lastName: "",
     firstName: "",
     gender: "",
@@ -100,6 +103,7 @@ export default function MyPage() {
       // Initialize form with profile data
       if (data.user) {
         setForm({
+          image: data.user.image || "",
           lastName: data.user.lastName || "",
           firstName: data.user.firstName || "",
           gender: data.user.gender || "",
@@ -141,6 +145,48 @@ export default function MyPage() {
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      setError("画像ファイルを選択してください");
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      setError("ファイルサイズは5MB以下にしてください");
+      return;
+    }
+
+    setUploading(true);
+    setError("");
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch("/api/upload/avatar", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || "アップロードに失敗しました");
+      }
+
+      const data = await res.json();
+      setForm({ ...form, image: data.url });
+      setSuccess("画像をアップロードしました");
+      setTimeout(() => setSuccess(""), 3000);
+    } catch (err: any) {
+      setError(err.message || "アップロードに失敗しました");
+    } finally {
+      setUploading(false);
+    }
   };
 
   const handleSaveProfile = async () => {
@@ -219,8 +265,7 @@ export default function MyPage() {
           <div className="flex items-center gap-4">
             <Avatar className="size-16">
               <AvatarImage
-                // TODO: add image from profile (profile.image)
-                src={session?.user?.image || ""}
+                src={profile?.image || session?.user?.image || ""}
                 alt={
                   profile?.lastName || profile?.firstName
                     ? `${profile?.lastName || ""} ${
@@ -316,6 +361,35 @@ export default function MyPage() {
 
                 {editing ? (
                   <div className="space-y-4">
+                    <div className="mb-6">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        プロフィール画像
+                      </label>
+                      <div className="flex items-center gap-4">
+                        {form.image && (
+                          <img
+                            src={form.image}
+                            alt="Avatar preview"
+                            className="w-24 h-24 rounded-full object-cover"
+                          />
+                        )}
+                        <div className="flex-1">
+                          <input
+                            title="avatar"
+                            type="file"
+                            accept="image/*"
+                            onChange={handleAvatarUpload}
+                            disabled={uploading}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                          />
+                          {uploading && (
+                            <p className="text-sm text-gray-500 mt-1">
+                              アップロード中...
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -491,8 +565,7 @@ export default function MyPage() {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <Avatar className="size-60 row-span-2 mx-auto">
                       <AvatarImage
-                        // TODO: add image from profile (src={profile?.image || ""})
-                        src={session?.user?.image || ""}
+                        src={profile?.image || session?.user?.image || ""}
                         alt={profile?.lastName || profile?.firstName || ""}
                       />
                       <AvatarFallback>

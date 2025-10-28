@@ -31,6 +31,7 @@ export async function PATCH(req: Request) {
 
     const body = await req.json();
 
+    const image = toNullIfBlank(body.image) as string | null;
     const lastName = toNullIfBlank(body.lastName) as string | null;
     const firstName = toNullIfBlank(body.firstName) as string | null;
     const postalCode = toNullIfBlank(body.postalCode) as string | null;
@@ -66,6 +67,7 @@ export async function PATCH(req: Request) {
     const user = await prisma.user.update({
       where: { id: Number(session.user.id) },
       data: {
+        image: image ?? undefined,
         lastName,
         firstName,
         postalCode,
@@ -79,7 +81,7 @@ export async function PATCH(req: Request) {
         birthday,
       },
       select: {
-        id: true, email: true,
+        id: true, email: true, image: true,
         lastName: true,
         firstName: true,
         postalCode: true, prefecture: true, city: true, street: true, building: true, room: true,
@@ -104,6 +106,7 @@ export async function GET() {
     select: {
       id: true,
       email: true,
+      image: true,
       lastName: true,
       firstName: true,
       postalCode: true,
