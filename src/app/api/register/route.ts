@@ -20,6 +20,7 @@ export async function POST(req: NextRequest) {
         const body = await req.json();
         const email = typeof body.email === "string" ? body.email.trim().toLowerCase() : "";
         const password = typeof body.password === "string" ? body.password : "";
+        const image = toNull(body.image) as string | null;
         const gender = toNull(body.gender) as string | null;
         const birthdayStr = body.birthday as string | undefined;
 
@@ -69,6 +70,7 @@ export async function POST(req: NextRequest) {
             data: {
                 email,
                 password: hashed,
+                image,
                 gender,
                 birthday,
                 lastName,
