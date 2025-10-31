@@ -56,25 +56,49 @@ export default function Chat() {
                   }
                 }
                 return null;
-              case "tool-generate_image":
-                // Simple test - always show something for tool-generate_image
-                if (part.state === "output-available") {
-                  console.log("State is output-available, showing image");
-                  const output = part.output as any;
-                  return (
-                    <div key={`image-${messageIndex}-${i}`} className="mt-2">
-                      <div className="text-green-600 text-sm mb-2">
-                        ✅ Image generated!
+                case "tool-generate_image":
+                  // Simple test - always show something for tool-generate_image
+                  if (part.state === "output-available") {
+                    console.log("State is output-available, showing image");
+                    const output = part.output as any;
+                    console.log("Output object:", output);
+                    console.log("ImageUrl:", output?.imageUrl);
+                    
+                    // 檢查 imageUrl 是否存在
+                    if (!output?.imageUrl) {
+                      return (
+                        <div key={`image-${messageIndex}-${i}`} className="mt-2">
+                          <div className="text-red-600 text-sm">
+                            ❌ 画像生成に失敗しました：画像 URL が取得できませんでした
+                          </div>
+                          <div className="text-sm text-gray-600">
+                            Output: {JSON.stringify(output)}
+                          </div>
+                        </div>
+                      );
+                    }
+                    
+                    return (
+                      <div key={`image-${messageIndex}-${i}`} className="mt-2">
+                        <div className="text-green-600 text-sm mb-2">
+                          ✅ 画像が生成されました！
+                        </div>
+                        <img
+                          src={output.imageUrl}
+                          alt={output.prompt || "Generated image"}
+                          className="max-w-full h-auto rounded"
+                          style={{ maxHeight: "400px" }}
+                          onLoad={() => console.log("Image loaded successfully")}
+                          onError={(e) => console.log("Image failed to load:", e)}
+                        />
                       </div>
-                      <Image
-                        width={400}
-                        height={400}
-                        src={output.imageUrl}
-                        alt={output.prompt}
-                        className="max-w-full h-auto max-h-[400px] rounded"
-                        onLoad={() => console.log("Image loaded successfully")}
-                        onError={(e) => console.log("Image failed to load:", e)}
-                      />
+                    );
+                  }
+                
+                  // Show generating message for other states
+                  return (
+                    <div key={partKey} className="text-blue-600 text-sm">
+                      🔧 画像を生成しています... (State: {part.state})
                     </div>
                   );
                 }
