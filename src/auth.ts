@@ -38,7 +38,19 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   session: { strategy: "jwt" },
   callbacks: {
     async session({ session, token }: any) {
-      if (session?.user && token?.sub) (session.user as any).id = token.sub;
+      if (session?.user && token?.sub) {
+        (session.user as any).id = token.sub;
+
+        // Fetch user image from database
+        const user = await prisma.user.findUnique({
+          where: { id: Number(token.sub) },
+          select: { image: true },
+        });
+
+        if (user?.image) {
+          session.user.image = user.image;
+        }
+      }
       return session;
     },
   },

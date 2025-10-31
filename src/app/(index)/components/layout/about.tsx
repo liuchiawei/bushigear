@@ -17,10 +17,8 @@ export default function About() {
         <p className="text-base text-justify mb-6">
           {content.home.about.description}
         </p>
-        <Button className="font-bold text-sm text-black rounded-none py-4 px-8" variant="outline" asChild>
-          <Link href="/about">
-            {content.home.about.button}
-          </Link>
+        <Button className="font-bold text-sm rounded-none py-4 px-8" asChild>
+          <Link href="/about">{content.home.about.button}</Link>
         </Button>
       </div>
     </section>

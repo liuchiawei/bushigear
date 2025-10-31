@@ -3,7 +3,11 @@
     "allow": [
       "Bash(pnpm dlx:*)",
       "Bash(pnpm lint:*)",
-      "Bash(pnpm build:*)"
+      "Bash(pnpm build:*)",
+      "Bash(ls:*)",
+      "Bash(rm:*)",
+      "Bash(pnpm db:push:*)",
+      "Bash(pnpm db:generate:*)"
     ],
     "deny": [],
     "ask": []

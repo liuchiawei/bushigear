@@ -7,6 +7,8 @@ export async function GET() {
       select: {
         id: true,
         email: true,
+        lastName: true,
+        firstName: true,
         gender: true,
         birthday: true,
         postalCode: true, prefecture: true, city: true, street: true, building: true, room: true,

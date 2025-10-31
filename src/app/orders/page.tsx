@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { formatJPAddress } from "@/lib/formatters";
 
 type Order = {
     id: number;
@@ -16,6 +15,8 @@ type Order = {
     user?: {
         id: number;
         email: string | null;
+        lastName?: string | null;
+        firstName?: string | null;
         postalCode?: string | null;
         prefecture?: string | null;
         city?: string | null;
@@ -24,6 +25,10 @@ type Order = {
         room?: string | null;
         address?: string | null;
     } | null;
+    lastName?: string | null;
+    firstName?: string | null;
+    email?: string | null;
+    address?: string | null;
 };
 
 const yen = new Intl.NumberFormat("ja-JP", { style: "currency", currency: "JPY" });
@@ -65,6 +70,18 @@ export default function OrdersDashboard() {
 
     if (loading) return <div className="p-8">読み込み中...</div>;
 
+    const guestIndexMap: Map<number, number> = (() => {
+        const map = new Map<number, number>();
+        let count = 0;
+        for (const o of [...orders].reverse()) { 
+        if (!o.user) {
+            count += 1;
+            map.set(o.id, count);
+        }
+    }
+        return map;
+    })();
+
     return (
         <div className="p-8 max-w-7xl mx-auto">
             <div className="flex justify-between items-center mb-8">
@@ -89,6 +106,7 @@ export default function OrdersDashboard() {
                         <tr>
                             <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">注文ID</th>
                             <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">会員メール</th>
+                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">氏名</th>
                             <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">住所</th>
                             <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">商品名</th>
                             <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">数量</th>
@@ -100,15 +118,21 @@ export default function OrdersDashboard() {
                     <tbody className="divide-y divide-gray-200">
                         {orders.map((order) => {
                             const total = (order.product?.price ?? 0) * order.quantity;
-                            const email = order.user?.email ?? "ゲスト";
+                            const guestIndex = guestIndexMap.get(order.id);
+                            const email = order.user?.email
+                                ?? (guestIndex ? `ゲスト${guestIndex}:${order.email ?? ""}` : (order.email ?? ""));
+                            const fullName = order.user
+                                ? [order.user.lastName, order.user.firstName].filter(Boolean).join(" ") || "-"
+                                : ([order.lastName, order.firstName].filter(Boolean).join(" ") || "-");
                             const address =
-                                order.user?.address /* 保存済みの一行住所があれば優先 */
-                                ?? (order.user ? formatJPAddress(order.user) : "-");
+                                order.address
+                                ?? (order.user?.address ?? "-");
 
                             return (
                                 <tr key={order.id}>
                                     <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">{order.id}</td>
                                     <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">{email}</td>
+                                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">{fullName}</td>
                                     <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">{address}</td>
                                     <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
                                         {order.product?.name_jp ?? "（商品不明）"}

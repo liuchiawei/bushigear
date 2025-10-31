@@ -20,8 +20,12 @@ export async function POST(req: NextRequest) {
         const body = await req.json();
         const email = typeof body.email === "string" ? body.email.trim().toLowerCase() : "";
         const password = typeof body.password === "string" ? body.password : "";
+        const image = toNull(body.image) as string | null;
         const gender = toNull(body.gender) as string | null;
         const birthdayStr = body.birthday as string | undefined;
+
+        const lastName = toNull(body.lastName) as string | null;
+        const firstName = toNull(body.firstName) as string | null;
 
         const postalCode = normalizePostal(toNull(body.postalCode) as string | null);
         const prefecture = toNull(body.prefecture) as string | null;
@@ -66,8 +70,11 @@ export async function POST(req: NextRequest) {
             data: {
                 email,
                 password: hashed,
+                image,
                 gender,
                 birthday,
+                lastName,
+                firstName,
                 postalCode,
                 prefecture,
                 city,
