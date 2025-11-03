@@ -66,3 +66,22 @@ model Order {
   @@index([productId])
   @@index([userId])
 }
+
+model Resource {
+  id         Int         @id @default(autoincrement())
+  content    String      @db.Text
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  embeddings Embedding[]
+}
+
+model Embedding {
+  id         Int      @id @default(autoincrement())
+  resourceId Int
+  content    String   @db.Text
+  embedding  Unsupported("vector(1536)")?
+  createdAt  DateTime @default(now())
+  resource   Resource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+  
+  @@index([resourceId])
+}

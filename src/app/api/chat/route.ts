@@ -1,7 +1,9 @@
 import { openai } from "@ai-sdk/openai";
-import { streamText, UIMessage, convertToModelMessages, tool } from "ai";
+import { streamText, UIMessage, convertToModelMessages, tool, stepCountIs } from "ai";
 import { z } from "zod";
 import products from "@/data/products.json";
+import { createResource } from "@/lib/actions/resources";
+import { findRelevantContent } from "@/lib/ai/embedding";
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
@@ -25,14 +27,12 @@ function searchProducts(query: string, limit: number = 3) {
       let score = 0;
       const searchText = `${product.name_jp} ${product.name_en} ${product.name_cn} ${product.category} ${product.brand} ${product.description_jp}`.toLowerCase();
       
-      // 檢查直接匹配
       const keywords = queryLower.split(' ');
       keywords.forEach(keyword => {
         if (searchText.includes(keyword)) {
           score += 2;
         }
         
-        // 檢查關鍵詞映射
         if (keywordMap[keyword]) {
           keywordMap[keyword].forEach(mappedKeyword => {
             if (searchText.includes(mappedKeyword)) {
@@ -61,31 +61,40 @@ export async function POST(req: Request) {
   const result = streamText({
     model: openai("gpt-4o-mini"),
     messages: convertToModelMessages(messages),
+    stopWhen: stepCountIs(5),
     system: `あなたはブシギアのAIアシスタントです。
 
 重要：ユーザーの質問に応じて適切なツールを使用してください。
 
 ツールの使用ガイドライン：
 
-1. **search_products** を使用する場合：
-   - ユーザーが商品を探している、検索したい、おすすめを知りたい場合
-   - 例：「グローブを探しています」「おすすめの商品を教えて」「ミットはありますか」
+1. **個人情報の記憶（addResource）**：
+   - ユーザーが自分について何か教えてくれたら、必ずこのツールで記憶する
+   - 例：「私は醤油ラーメンが好きです」「私の趣味はテニスです」
+   - 確認なしで自動的に記憶してください
    
-2. **get_product_details** を使用する場合：
-   - ユーザーが特定の商品の「詳細」「詳しい情報」「詳細情報」を知りたい場合のみ
-   - 例：「商品1の詳細を教えて」「商品0の詳細情報を知りたい」
+2. **個人情報の検索（getInformation）**：
+   - ユーザーが自分について質問したら、まずこのツールで検索してから回答
+   - 例：「私の好きな食べ物は何ですか？」「私の趣味は何でしたか？」
+   - 見つかった情報を使って回答してください
+   - 見つからない場合は「その情報は記憶にありません」と伝える
+
+3. **商品検索（search_products）**：
+   - ユーザーが商品を探している、検索したい場合
+   - 例：「グローブを探しています」「おすすめの商品を教えて」
    
-3. **商品名だけを聞かれた場合**：
-   - 「商品1を教えて」「商品0について教えて」などの場合
-   - search_productsツールを使用して、簡潔に商品を紹介してください
-   - get_product_detailsは使用しないでください
+4. **商品詳細（get_product_details）**：
+   - ユーザーが特定の商品の「詳細」を明示的に求めた場合のみ
+   - 例：「商品1の詳細を教えて」
 
-回答のルール：
-- search_productsの結果を使う場合：簡潔に商品の概要を紹介する
-- get_product_detailsの結果を使う場合：詳細な説明を提供する
-- Markdown形式を使用してください
+5. **画像生成（generate_image）**：
+   - ユーザーが画像生成を依頼した場合
 
-ユーザーが「詳細」というキーワードを使わない限り、get_product_detailsツールは使用しないでください。`,
+重要なルール：
+- ユーザーが何か情報を教えてくれたら、必ずaddResourceを使用して記憶する
+- ユーザーが「私の〜は？」と質問したら、必ずgetInformationで検索してから回答する
+- 記憶を確認せずに推測で答えない
+- Markdown形式を使用してください`,
     tools: {
       search_products: tool({
         description: "ブシギアの商品を検索します。ユーザーが商品について質問した場合や、商品の基本情報を知りたい場合に使用してください。「詳細」というキーワードがない限り、このツールを優先的に使用してください。",
@@ -182,6 +191,25 @@ export async function POST(req: Request) {
             };
           }
         },
+      }),
+
+      addResource: tool({
+        description: `add a resource to your knowledge base.
+          If the user provides a random piece of knowledge unprompted, use this tool without asking for confirmation.`,
+        inputSchema: z.object({
+          content: z
+            .string()
+            .describe('the content or resource to add to the knowledge base'),
+        }),
+        execute: async ({ content }) => createResource({ content }),
+      }),
+
+      getInformation: tool({
+        description: `get information from your knowledge base to answer questions.`,
+        inputSchema: z.object({
+          question: z.string().describe('the users question'),
+        }),
+        execute: async ({ question }) => findRelevantContent(question),
       }),
     },
   });
