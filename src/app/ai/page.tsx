@@ -264,12 +264,10 @@ export default function Chat() {
                     📋 商品詳細を取得中...
                   </div>
                 );
+              
               case "tool-addResource":
-                // 静默处理：不显示任何内容
-                return null;
               case "tool-getInformation":
-                // 静默处理：不显示任何内容
-                return null;
+                return null; 
               case "step-start":
                 return null; // Ignore step-start parts
               default:
