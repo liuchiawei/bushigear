@@ -3,7 +3,8 @@ import { streamText, UIMessage, convertToModelMessages, tool, stepCountIs } from
 import { z } from "zod";
 import products from "@/data/products.json";
 import { createResource } from "@/lib/actions/resources";
-import { findRelevantContent } from "@/lib/ai/embedding";
+import { findRelevantContent, findRelevantProducts } from "@/lib/ai/embedding";
+import prisma from "@/lib/prisma";
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
@@ -79,9 +80,11 @@ export async function POST(req: Request) {
    - 見つかった情報を使って回答してください
    - 見つからない場合は「その情報は記憶にありません」と伝える
 
-3. **商品検索（search_products）**：
-   - ユーザーが商品を探している、検索したい場合
-   - 例：「グローブを探しています」「おすすめの商品を教えて」
+3. **商品検索（search_products_semantic）**：
+   - ユーザーが商品を探している、検索したい、おすすめを知りたい場合
+   - 例：「グローブを探しています」「おすすめの商品を教えて」「初心者向けの商品」
+   - 必ずこのツールを使用してください（AIによる意味理解で検索します）
+   - **重要：このツールを使用した後は、商品の詳細情報を繰り返さないでください。UIに既に表示されています。簡単な確認だけで十分です。**
    
 4. **商品詳細（get_product_details）**：
    - ユーザーが特定の商品の「詳細」を明示的に求めた場合のみ
@@ -94,6 +97,7 @@ export async function POST(req: Request) {
 - ユーザーが何か情報を教えてくれたら、必ずaddResourceを使用して記憶する
 - ユーザーが「私の〜は？」と質問したら、必ずgetInformationで検索してから回答する
 - 記憶を確認せずに推測で答えない
+- 商品検索ツールを使用した後は、商品詳細を繰り返し記載しないでください
 - Markdown形式を使用してください`,
     tools: {
       search_products: tool({
@@ -210,6 +214,63 @@ export async function POST(req: Request) {
           question: z.string().describe('the users question'),
         }),
         execute: async ({ question }) => findRelevantContent(question),
+      }),
+
+      search_products_semantic: tool({
+        description: "使用语义搜索查找相关商品。可以理解用户的意图，即使用词不完全相同也能找到相关商品。例如：'初心者向け'可以找到'ビギナー用'的商品。",
+        inputSchema: z.object({
+          query: z.string().describe("用户的搜索查询或意图描述"),
+          limit: z.number().optional().default(5).describe("返回商品的最大数量")
+        }),
+        execute: async ({ query, limit }) => {
+          console.log("🔍 TOOL CALLED: search_products_semantic");
+          console.log("Query:", query);
+          console.log("Limit:", limit);
+          
+          try {
+            // 使用 vector 搜索找到相关商品
+            const semanticResults = await findRelevantProducts(query);
+            
+            if (semanticResults.length === 0) {
+              return {
+                products: [],
+                query,
+                totalFound: 0,
+                message: "該当する商品が見つかりませんでした"
+              };
+            }
+
+            // 根据 productId 获取完整商品信息
+            const productIds = semanticResults
+              .slice(0, limit)
+              .map((r: { productId: number | null }) => r.productId)
+              .filter((id: number | null): id is number => id !== null);
+
+            const productsData = await prisma.product.findMany({
+              where: {
+                id: { in: productIds }
+              }
+            });
+
+            // 按相似度排序
+            const orderedProducts = productIds
+              .map((id: number) => productsData.find((p: any) => p.id === id))
+              .filter((p: any): p is NonNullable<typeof p> => p !== null);
+
+            return {
+              products: orderedProducts,
+              query,
+              totalFound: orderedProducts.length,
+              semanticSearch: true
+            };
+          } catch (error) {
+            console.error("❌ Semantic search error:", error);
+            return {
+              error: "語義検索に失敗しました",
+              query
+            };
+          }
+        },
       }),
     },
   });
