@@ -10,19 +10,29 @@ export default function Chat() {
   const { messages, sendMessage } = useChat();
   return (
     <section className="flex flex-col relative w-full max-w-md h-full min-h-screen py-24 mx-auto stretch">
-      {messages.map((message, messageIndex) => (
-        <div key={`msg-${messageIndex}`} className="whitespace-pre-wrap">
-          {message.role === "user" ? "User: " : "AI: "}
-          {message.parts.map((part, i) => {
-            console.log("Part type:", part.type, "Part:", part);
-            const partKey = `msg-${messageIndex}-part-${i}-${part.type}`;
-            switch (part.type) {
-              case "text":
-                return (
-                  <div key={partKey} className="prose max-w-none">
-                    <ReactMarkdown>{part.text}</ReactMarkdown>
-                  </div>
-                );
+      {messages.map((message, messageIndex) => {
+        // 检查这条消息是否有商品搜索工具调用
+        const hasProductSearchTool = message.parts.some(
+          (p) => p.type === "tool-search_products_semantic" || p.type === "tool-search_products"
+        );
+        
+        return (
+          <div key={`msg-${messageIndex}`} className="whitespace-pre-wrap">
+            {message.role === "user" ? "User: " : "AI: "}
+            {message.parts.map((part, i) => {
+              console.log("Part type:", part.type, "Part:", part);
+              const partKey = `msg-${messageIndex}-part-${i}-${part.type}`;
+              switch (part.type) {
+                case "text":
+                  // 如果这条消息有商品搜索工具，跳过文本输出（避免重复）
+                  if (hasProductSearchTool) {
+                    return null;
+                  }
+                  return (
+                    <div key={partKey} className="prose max-w-none">
+                      <ReactMarkdown>{part.text}</ReactMarkdown>
+                    </div>
+                  );
               case "tool-call":
                 return (
                   <div key={partKey} className="text-blue-600 text-sm">
@@ -158,7 +168,60 @@ export default function Chat() {
                   }
                 }
                 
-                // 顯示搜索中狀態
+                return (
+                  <div key={partKey} className="text-blue-600 text-sm">
+                    🔍 商品を検索中...
+                  </div>
+                );
+              case "tool-search_products_semantic":
+                if (part.state === "output-available" && part.output) {
+                  const result = part.output as any;
+                  console.log("Semantic search result:", result);
+                  
+                  if (result.error) {
+                    return (
+                      <div key={`${partKey}-error`} className="text-red-600 text-sm">
+                        ❌ {result.error}
+                      </div>
+                    );
+                  }
+                  
+                  if (result.products && result.products.length > 0) {
+                    return (
+                      <div key={`${partKey}-products`} className="mt-4">
+                        <div className="text-green-600 text-sm mb-2">
+                          ✅ {result.totalFound}件の商品が見つかりました
+                        </div>
+                        <div className="grid gap-4">
+                          {result.products.map((product: any, index: number) => (
+                            <div key={`product-${index}`} className="border rounded-lg p-4 bg-gray-50">
+                              <div className="flex items-center gap-4">
+                                <img 
+                                  src={product.image} 
+                                  alt={product.name_jp}
+                                  className="w-16 h-16 object-cover rounded"
+                                />
+                                <div className="flex-1">
+                                  <h3 className="font-semibold text-lg">{product.name_jp}</h3>
+                                  <p className="text-gray-600">{product.brand}</p>
+                                  <p className="text-sm text-gray-500">{product.category}</p>
+                                  <p className="text-lg font-bold text-blue-600">¥{product.price.toLocaleString()}</p>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  } else {
+                    return (
+                      <div key={`${partKey}-no-results`} className="text-yellow-600 text-sm">
+                        ⚠️ 該当する商品が見つかりませんでした
+                      </div>
+                    );
+                  }
+                }
+                
                 return (
                   <div key={partKey} className="text-blue-600 text-sm">
                     🔍 商品を検索中...
@@ -225,6 +288,10 @@ export default function Chat() {
                     📋 商品詳細を取得中...
                   </div>
                 );
+              
+              case "tool-addResource":
+              case "tool-getInformation":
+                return null; 
               case "step-start":
                 return null; // Ignore step-start parts
               default:
@@ -232,8 +299,9 @@ export default function Chat() {
                 return null;
             }
           })}
-        </div>
-      ))}
+          </div>
+        );
+      })}
 
       <form
         onSubmit={(e) => {

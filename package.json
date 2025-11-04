@@ -12,7 +12,8 @@
     "lint": "next lint",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
-    "db:migrate": "prisma migrate dev"
+    "db:migrate": "prisma migrate dev",
+    "import:products": "tsx scripts/import-products.ts"
   },
   "dependencies": {
     "@ai-sdk/openai": "2.0.52",
