@@ -14,7 +14,8 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Trash2, Eye } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Trash2, Eye, Loader2 } from "lucide-react";
 
 type UserProfile = {
   id: number;
@@ -247,8 +248,18 @@ export default function MyPage() {
 
   if (status === "loading" || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p className="text-lg">読み込み中...</p>
+      <div className="w-full max-w-6xl min-h-screen mx-auto py-12 px-4 md:px-0">
+        <Skeleton className="w-full flex items-center gap-4 rounded-lg shadow-sm p-6 mb-6">
+          <Skeleton className="size-16 bg-gray-100 rounded-full" />
+          <div className="flex flex-col gap-4">
+            <Skeleton className="w-24 h-5 bg-gray-100 rounded-full" />
+            <Skeleton className="w-48 h-3 bg-gray-100 rounded-full" />
+          </div>
+        </Skeleton>
+        <Skeleton className="w-full h-60 md:h-108 rounded-lg shadow-sm flex flex-col items-center justify-center gap-4 mb-6">
+          <Loader2 className="size-20 text-gray-300 animate-spin" />
+          <p className="text-2xl text-gray-400 animate-pulse">読み込み中...</p>
+        </Skeleton>
       </div>
     );
   }
@@ -258,7 +269,7 @@ export default function MyPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4">
+    <div className="min-h-screen py-12 px-4">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
@@ -383,9 +394,12 @@ export default function MyPage() {
                             className="w-full px-3 py-2 border border-gray-300 rounded-lg"
                           />
                           {uploading && (
-                            <p className="text-sm text-gray-500 mt-1">
-                              アップロード中...
-                            </p>
+                            <div className="flex items-center gap-2 text-gray-500">
+                              <Loader2 className="size-4 animate-spin" />
+                              <p className="text-sm animate-pulse">
+                                アップロード中...
+                              </p>
+                            </div>
                           )}
                         </div>
                       </div>
@@ -575,7 +589,9 @@ export default function MyPage() {
                       </AvatarFallback>
                     </Avatar>
                     <div>
-                      <p className="mb-2 text-sm text-gray-500">メールアドレス</p>
+                      <p className="mb-2 text-sm text-gray-500">
+                        メールアドレス
+                      </p>
                       <p className="text-lg md:text-2xl">{profile?.email}</p>
                     </div>
                     <div>
