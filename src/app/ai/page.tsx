@@ -3,7 +3,6 @@
 import { useChat } from "@ai-sdk/react";
 import { useState } from "react";
 import ReactMarkdown from "react-markdown";
-import Image from "next/image";
 
 export default function Chat() {
   const [input, setInput] = useState("");
