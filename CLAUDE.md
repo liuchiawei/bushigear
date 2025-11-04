@@ -43,6 +43,7 @@ This is a Japanese e-commerce site for martial arts equipment (ブシギア) bui
 #### `/src/app/` - Next.js App Router pages and API routes
 
 **Pages:**
+
 - `/(index)/page.tsx` - Homepage with hero sections and product showcases
   - Uses 8 section components: Hero, Cm, Sales, Features, Ranking, About, News
   - Components in `/(index)/components/layout/`: hero.tsx, cm.tsx, cm1.tsx, sales.tsx, features.tsx, ranking.tsx, about.tsx, news.tsx
@@ -63,6 +64,7 @@ This is a Japanese e-commerce site for martial arts equipment (ブシギア) bui
 - `/orders/page.tsx` - Order history
 
 **API Routes:**
+
 - `/api/chat/route.ts` - AI chat endpoint with OpenAI gpt-4o-mini and DALL-E 3 image generation tool
 - `/api/products/route.ts` - Product data API (list all products)
 - `/api/products/[id]/route.ts` - Single product API
@@ -77,11 +79,13 @@ This is a Japanese e-commerce site for martial arts equipment (ブシギア) bui
 #### `/src/components/` - Reusable React components
 
 **Layout Components (`/layout/`):**
+
 - `nav.tsx` - Main navigation header
 - `footer.tsx` - Site footer
 - `app-sidebar.tsx` - App sidebar navigation
 
 **Common Components (`/common/`):**
+
 - `aiAssistant.tsx` - Floating AI assistant widget
 - `backToTop.tsx` - Back to top button
 - `AddToCart.tsx` - Add to cart functionality
@@ -92,10 +96,12 @@ This is a Japanese e-commerce site for martial arts equipment (ブシギア) bui
 - `sns.tsx` - Social media links
 
 **UI Components (`/ui/`):**
+
 - shadcn/ui components: button, carousel, collapsible, dialog, input, navigation-menu, separator, sheet, sidebar, skeleton, tooltip
 - Custom: `3d-card.tsx` for 3D card effects
 
 #### `/src/lib/` - Utilities and libraries
+
 - `prisma.ts` - Prisma client singleton
 - `cart.ts` - Cart management utilities
 - `formatters.ts` - Data formatting helpers
@@ -103,27 +109,33 @@ This is a Japanese e-commerce site for martial arts equipment (ブシギア) bui
 - `utils.ts` - General utility functions
 
 #### `/src/contexts/` - React contexts
+
 - `CartContext.tsx` - Global cart state management with React Context
 
 #### `/src/hooks/` - Custom React hooks
+
 - `use-mobile.ts` - Mobile device detection hook
 
 #### `/src/constants/` - Application constants
+
 - `prefectures.ts` - List of all 47 Japanese prefectures (都道府県)
 
 #### `/src/data/` - Static JSON data
+
 - `products.json` - Product catalog data
 - `content.json` - Site content/copy
 - `heroImageList.json` - Hero section image configurations
 
 #### `/prisma/` - Database schema and migrations
+
 - `schema.prisma` - Database schema definition
 
 #### `/public/` - Static assets
+
 - `/images/` - Product and site images
-  - Product images by category: glove_*, mitt_*, protector_*, fuku_*
+  - Product images by category: glove*\*, mitt*_, protector\__, fuku\_\*
   - `/hero/` subdirectory with demo_001.jpg through demo_005.jpg
-  - Background images: top_bg_*, glove_area_bg.jpg, sale_area_bg.jpg
+  - Background images: top*bg*\*, glove_area_bg.jpg, sale_area_bg.jpg
   - Social media icons: icon-facebook.svg, icon-instagram.svg, icon-x.svg
   - Design files and PDFs for reference (About redesign.pdf)
   - Commercial images: cm_img_01.png, cm_img_02.png, cm_img_03.png
@@ -136,6 +148,7 @@ This is a Japanese e-commerce site for martial arts equipment (ブシギア) bui
 Three main models:
 
 **User**
+
 - id (Int, auto-increment), email (unique), password (hashed with bcryptjs)
 - Name: lastName, firstName (nullable)
 - Profile: gender (nullable), birthday (DateTime, nullable)
@@ -144,6 +157,7 @@ Three main models:
 - Relations: orders (one-to-many)
 
 **Product**
+
 - id (Int, auto-increment), brand, category, price (Int), stock (Int, default 0), image
 - Multi-language support:
   - name_en, name_jp, name_cn
@@ -152,6 +166,7 @@ Three main models:
 - Relations: orders (one-to-many)
 
 **Order**
+
 - id (Int, auto-increment), userId (nullable), productId, quantity (Int)
 - Customer info: lastName, firstName, email, address (all nullable for guest orders)
 - Timestamps: createdAt (default now)
@@ -163,12 +178,14 @@ Three main models:
 ### AI Features
 
 **Chat Assistant (`/api/chat/route.ts`)**
+
 - Model: OpenAI gpt-4o-mini
 - System prompt configured for Japanese responses with Markdown formatting
 - Max duration: 30 seconds
 - Streaming responses via Vercel AI SDK
 
 **Tools:**
+
 - `generate_image` - DALL-E 3 image generation
   - Supports sizes: 1024x1024, 1792x1024, 1024x1792
   - Quality options: standard, hd
@@ -177,6 +194,7 @@ Three main models:
 ### Authentication & User Management
 
 **NextAuth Configuration (`/src/auth.ts`):**
+
 - NextAuth 5.0.0-beta.29 with Prisma adapter (@auth/prisma-adapter)
 - Authentication providers:
   - Google OAuth (requires GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET env vars)
@@ -189,6 +207,7 @@ Three main models:
 - Guest checkout supported (nullable userId in Order model)
 
 **Environment Variables Required:**
+
 - `DATABASE_URL` - PostgreSQL connection string (Neon serverless)
 - `OPENAI_API_KEY` - OpenAI API key for AI features
 - `AUTH_SECRET` - NextAuth secret for JWT signing
@@ -204,12 +223,14 @@ Three main models:
 ### Styling & UI
 
 **Fonts (Next.js Google Fonts):**
+
 - Primary: Noto Sans JP (variable: --font-noto-sans-jp) - for Japanese text
 - Secondary: Roboto (variable: --font-roboto)
 - Condensed: Roboto Condensed (variable: --font-roboto-condensed)
 - Decorative: Yuji Syuku (variable: --font-yuji-syuku, weight: 400)
 
 **Theme:**
+
 - Language: Japanese (`lang="ja"`)
 - Background: Dot grid pattern (bg-dot-32-s-2-neutral-400) from @nauverse/tailwind-dot-grid-backgrounds
 - Tailwind CSS v4 (@tailwindcss/postcss) with custom animations (tw-animate-css)
@@ -218,6 +239,7 @@ Three main models:
 - Global styles in `/src/app/globals.css`
 
 **Layout Structure:**
+
 - Root layout wraps all pages with Nav, Footer, BackToTop, and AiAssistant components
 - SidebarProvider and AppSidebar for navigation
 - CartProvider for global cart state
@@ -226,6 +248,7 @@ Three main models:
 ### Development Notes
 
 **TypeScript Configuration:**
+
 - Strict mode enabled (`tsconfig.json`)
 - Target: ES2017
 - Module resolution: bundler
@@ -233,6 +256,7 @@ Three main models:
 - Force consistent casing in file names
 
 **Build & Development:**
+
 - ESLint configuration with Next.js rules
 - Build process (`pnpm build`): automatically runs `prisma db push` → `prisma generate` → `next build`
 - Development server uses Turbopack for fast HMR (`pnpm dev`)
@@ -240,16 +264,19 @@ Three main models:
 - Prisma seed script configured (ts-node prisma/seed.ts)
 
 **Package Manager:**
+
 - Uses pnpm (not npm or yarn)
 - Zod version override (3.25.76) in package.json for openai-zod-to-json-schema compatibility
 - Actual Zod version in project: 4.1.12
 
 **Project Metadata:**
+
 - Site title: "ブシギア | 格闘用品専門店"
-- Description: "「ブシギア」は、高品質な日本製の格闘用品を中心に取り扱う専門ECサイトです。"
+- Description: "「ブシギア」は、高品質な日本製の格闘用品を中心に取り扱う専門 EC サイトです。"
 - Favicon: `/favicon.ico`
 
 **Recent Development Activity:**
+
 - About page redesign (October 2024)
 - Dashboard improvements
 - RAG (Retrieval-Augmented Generation) AI features integration
