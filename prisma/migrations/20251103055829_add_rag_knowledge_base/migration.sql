@@ -1,3 +1,6 @@
+-- Enable the pgvector extension
+CREATE EXTENSION IF NOT EXISTS vector;
+
 -- CreateTable
 CREATE TABLE "Resource" (
     "id" SERIAL NOT NULL,

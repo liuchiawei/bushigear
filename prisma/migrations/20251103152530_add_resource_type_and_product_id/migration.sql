@@ -1,3 +1,5 @@
+CREATE EXTENSION IF NOT EXISTS vector;
+
 -- AlterTable
 ALTER TABLE "Resource" ADD COLUMN "type" TEXT NOT NULL DEFAULT 'user_info';
 ALTER TABLE "Resource" ADD COLUMN "productId" INTEGER;

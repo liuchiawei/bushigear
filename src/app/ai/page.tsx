@@ -3,13 +3,12 @@
 import { useChat } from "@ai-sdk/react";
 import { useState } from "react";
 import ReactMarkdown from "react-markdown";
-import Image from "next/image";
 
 export default function Chat() {
   const [input, setInput] = useState("");
   const { messages, sendMessage } = useChat();
   return (
-    <section className="flex flex-col relative w-full max-w-md h-full min-h-screen py-24 mx-auto stretch">
+    <div className="flex flex-col relative w-full max-w-md h-full min-h-screen py-24 mx-auto stretch">
       {messages.map((message, messageIndex) => {
         // 检查这条消息是否有商品搜索工具调用
         const hasProductSearchTool = message.parts.some(
@@ -67,8 +66,8 @@ export default function Chat() {
                 }
                 return null;
                 case "tool-generate_image":
-                  // Simple test - always show something for tool-generate_image
-                  if (part.state === "output-available") {
+                  // Check if part has 'state' property before accessing it
+                  if ('state' in part && part.state === "output-available") {
                     console.log("State is output-available, showing image");
                     const output = part.output as any;
                     console.log("Output object:", output);
@@ -108,19 +107,11 @@ export default function Chat() {
                   // Show generating message for other states
                   return (
                     <div key={partKey} className="text-blue-600 text-sm">
-                      🔧 画像を生成しています... (State: {part.state})
+                      🔧 Generating image... {('state' in part) ? `(State: ${part.state})` : ''}
                     </div>
                   );
-                }
-
-                // Show generating message for other states
-                return (
-                  <div key={partKey} className="text-blue-600 text-sm">
-                    🔧 Generating image... (State: {part.state})
-                  </div>
-                );
               case "tool-search_products":
-                if (part.state === "output-available" && part.output) {
+                if ('state' in part && part.state === "output-available" && part.output) {
                   const result = part.output as any;
                   console.log("Search result:", result);
                   
@@ -319,6 +310,6 @@ export default function Chat() {
           onChange={(e) => setInput(e.currentTarget.value)}
         />
       </form>
-    </section>
+    </div>
   );
 }
