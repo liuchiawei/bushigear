@@ -9,16 +9,16 @@ export default function Chat() {
   const { messages, sendMessage } = useChat();
   return (
     <div className="flex flex-col relative w-full max-w-md h-full min-h-screen py-24 mx-auto stretch">
-      {messages.map((message, messageIndex) => {
+      {messages.map((message: any, messageIndex: number) => {
         // 检查这条消息是否有商品搜索工具调用
         const hasProductSearchTool = message.parts.some(
-          (p) => p.type === "tool-search_products_semantic" || p.type === "tool-search_products"
+          (p: any) => p.type === "tool-search_products_semantic" || p.type === "tool-search_products"
         );
         
         return (
           <div key={`msg-${messageIndex}`} className="whitespace-pre-wrap">
             {message.role === "user" ? "User: " : "AI: "}
-            {message.parts.map((part, i) => {
+            {message.parts.map((part: any, i: number) => {
               console.log("Part type:", part.type, "Part:", part);
               const partKey = `msg-${messageIndex}-part-${i}-${part.type}`;
               switch (part.type) {
