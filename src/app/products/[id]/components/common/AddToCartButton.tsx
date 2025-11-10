@@ -48,15 +48,13 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
           ))}
         </select>
       </div>
-      <OptionButtons handleAddToCart={handleAddToCart} />
+      <OptionButtons handleAddToCart={handleAddToCart} productId={product.id} />
 
-      <Button
-        onClick={handleAddToCart}
-        disabled={isAdding}
-        asChild
-      >
+      <Button onClick={handleAddToCart} disabled={isAdding} asChild>
         <Link href="/cart" className="w-full col-span-2">
-          {isAdding ? "カートに追加中..." : content.products_detail.directly_buy.jp}
+          {isAdding
+            ? "カートに追加中..."
+            : content.products_detail.directly_buy.jp}
         </Link>
       </Button>
     </div>
