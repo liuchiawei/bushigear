@@ -12,7 +12,6 @@ export default function CheckoutForm() {
       return (
         <pre>
           {JSON.stringify(checkoutState.checkout.lineItems, null, 2)}
-          // A formatted total amount Total:{" "}
           {checkoutState.checkout.total.total.amount}
         </pre>
       );
