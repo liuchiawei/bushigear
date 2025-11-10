@@ -14,6 +14,14 @@ import { CartProvider } from "@/contexts/CartContext";
 import AppSidebar from "@/components/layout/app-sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import Providers from "./providers";
+import { CheckoutProvider } from "@stripe/react-stripe-js/checkout";
+import { loadStripe } from "@stripe/stripe-js";
+
+const stripePromise = loadStripe(process.env.STRIPE_PUBLISHABLE_KEY!);
+
+const clientSecret = fetch("/create-checkout-session", { method: "POST" })
+  .then((response) => response.json())
+  .then((json) => json.client_secret);
 
 const notoSansJP = Noto_Sans_JP({
   variable: "--font-noto-sans-jp",
@@ -56,16 +64,18 @@ export default function RootLayout({
         className={`${notoSansJP.variable} ${roboto.variable} ${robotoCondensed.variable} ${yujiSyuku.variable} bg-background bg-dot-32-s-2-neutral-400 antialiased`}
       >
         <Providers>
-          <CartProvider>
-            <SidebarProvider defaultOpen={false}>
-              <AppSidebar />
-              <Nav />
-              <main>{children}</main>
-              <Footer />
-              <BackToTop />
-              <AiAssistant />
-            </SidebarProvider>
-          </CartProvider>
+          {/* <CheckoutProvider stripe={stripePromise} options={{ clientSecret }}> */}
+            <CartProvider>
+              <SidebarProvider defaultOpen={false}>
+                <AppSidebar />
+                <Nav />
+                <main>{children}</main>
+                <Footer />
+                <BackToTop />
+                <AiAssistant />
+              </SidebarProvider>
+            </CartProvider>
+          {/* </CheckoutProvider> */}
         </Providers>
       </body>
     </html>

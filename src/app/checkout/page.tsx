@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function CheckoutPage() {
-  const {cart, clearCart} = useCart();
+  const { cart, clearCart } = useCart();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
 
@@ -37,13 +37,14 @@ export default function CheckoutPage() {
             }));
           }
         }
-      } catch {
-      }
+      } catch {}
     })();
   }, []);
 
   const handleCustomerChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >
   ) => {
     const { name, value } = e.target;
     setCustomer((prev) => ({ ...prev, [name]: value }));
@@ -66,7 +67,12 @@ export default function CheckoutPage() {
     }
     setIsProcessing(true);
     try {
-      if (!customer.lastName || !customer.firstName || !customer.email || !customer.address) {
+      if (
+        !customer.lastName ||
+        !customer.firstName ||
+        !customer.email ||
+        !customer.address
+      ) {
         alert("必須項目を入力してください");
         setIsProcessing(false);
         return;
@@ -124,7 +130,10 @@ export default function CheckoutPage() {
             <h2 className="text-2xl font-semibold mb-6">注文内容</h2>
             <div className="space-y-4">
               {cart.items.map((item) => (
-                <div key={item.product.id} className="flex items-center space-x-4 p-4 border rounded-lg">
+                <div
+                  key={item.product.id}
+                  className="flex items-center space-x-4 p-4 border rounded-lg"
+                >
                   <Image
                     src={item.product.image}
                     alt={item.product.name_jp}
@@ -134,7 +143,9 @@ export default function CheckoutPage() {
                   />
                   <div className="flex-1">
                     <h3 className="font-semibold">{item.product.name_jp}</h3>
-                    <p className="text-sm text-gray-500">{item.product.brand}</p>
+                    <p className="text-sm text-gray-500">
+                      {item.product.brand}
+                    </p>
                     <p className="text-sm">数量: {item.quantity}</p>
                   </div>
                   <div className="text-right">
@@ -159,9 +170,12 @@ export default function CheckoutPage() {
             <h2 className="text-2xl font-semibold mb-6">お客様情報</h2>
             <div className="space-y-6">
               <div className="p-6 border rounded-lg bg-yellow-50 border-yellow-200">
-                <h3 className="font-semibold text-yellow-800 mb-2">⚠️ デモ機能について</h3>
+                <h3 className="font-semibold text-yellow-800 mb-2">
+                  ⚠️ デモ機能について
+                </h3>
                 <p className="text-sm text-yellow-700">
-                  これはデモ版です。実際の支払い処理は行われません。<br />
+                  これはデモ版です。実際の支払い処理は行われません。
+                  <br />
                   データベース統合時には以下の機能を実装してください：
                 </p>
                 <ul className="text-sm text-yellow-700 mt-2 list-disc list-inside">
@@ -176,7 +190,9 @@ export default function CheckoutPage() {
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium mb-2">氏 *</label>
+                    <label className="block text-sm font-medium mb-2">
+                      氏 *
+                    </label>
                     <input
                       type="text"
                       name="lastName"
@@ -189,7 +205,9 @@ export default function CheckoutPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium mb-2">名 *</label>
+                    <label className="block text-sm font-medium mb-2">
+                      名 *
+                    </label>
                     <input
                       type="text"
                       name="firstName"
@@ -203,7 +221,9 @@ export default function CheckoutPage() {
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-2">メールアドレス *</label>
+                  <label className="block text-sm font-medium mb-2">
+                    メールアドレス *
+                  </label>
                   <input
                     type="email"
                     name="email"
@@ -216,7 +236,9 @@ export default function CheckoutPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-2">配送先住所 *</label>
+                  <label className="block text-sm font-medium mb-2">
+                    配送先住所 *
+                  </label>
                   <textarea
                     name="address"
                     className="w-full p-3 border rounded-md"
@@ -228,16 +250,18 @@ export default function CheckoutPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-2">支払い方法 *</label>
-                    <select
-                      title="paymentMethod"
-                      name="paymentMethod"
-                      className="w-full p-3 border rounded-md"
-                      value={customer.paymentMethod}
-                      onChange={handleCustomerChange}
-                    >
-                      <option value="credit_card">クレジットカード</option>
-                    </select>
+                  <label className="block text-sm font-medium mb-2">
+                    支払い方法 *
+                  </label>
+                  <select
+                    title="paymentMethod"
+                    name="paymentMethod"
+                    className="w-full p-3 border rounded-md"
+                    value={customer.paymentMethod}
+                    onChange={handleCustomerChange}
+                  >
+                    <option value="credit_card">クレジットカード</option>
+                  </select>
                 </div>
               </div>
               <div className="flex space-x-4 pt-6">
@@ -251,8 +275,15 @@ export default function CheckoutPage() {
                   disabled={isProcessing}
                   className="flex-1"
                   size="lg"
+                  asChild
                 >
-                  {isProcessing ? "処理中..." : "注文を確定する"}
+                  {isProcessing ? (
+                    <span>処理中...</span>
+                  ) : (
+                    <Link href="https://buy.stripe.com/7sY3cvdox5QL2WD3O61ZS00" target="_blank">
+                      注文を確定する
+                    </Link>
+                  )}
                 </Button>
               </div>
             </div>
