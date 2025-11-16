@@ -31,3 +31,26 @@ export type Order = {
   createdAt: string;
   product?: Product;
 };
+
+export type Comment = {
+  id: number;
+  score: number;
+  comment: string;
+  productId: number;
+  userId: number;
+  createdAt: string;
+  user?: {
+    id: number;
+    email: string;
+    firstName?: string | null;
+    lastName?: string | null;
+    image?: string | null;
+  };
+  product?: {
+    id: number;
+    name_jp: string;
+    name_en: string;
+    brand: string;
+    image: string;
+  };
+};

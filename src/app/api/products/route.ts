@@ -10,6 +10,11 @@ export async function GET(request: Request) {
       where: category ? { category } : undefined,
       take: limit ? parseInt(limit) : undefined,
       orderBy: { id: "desc" },
+      include: {
+        _count: {
+          select: { orders: true, likes: true, comments: true },
+        },
+      },
     });
 
     return Response.json(products);

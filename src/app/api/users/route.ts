@@ -15,6 +15,9 @@ export async function GET() {
         address: true,
         createdAt: true,
         updatedAt: true,
+        _count: {
+          select: { likes: true, orders: true, comments: true },
+        },
       },
     });
     return Response.json(users);

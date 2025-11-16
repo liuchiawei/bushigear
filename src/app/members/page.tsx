@@ -20,6 +20,11 @@ type UserRow = {
   address?: string | null;
   createdAt?: string;
   updatedAt?: string;
+  _count?: {
+    likes: number;
+    orders: number;
+    comments: number;
+  };
 };
 
 export default function MembersDashboardPage() {
@@ -113,6 +118,9 @@ export default function MembersDashboardPage() {
                 更新日時
               </th>
               <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                リンク
+              </th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                 操作
               </th>
             </tr>
@@ -137,6 +145,19 @@ export default function MembersDashboardPage() {
                     {u.updatedAt
                       ? new Date(u.updatedAt).toLocaleString("ja-JP")
                       : "-"}
+                  </td>
+                  <td className="px-4 py-3">
+                    <div className="flex flex-col gap-1 text-sm">
+                      <Link href={`/members/${u.id}/likes`} className="text-blue-600 hover:underline">
+                        お気に入り ({u._count?.likes ?? 0})
+                      </Link>
+                      <Link href={`/members/${u.id}/orders`} className="text-blue-600 hover:underline">
+                        注文 ({u._count?.orders ?? 0})
+                      </Link>
+                      <Link href={`/members/${u.id}/comments`} className="text-blue-600 hover:underline">
+                        レビュー ({u._count?.comments ?? 0})
+                      </Link>
+                    </div>
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex gap-3">
