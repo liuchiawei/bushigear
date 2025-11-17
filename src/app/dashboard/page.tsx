@@ -5,9 +5,16 @@ import { Product } from '@/lib/type';
 import Link from 'next/link';
 import Image from 'next/image';
 
+type ProductWithCounts = Product & {
+  _count?: {
+    likes: number;
+    orders: number;
+    comments: number;
+  };
+};
 
 export default function Dashboard() {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<ProductWithCounts[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
@@ -340,6 +347,7 @@ export default function Dashboard() {
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">価格</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">在庫</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">画像</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">リンク</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">操作</th>
             </tr>
           </thead>
@@ -364,6 +372,19 @@ export default function Dashboard() {
                 <td className="px-6 py-4 whitespace-nowrap">{product.stock}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   <Image src={product.image} alt={product.name_jp} width={48} height={48} className="w-12 h-12 object-cover rounded" />
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <div className="flex flex-col gap-1">
+                    <Link href={`/dashboard/products/${product.id}/likes`} className="text-blue-600 hover:underline">
+                      お気に入り ({product._count?.likes ?? 0})
+                    </Link>
+                    <Link href={`/dashboard/products/${product.id}/orders`} className="text-blue-600 hover:underline">
+                      注文 ({product._count?.orders ?? 0})
+                    </Link>
+                    <Link href={`/dashboard/products/${product.id}/comments`} className="text-blue-600 hover:underline">
+                      レビュー ({product._count?.comments ?? 0})
+                    </Link>
+                  </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   <button
