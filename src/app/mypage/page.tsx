@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCart } from "@/contexts/CartContext";
@@ -64,7 +64,7 @@ type LikeItem = {
   };
 };
 
-export default function MyPage() {
+function MyPageContent() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -146,7 +146,9 @@ export default function MyPage() {
           lastName: data.user.lastName || "",
           firstName: data.user.firstName || "",
           gender: data.user.gender || "",
-          birthday: data.user.birthday ? data.user.birthday.substring(0, 10) : "",
+          birthday: data.user.birthday
+            ? data.user.birthday.substring(0, 10)
+            : "",
           postalCode: data.user.postalCode || "",
           prefecture: data.user.prefecture || "",
           city: data.user.city || "",
@@ -167,7 +169,9 @@ export default function MyPage() {
       const res = await fetch("/api/orders");
       if (!res.ok) throw new Error("注文履歴の取得に失敗しました");
       const data = await res.json();
-      const userOrders = data.filter((order: any) => order.userId === Number(session?.user?.id));
+      const userOrders = data.filter(
+        (order: any) => order.userId === Number(session?.user?.id)
+      );
       setOrders(userOrders);
     } catch (e: any) {
       console.error("Failed to fetch orders:", e);
@@ -286,7 +290,10 @@ export default function MyPage() {
   };
 
   const calculateCartTotal = () => {
-    return cart.items.reduce((total, item) => total + item.product.price * item.quantity, 0);
+    return cart.items.reduce(
+      (total, item) => total + item.product.price * item.quantity,
+      0
+    );
   };
   const formatPrice = (price: number) => {
     return `¥${price.toLocaleString()}`;
@@ -326,9 +333,21 @@ export default function MyPage() {
         <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
           <div className="flex items-center gap-4">
             <Avatar className="size-16">
-              <AvatarImage src={profile?.image || session?.user?.image || ""} alt={(profile?.lastName || profile?.firstName) ? `${profile?.lastName || ""} ${profile?.firstName || ""}`.trim() : session?.user?.email || ""} />
+              <AvatarImage
+                src={profile?.image || session?.user?.image || ""}
+                alt={
+                  profile?.lastName || profile?.firstName
+                    ? `${profile?.lastName || ""} ${
+                        profile?.firstName || ""
+                      }`.trim()
+                    : session?.user?.email || ""
+                }
+              />
               <AvatarFallback className="text-xl font-bold bg-primary text-primary-foreground">
-                {profile?.lastName?.[0] || profile?.firstName?.[0] || session?.user?.email?.[0].toUpperCase() || "U"}
+                {profile?.lastName?.[0] ||
+                  profile?.firstName?.[0] ||
+                  session?.user?.email?.[0].toUpperCase() ||
+                  "U"}
               </AvatarFallback>
             </Avatar>
             <div>
@@ -336,7 +355,9 @@ export default function MyPage() {
               <p className="text-gray-600 mt-2">
                 ようこそ、
                 {profile?.lastName || profile?.firstName
-                  ? `${profile?.lastName || ""} ${profile?.firstName || ""}`.trim()
+                  ? `${profile?.lastName || ""} ${
+                      profile?.firstName || ""
+                    }`.trim()
                   : profile?.email || session?.user?.email}
                 {profile?.lastName || profile?.firstName ? "さん" : ""}
               </p>
@@ -349,25 +370,41 @@ export default function MyPage() {
             <nav className="flex -mb-px">
               <button
                 onClick={() => setActiveTab("profile")}
-                className={`px-6 py-4 text-sm font-medium border-b-2 transition-colors cursor-pointer ${activeTab === "profile" ? "border-accent text-primary" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}`}
+                className={`px-6 py-4 text-sm font-medium border-b-2 transition-colors cursor-pointer ${
+                  activeTab === "profile"
+                    ? "border-accent text-primary"
+                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                }`}
               >
                 プロフィール
               </button>
               <button
                 onClick={() => setActiveTab("cart")}
-                className={`px-6 py-4 text-sm font-medium border-b-2 transition-colors cursor-pointer ${activeTab === "cart" ? "border-accent text-primary" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}`}
+                className={`px-6 py-4 text-sm font-medium border-b-2 transition-colors cursor-pointer ${
+                  activeTab === "cart"
+                    ? "border-accent text-primary"
+                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                }`}
               >
                 カート ({cart.items.length})
               </button>
               <button
                 onClick={() => setActiveTab("orders")}
-                className={`px-6 py-4 text-sm font-medium border-b-2 transition-colors cursor-pointer ${activeTab === "orders" ? "border-accent text-primary" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}`}
+                className={`px-6 py-4 text-sm font-medium border-b-2 transition-colors cursor-pointer ${
+                  activeTab === "orders"
+                    ? "border-accent text-primary"
+                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                }`}
               >
                 購入履歴 ({orders.length})
               </button>
               <button
                 onClick={() => setActiveTab("likes")}
-                className={`px-6 py-4 text-sm font-medium border-b-2 transition-colors cursor-pointer ${activeTab === "likes" ? "border-accent text-primary" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}`}
+                className={`px-6 py-4 text-sm font-medium border-b-2 transition-colors cursor-pointer ${
+                  activeTab === "likes"
+                    ? "border-accent text-primary"
+                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                }`}
               >
                 お気に入り ({likes.length})
               </button>
@@ -386,20 +423,34 @@ export default function MyPage() {
               <div>
                 <div className="flex justify-between items-center mb-6">
                   <h2 className="text-2xl font-semibold">プロフィール情報</h2>
-                  {!editing && <Button onClick={() => setEditing(true)}>編集</Button>}
+                  {!editing && (
+                    <Button onClick={() => setEditing(true)}>編集</Button>
+                  )}
                 </div>
                 {error && (
-                  <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg mb-4">{error}</div>
+                  <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg mb-4">
+                    {error}
+                  </div>
                 )}
                 {success && (
-                  <div className="bg-green-50 border border-green-200 text-green-600 px-4 py-3 rounded-lg mb-4">{success}</div>
+                  <div className="bg-green-50 border border-green-200 text-green-600 px-4 py-3 rounded-lg mb-4">
+                    {success}
+                  </div>
                 )}
                 {editing ? (
                   <div className="space-y-4">
                     <div className="mb-6">
-                      <label className="block text-sm font-medium text-gray-700 mb-2">プロフィール画像</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        プロフィール画像
+                      </label>
                       <div className="flex items-center gap-4">
-                        {form.image && <img src={form.image} alt="Avatar preview" className="w-24 h-24 rounded-full object-cover" />}
+                        {form.image && (
+                          <img
+                            src={form.image}
+                            alt="Avatar preview"
+                            className="w-24 h-24 rounded-full object-cover"
+                          />
+                        )}
                         <div className="flex-1">
                           <input
                             title="avatar"
@@ -412,7 +463,9 @@ export default function MyPage() {
                           {uploading && (
                             <div className="flex items-center gap-2 text-gray-500">
                               <Loader2 className="size-4 animate-spin" />
-                              <p className="text-sm animate-pulse">アップロード中...</p>
+                              <p className="text-sm animate-pulse">
+                                アップロード中...
+                              </p>
                             </div>
                           )}
                         </div>
@@ -420,7 +473,9 @@ export default function MyPage() {
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">姓</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          姓
+                        </label>
                         <input
                           title="lastName"
                           type="text"
@@ -431,7 +486,9 @@ export default function MyPage() {
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">名</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          名
+                        </label>
                         <input
                           title="firstName"
                           type="text"
@@ -444,7 +501,9 @@ export default function MyPage() {
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">性別</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          性別
+                        </label>
                         <select
                           title="gender"
                           name="gender"
@@ -459,7 +518,9 @@ export default function MyPage() {
                         </select>
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">誕生日</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          誕生日
+                        </label>
                         <input
                           title="birthday"
                           type="date"
@@ -474,7 +535,9 @@ export default function MyPage() {
                       <h3 className="text-lg font-semibold mb-4">住所情報</h3>
                       <div className="space-y-4">
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">郵便番号（半角）</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            郵便番号（半角）
+                          </label>
                           <input
                             type="text"
                             name="postalCode"
@@ -485,7 +548,9 @@ export default function MyPage() {
                           />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">都道府県</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            都道府県
+                          </label>
                           <select
                             title="prefecture"
                             name="prefecture"
@@ -502,7 +567,9 @@ export default function MyPage() {
                           </select>
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">市区町村</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            市区町村
+                          </label>
                           <input
                             title="city"
                             type="text"
@@ -513,7 +580,9 @@ export default function MyPage() {
                           />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">丁目・番地・号（半角）</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            丁目・番地・号（半角）
+                          </label>
                           <input
                             title="street"
                             type="text"
@@ -524,7 +593,9 @@ export default function MyPage() {
                           />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">建物名・会社名（任意）</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            建物名・会社名（任意）
+                          </label>
                           <input
                             type="text"
                             title="building"
@@ -535,7 +606,9 @@ export default function MyPage() {
                           />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">部屋番号（任意）</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            部屋番号（任意）
+                          </label>
                           <input
                             type="text"
                             title="room"
@@ -563,20 +636,29 @@ export default function MyPage() {
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <Avatar className="size-60 row-span-2 mx-auto">
-                      <AvatarImage src={profile?.image || session?.user?.image || ""} alt={profile?.lastName || profile?.firstName || ""} />
+                      <AvatarImage
+                        src={profile?.image || session?.user?.image || ""}
+                        alt={profile?.lastName || profile?.firstName || ""}
+                      />
                       <AvatarFallback>
-                        {profile?.lastName?.[0] || profile?.firstName?.[0] || "U"}
+                        {profile?.lastName?.[0] ||
+                          profile?.firstName?.[0] ||
+                          "U"}
                       </AvatarFallback>
                     </Avatar>
                     <div>
-                      <p className="mb-2 text-sm text-gray-500">メールアドレス</p>
+                      <p className="mb-2 text-sm text-gray-500">
+                        メールアドレス
+                      </p>
                       <p className="text-lg md:text-2xl">{profile?.email}</p>
                     </div>
                     <div>
                       <p className="mb-2 text-sm text-gray-500">氏名</p>
                       <p className="text-lg md:text-2xl">
                         {profile?.lastName || profile?.firstName
-                          ? `${profile?.lastName || ""} ${profile?.firstName || ""}`.trim()
+                          ? `${profile?.lastName || ""} ${
+                              profile?.firstName || ""
+                            }`.trim()
                           : "未設定"}
                       </p>
                     </div>
@@ -596,7 +678,9 @@ export default function MyPage() {
                       <p className="mb-2text-sm text-gray-500">誕生日</p>
                       <p className="text-lg md:text-2xl">
                         {profile?.birthday
-                          ? new Date(profile.birthday).toLocaleDateString("ja-JP")
+                          ? new Date(profile.birthday).toLocaleDateString(
+                              "ja-JP"
+                            )
                           : "未設定"}
                       </p>
                     </div>
@@ -613,7 +697,9 @@ export default function MyPage() {
             {/* Cart Tab */}
             {activeTab === "cart" && (
               <div>
-                <h2 className="text-2xl font-semibold mb-6">ショッピングカート</h2>
+                <h2 className="text-2xl font-semibold mb-6">
+                  ショッピングカート
+                </h2>
                 {cart.items.length === 0 ? (
                   <div className="text-center py-12">
                     <p className="text-gray-500 mb-4">カートは空です</p>
@@ -625,14 +711,28 @@ export default function MyPage() {
                   <div>
                     <div className="space-y-4 mb-6">
                       {cart.items.map((item) => (
-                        <div key={item.product.id} className="flex items-center gap-4 bg-gray-50 p-4 rounded-lg">
-                          <div className="w-24 h-24 relative shrink-0">
-                            <Image src={item.product.image} alt={item.product.name_jp} fill className="object-cover rounded" />
+                        <div
+                          key={item.product.id}
+                          className="flex items-center gap-4 bg-gray-50 p-4 rounded-lg"
+                        >
+                          <div className="w-24 h-24 relative flex-shrink-0">
+                            <Image
+                              src={item.product.image}
+                              alt={item.product.name_jp}
+                              fill
+                              className="object-cover rounded"
+                            />
                           </div>
-                          <div className="grow">
-                            <h3 className="font-semibold text-lg md:text-2xl">{item.product.name_jp}</h3>
-                            <p className="text-gray-500 text-sm">{item.product.brand}</p>
-                            <p className="text-secondary font-semibold mt-1">{formatPrice(item.product.price)}</p>
+                          <div className="flex-grow">
+                            <h3 className="font-semibold text-lg md:text-2xl">
+                              {item.product.name_jp}
+                            </h3>
+                            <p className="text-gray-500 text-sm">
+                              {item.product.brand}
+                            </p>
+                            <p className="text-secondary font-semibold mt-1">
+                              {formatPrice(item.product.price)}
+                            </p>
                           </div>
                           <div className="flex flex-col md:flex-row items-center gap-2">
                             <input
@@ -641,15 +741,27 @@ export default function MyPage() {
                               min="1"
                               max={item.product.stock}
                               value={item.quantity}
-                              onChange={(e) => updateQuantity(item.product.id, parseInt(e.target.value) || 1)}
+                              onChange={(e) =>
+                                updateQuantity(
+                                  item.product.id,
+                                  parseInt(e.target.value) || 1
+                                )
+                              }
                               className="w-full md:w-20 px-3 py-2 border border-gray-300 rounded-lg text-center"
                             />
                             <div className="flex items-center gap-1">
                               <TooltipProvider>
                                 <Tooltip>
                                   <TooltipTrigger asChild>
-                                    <Button variant="outline" size="icon" className="hover:bg-primary hover:text-background" asChild>
-                                      <Link href={`/products/${item.product.id}`}>
+                                    <Button
+                                      variant="outline"
+                                      size="icon"
+                                      className="hover:bg-primary hover:text-background"
+                                      asChild
+                                    >
+                                      <Link
+                                        href={`/products/${item.product.id}`}
+                                      >
                                         <Eye className="size-4" />
                                       </Link>
                                     </Button>
@@ -662,7 +774,13 @@ export default function MyPage() {
                               <TooltipProvider>
                                 <Tooltip>
                                   <TooltipTrigger asChild>
-                                    <Button onClick={() => removeFromCart(item.product.id)} variant="outline" size="icon">
+                                    <Button
+                                      onClick={() =>
+                                        removeFromCart(item.product.id)
+                                      }
+                                      variant="outline"
+                                      size="icon"
+                                    >
                                       <Trash2 className="size-4" />
                                     </Button>
                                   </TooltipTrigger>
@@ -679,10 +797,17 @@ export default function MyPage() {
                     <div className="border-t pt-4">
                       <div className="flex justify-between items-center mb-4">
                         <span className="text-xl font-semibold">合計:</span>
-                        <span className="text-2xl md:text-5xl font-bold text-secondary-600">{formatPrice(calculateCartTotal())}</span>
+                        <span className="text-2xl md:text-5xl font-bold text-secondary-600">
+                          {formatPrice(calculateCartTotal())}
+                        </span>
                       </div>
                       <div className="flex w-full justify-between gap-3">
-                        <Button size="lg" variant="outline" className="w/full shrink bg-gray-200 text-gray-700 hover:bg-gray-300 transition-colors" onClick={clearCart}>
+                        <Button
+                          size="lg"
+                          variant="outline"
+                          className="w/full shrink bg-gray-200 text-gray-700 hover:bg-gray-300 transition-colors"
+                          onClick={clearCart}
+                        >
                           カートを空にする
                         </Button>
                         <Button asChild size="lg" className="w/full shrink">
@@ -708,23 +833,47 @@ export default function MyPage() {
                 ) : (
                   <div className="space-y-4">
                     {orders.map((order) => (
-                      <div key={order.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                      <div
+                        key={order.id}
+                        className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
+                      >
                         <div className="flex items-start gap-4">
-                          <div className="w-20 h-20 relative shrink-0">
-                            <Image src={order.product.image} alt={order.product.name_jp} fill className="object-cover rounded" />
+                          <div className="w-20 h-20 relative flex-shrink-0">
+                            <Image
+                              src={order.product.image}
+                              alt={order.product.name_jp}
+                              fill
+                              className="object-cover rounded"
+                            />
                           </div>
                           <div className="grow">
                             <div className="flex justify-between items-start">
                               <div>
-                                <h3 className="font-semibold text-lg">{order.product.name_jp}</h3>
-                                <p className="text-gray-600 text-sm">{order.product.brand}</p>
-                                <p className="text-sm text-gray-500 mt-1">注文番号: #{order.id}</p>
-                                <p className="text-sm text-gray-500">購入日: {formatDate(order.createdAt)}</p>
+                                <h3 className="font-semibold text-lg">
+                                  {order.product.name_jp}
+                                </h3>
+                                <p className="text-gray-600 text-sm">
+                                  {order.product.brand}
+                                </p>
+                                <p className="text-sm text-gray-500 mt-1">
+                                  注文番号: #{order.id}
+                                </p>
+                                <p className="text-sm text-gray-500">
+                                  購入日: {formatDate(order.createdAt)}
+                                </p>
                               </div>
                               <div className="text-right">
-                                <p className="text-secondary-600 font-semibold">{formatPrice(order.product.price)}</p>
-                                <p className="text-sm text-gray-600 mt-1">数量: {order.quantity}</p>
-                                <p className="text-lg font-bold text-gray-900 mt-1">{formatPrice(order.product.price * order.quantity)}</p>
+                                <p className="text-secondary-600 font-semibold">
+                                  {formatPrice(order.product.price)}
+                                </p>
+                                <p className="text-sm text-gray-600 mt-1">
+                                  数量: {order.quantity}
+                                </p>
+                                <p className="text-lg font-bold text-gray-900 mt-1">
+                                  {formatPrice(
+                                    order.product.price * order.quantity
+                                  )}
+                                </p>
                               </div>
                             </div>
                           </div>
@@ -749,20 +898,39 @@ export default function MyPage() {
                 ) : (
                   <div className="space-y-4">
                     {likes.map((like) => (
-                      <div key={like.product.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                      <div
+                        key={like.product.id}
+                        className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
+                      >
                         <div className="flex items-start gap-4">
-                          <div className="w-20 h-20 relative shrink-0">
-                            <Image src={like.product.image} alt={like.product.name_jp} fill className="object-cover rounded" />
+                          <div className="w-20 h-20 relative flex-shrink-0">
+                            <Image
+                              src={like.product.image}
+                              alt={like.product.name_jp}
+                              fill
+                              className="object-cover rounded"
+                            />
                           </div>
                           <div className="grow">
                             <div className="flex justify-between items-start">
                               <div>
-                                <h3 className="font-semibold text-lg">{like.product.name_jp}</h3>
-                                <p className="text-gray-600 text-sm">{like.product.brand}</p>
-                                <p className="text-sm text-gray-500 mt-1">¥{like.product.price.toLocaleString()}</p>
+                                <h3 className="font-semibold text-lg">
+                                  {like.product.name_jp}
+                                </h3>
+                                <p className="text-gray-600 text-sm">
+                                  {like.product.brand}
+                                </p>
+                                <p className="text-sm text-gray-500 mt-1">
+                                  ¥{like.product.price.toLocaleString()}
+                                </p>
                               </div>
                               <div className="text-right">
-                                <Link href={`/products/${like.product.id}`} className="text-primary hover:underline">詳細を見る</Link>
+                                <Link
+                                  href={`/products/${like.product.id}`}
+                                  className="text-primary hover:underline"
+                                >
+                                  詳細を見る
+                                </Link>
                               </div>
                             </div>
                           </div>
@@ -839,5 +1007,19 @@ export default function MyPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function MyPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="w-full max-w-6xl min-h-screen mx-auto py-12 px-4 md:px-0 flex items-center justify-center">
+          <Loader2 className="size-12 text-gray-300 animate-spin" />
+        </div>
+      }
+    >
+      <MyPageContent />
+    </Suspense>
   );
 }
