@@ -76,6 +76,11 @@ export default function Footer() {
         <SNS className="text-white" />
       </div>
       <div className="w-full mx-auto mb-6">
+        <div className="flex justify-center gap-4 mb-4 text-sm">
+          <Link href="/legal/tokusho" className="text-gray-300 hover:text-white underline">
+            特定商取引法に基づく表記
+          </Link>
+        </div>
         <h4 className="text-center font-bold text-white">BUSHIGEAR</h4>
         <h6 className="text-center text-xs text-white">COPYRIGHT © 2025</h6>
       </div>
