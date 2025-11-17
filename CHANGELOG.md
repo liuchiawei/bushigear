@@ -4,9 +4,149 @@
 
 ---
 
+## [2025-01-XX] - Stripe 信用卡支付整合
+
+### 🎯 概述
+
+本次更新整合了 Stripe Checkout Session 支付系統，實現完整的信用卡支付流程，並符合日本《特定商取引法》要求。
+
+### 📊 資料庫變更
+
+#### Order 表新增欄位
+
+**新增欄位**:
+
+- `checkoutSessionId` (TEXT, Unique): Stripe Checkout Session ID
+- `paymentStatus` (TEXT, 可選): 支付狀態（pending, succeeded, failed, canceled）
+- `total` (INTEGER, 可選): 訂單總金額
+- `stripeCustomerId` (TEXT, 可選): Stripe Customer ID
+
+**新增索引**:
+
+- `checkoutSessionId` 索引（用於快速查詢）
+
+### 🔧 API 變更
+
+#### 新增 API 路由
+
+**1. POST `/api/checkout/create-session`**
+
+- 創建 Stripe Checkout Session
+- 驗證購物車和客戶資訊
+- 檢查庫存
+- 返回 Checkout Session URL 供前端重定向
+
+**2. GET `/api/checkout/success`**
+
+- 處理支付成功回調
+- 驗證 Checkout Session 狀態
+- 批量創建訂單記錄
+- 更新庫存
+- 自動無效化相關快取
+
+### 🎨 前端變更
+
+#### 新增頁面
+
+**1. `/checkout/success`**
+
+- 支付成功確認頁面
+- 顯示訂單詳情
+- 自動處理訂單創建
+- 使用 Suspense boundary 包裹 `useSearchParams()`
+
+**2. `/legal/tokusho`**
+
+- 特定商取引法業務資訊頁面
+- 包含所有法律要求的資訊（販賣業者、聯絡方式、價格、支付方式、退貨政策等）
+
+#### 更新頁面
+
+**`/checkout`**
+
+- 整合 Stripe Checkout Session API
+- 點擊「注文を確定する」時創建 Checkout Session 並重定向到 Stripe 支付頁面
+- 更新 UI 說明和安全提示
+
+**`/components/layout/footer.tsx`**
+
+- 添加「特定商取引法に基づく表記」連結
+
+### 📦 新增檔案
+
+- `src/lib/stripe.ts`: Stripe 工具函數（初始化、驗證、格式化）
+- `src/app/api/checkout/create-session/route.ts`: Checkout Session 創建 API
+- `src/app/api/checkout/success/route.ts`: 支付成功處理 API
+- `src/app/checkout/success/page.tsx`: 支付成功確認頁面
+- `src/app/legal/tokusho/page.tsx`: 特定商取引法頁面
+
+### 🔐 環境變數要求
+
+新增以下環境變數：
+
+```env
+# Stripe 支付配置
+STRIPE_SECRET_KEY=sk_test_your_stripe_secret_key_here
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+```
+
+### 📝 Migration 檔案
+
+本次更新包含以下 migration：
+
+**20251117075714_add_stripe_payment_fields**
+
+- 在 Order 表中新增支付相關欄位
+- 添加 `checkoutSessionId` 唯一索引
+
+### 🚀 部署注意事項
+
+1. **資料庫 Migration**:
+
+   ```bash
+   pnpm prisma migrate deploy
+   pnpm prisma generate
+   ```
+
+2. **Stripe 設定**:
+
+   - 從 Stripe Dashboard 取得 Secret Key（Test Mode: `sk_test_*`, Live Mode: `sk_live_*`）
+   - 設定正確的 `success_url` 和 `cancel_url`
+   - 生產環境建議設定 Webhook 作為備援機制
+
+3. **環境變數設定**:
+   - 確保 `STRIPE_SECRET_KEY` 已設定
+   - 設定 `NEXT_PUBLIC_APP_URL` 為實際應用程式 URL
+
+### ✅ 測試檢查清單
+
+- [ ] Checkout Session 創建成功
+- [ ] 支付流程正常（使用測試卡號：4242 4242 4242 4242）
+- [ ] 支付成功後訂單正確創建
+- [ ] 庫存正確更新
+- [ ] 購物車在支付成功後清空
+- [ ] 特定商取引法頁面可正常訪問
+- [ ] 頁腳連結正常運作
+
+### 🔄 向後相容性
+
+- ✅ 現有的訂單 API (`/api/orders`) 保持不變
+- ✅ 現有的購物車功能完全相容
+- ✅ 現有用戶資料不受影響
+
+### 💡 技術細節
+
+- **支付方式**: Stripe Checkout Session（Stripe 託管支付頁面）
+- **支付流程**: 客戶資訊輸入 → 創建 Checkout Session → 重定向到 Stripe → 支付成功 → 返回確認頁面 → 創建訂單
+- **訂單創建**: 在支付成功確認頁面處理，支援批量創建多個商品訂單
+- **快取處理**: 訂單創建後自動無效化相關快取（產品、訂單列表）
+
+---
+
 ## [2025-11-17] - Google OAuth 認證整合
 
 ### 🎯 概述
+
 本次更新整合了 NextAuth.js 5.0 與 Google OAuth 2.0 認證功能，實現第三方登入並自動處理用戶帳號連結。
 
 ### 📊 資料庫變更
@@ -14,6 +154,7 @@
 #### 新增資料表
 
 **1. Account 表**
+
 - **用途**: 儲存 OAuth 提供者（如 Google）的帳號資訊
 - **主要欄位**:
   - `id` (TEXT, Primary Key): 使用 cuid() 生成
@@ -23,45 +164,50 @@
   - `type` (TEXT): 帳號類型
   - `access_token`, `refresh_token`, `id_token` (TEXT, 可選): OAuth token
   - `expires_at` (INTEGER, 可選): Token 過期時間
-- **索引**: 
+- **索引**:
   - `userId` 索引（用於快速查詢用戶的所有帳號）
   - `(provider, providerAccountId)` 唯一索引（確保同一提供者的帳號不重複）
-- **外鍵關係**: 
+- **外鍵關係**:
   - `userId` → `User.id` (ON DELETE CASCADE)
 
 **2. Session 表**
+
 - **用途**: 儲存用戶會話資訊（使用 JWT 策略時可選）
 - **主要欄位**:
   - `id` (TEXT, Primary Key): 使用 cuid() 生成
   - `sessionToken` (TEXT, Unique): 會話 token
   - `userId` (INTEGER): 關聯到 User 表的外鍵
   - `expires` (TIMESTAMP): 會話過期時間
-- **索引**: 
+- **索引**:
   - `userId` 索引
   - `sessionToken` 唯一索引
-- **外鍵關係**: 
+- **外鍵關係**:
   - `userId` → `User.id` (ON DELETE CASCADE)
 
 **3. VerificationToken 表**
+
 - **用途**: 儲存電子郵件驗證 token
 - **主要欄位**:
   - `identifier` (TEXT): 識別符（通常是 email）
   - `token` (TEXT, Unique): 驗證 token
   - `expires` (TIMESTAMP): Token 過期時間
-- **索引**: 
+- **索引**:
   - `token` 唯一索引
   - `(identifier, token)` 唯一索引
 
 #### User 表變更
 
 **新增欄位**:
+
 - `name` (TEXT, 可選): 用戶顯示名稱（NextAuth.js 標準欄位）
 - `emailVerified` (TIMESTAMP, 可選): 電子郵件驗證時間（NextAuth.js 標準欄位）
 
 **欄位修改**:
+
 - `password` (TEXT): 從 `NOT NULL` 改為可選（`NULL`），以支援 OAuth 使用者（無密碼）
 
 **新增關聯**:
+
 - `accounts`: 一對多關係，關聯到 `Account` 表
 - `sessions`: 一對多關係，關聯到 `Session` 表
 
@@ -70,13 +216,16 @@
 #### NextAuth 配置更新 (`src/auth.ts`)
 
 **新增配置**:
+
 - `trustHost: true`: NextAuth.js 5.0 必要配置，用於處理主機信任
 
 **新增 Callback**:
+
 - `jwt` callback: 處理 JWT token 生成，將用戶 ID 添加到 token 中
 - `session` callback: 更新 session 物件，從資料庫獲取最新的用戶資訊（name, image）
 
 **功能說明**:
+
 - PrismaAdapter 會自動處理以下邏輯：
   1. 檢查 `Account` 是否存在（通過 `provider` + `providerAccountId`）
   2. 如果 `Account` 存在，找到對應的 `User`
@@ -103,10 +252,12 @@ AUTH_SECRET=your_auth_secret
 本次更新包含以下 migration：
 
 1. **20251117055028_add_nextauth_models**
+
    - 創建 `Account`, `Session`, `VerificationToken` 表
    - 將 `User.password` 改為可選
 
 2. **20251117055655_add_user_name_field**
+
    - 添加 `User.name` 欄位
 
 3. **20251117062732_add_email_verified_field**
@@ -115,11 +266,13 @@ AUTH_SECRET=your_auth_secret
 ### 🚀 部署注意事項
 
 1. **資料庫 Migration**:
+
    ```bash
    pnpm prisma migrate deploy
    ```
 
 2. **重新生成 Prisma Client**:
+
    ```bash
    pnpm prisma generate
    ```
@@ -339,7 +492,6 @@ AUTH_SECRET=your_auth_secret
 **優化範圍**：全站 API 路由和資料庫查詢
 **預期效能提升**：整體 API 響應時間減少 60-85%
 
-
 ### 📚 相關文件
 
 - NextAuth.js 5.0 文件: https://authjs.dev/
@@ -363,6 +515,5 @@ AUTH_SECRET=your_auth_secret
 
 ---
 
-**最後更新**: 2025-11-17  
+**最後更新**: 2025-01-XX  
 **維護者**: 開發團隊
-

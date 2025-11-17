@@ -215,7 +215,7 @@ export default function CheckoutPage() {
                       placeholder="山田"
                       value={customer.lastName}
                       onChange={handleCustomerChange}
-                      disabled={isLoggedIn}
+                      // disabled={isLoggedIn}
                       required
                     />
                   </div>
@@ -230,7 +230,7 @@ export default function CheckoutPage() {
                       placeholder="太郎"
                       value={customer.firstName}
                       onChange={handleCustomerChange}
-                      disabled={isLoggedIn}
+                      // disabled={isLoggedIn}
                       required
                     />
                   </div>
