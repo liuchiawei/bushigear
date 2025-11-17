@@ -1,23 +1,50 @@
 import prisma from "@/lib/prisma";
+import { unstable_cache, revalidateTag } from "next/cache";
+import { CACHE_TAGS, CACHE_TTL } from "@/lib/cache";
+
+// キャッシュされた商品取得関数
+async function getCachedProducts(category: string | null, limit: number | null) {
+  return prisma.product.findMany({
+    where: category ? { category } : undefined,
+    take: limit || undefined,
+    orderBy: { id: "desc" },
+    include: {
+      _count: {
+        select: { orders: true, likes: true, comments: true },
+      },
+    },
+  });
+}
 
 export async function GET(request: Request) {
   try {
     const url = new URL(request.url);
     const category = url.searchParams.get("category");
     const limit = url.searchParams.get("limit");
+    const limitNum = limit ? parseInt(limit) : null;
 
-    const products = await prisma.product.findMany({
-      where: category ? { category } : undefined,
-      take: limit ? parseInt(limit) : undefined,
-      orderBy: { id: "desc" },
-      include: {
-        _count: {
-          select: { orders: true, likes: true, comments: true },
-        },
-      },
-    });
+    // キャッシュキーを生成
+    const cacheKey = `products-${category || "all"}-${limitNum || "all"}`;
+    const tags = [CACHE_TAGS.PRODUCTS];
+    if (category) tags.push(`products-category-${category}`);
 
-    return Response.json(products);
+    // キャッシュされた関数を使用
+    const cachedGetProducts = unstable_cache(
+      () => getCachedProducts(category, limitNum),
+      [cacheKey],
+      {
+        revalidate: CACHE_TTL.MEDIUM, // 5分キャッシュ
+        tags,
+      }
+    );
+
+    const products = await cachedGetProducts();
+
+    // キャッシュヘッダーを設定
+    const headers = new Headers();
+    headers.set("Cache-Control", "public, s-maxage=300, stale-while-revalidate=600");
+
+    return Response.json(products, { headers });
   } catch (e: any) {
     return new Response(`Internal Server Error: ${e?.message ?? e}`, { status: 500 });
   }
@@ -42,6 +69,12 @@ export async function POST(request: Request) {
         stock: data.stock != null ? parseInt(String(data.stock)) : 0,
       },
     });
+
+    // 商品リストのキャッシュを無効化
+    revalidateTag(CACHE_TAGS.PRODUCTS);
+    if (data.category) {
+      revalidateTag(`products-category-${data.category}`);
+    }
 
     return Response.json(product, { status: 201 });
   } catch (e: any) {

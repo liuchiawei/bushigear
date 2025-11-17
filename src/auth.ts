@@ -20,19 +20,35 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         password: { label: "Password", type: "password" },
       },
       async authorize(creds) {
-        const emailRaw = typeof creds?.email === "string" ? creds.email.trim() : "";
-        const password = typeof creds?.password === "string" ? creds.password : "";
+        const emailRaw =
+          typeof creds?.email === "string" ? creds.email.trim() : "";
+        const password =
+          typeof creds?.password === "string" ? creds.password : "";
         if (!emailRaw || !password) return null;
 
         const email = emailRaw.toLowerCase();
 
-        const user = await prisma.user.findUnique({ where: { email } });
+        const user = await prisma.user.findUnique({
+          where: { email },
+          select: {
+            id: true,
+            email: true,
+            name: true,
+            password: true,
+            image: true,
+          },
+        });
         if (!user || !user.password) return null;
 
         const ok = await bcrypt.compare(password, user.password);
         if (!ok) return null;
 
-        return { id: String(user.id), email: user.email, name: user.name || user.email };
+        return {
+          id: String(user.id),
+          email: user.email,
+          name: user.name || user.email,
+          image: user.image || undefined,
+        };
       },
     }),
   ],
@@ -46,29 +62,36 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     //    - 如果 User 存在，創建 Account 並連結到現有的 User
     //    - 如果 User 不存在，創建新的 User 和 Account
     // 所以不需要手動處理 User 和 Account 的連結
-    async jwt({ token, user, account }) {
+    async jwt({ token, user }) {
       // 當用戶首次登入時，將用戶資訊添加到 token
       if (user) {
         token.id = user.id;
+        // 使用者資訊を token に保存してパフォーマンスを向上
+        token.name = user.name;
+        token.email = user.email;
+        token.picture = user.image;
+      }
+      // 既存の token に user 情報がない場合のみ DB から取得（初回ログイン後の更新時）
+      if (token.sub && !token.name) {
+        const dbUser = await prisma.user.findUnique({
+          where: { id: Number(token.sub) },
+          select: { image: true, name: true, email: true },
+        });
+        if (dbUser) {
+          token.name = dbUser.name;
+          token.email = dbUser.email;
+          token.picture = dbUser.image;
+        }
       }
       return token;
     },
     async session({ session, token }: any) {
       if (session?.user && token?.sub) {
         (session.user as any).id = token.sub;
-
-        // Fetch user image from database
-        const user = await prisma.user.findUnique({
-          where: { id: Number(token.sub) },
-          select: { image: true, name: true },
-        });
-
-        if (user?.image) {
-          session.user.image = user.image;
-        }
-        if (user?.name) {
-          session.user.name = user.name;
-        }
+        // token から直接取得して DB クエリを削減
+        if (token.name) session.user.name = token.name;
+        if (token.email) session.user.email = token.email;
+        if (token.picture) session.user.image = token.picture;
       }
       return session;
     },

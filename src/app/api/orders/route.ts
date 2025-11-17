@@ -1,10 +1,18 @@
 import prisma from "@/lib/prisma";
 import { auth } from "@/auth";
-
+import { revalidateTag } from "next/cache";
+import { CACHE_TAGS } from "@/lib/cache";
 
 export async function GET() {
   try {
+    const session = await auth();
+    const userId = session?.user?.id ? Number(session.user.id) : null;
+    
+    // ユーザーがログインしている場合、自分の注文のみを取得（パフォーマンス向上）
+    const where = userId ? { userId } : undefined;
+    
     const orders = await prisma.order.findMany({
+      where,
       include: {
         product: true,
         user: {
@@ -25,7 +33,16 @@ export async function GET() {
       },
       orderBy: { id: "desc" },
     });
-    return Response.json(orders);
+    
+    // キャッシュヘッダーを設定（ユーザー固有のデータなので短め）
+    const headers = new Headers();
+    if (userId) {
+      headers.set("Cache-Control", "private, s-maxage=60, stale-while-revalidate=120");
+    } else {
+      headers.set("Cache-Control", "public, s-maxage=300, stale-while-revalidate=600");
+    }
+    
+    return Response.json(orders, { headers });
   } catch (e: any) {
     return new Response(`Internal Server Error: ${e?.message ?? e}`, { status: 500 });
   }
@@ -74,6 +91,14 @@ export async function POST(request: Request) {
       });
       return order;
     });
+
+    // 注文関連のキャッシュを無効化
+    if (currentUserId) {
+      revalidateTag(CACHE_TAGS.ORDERS(currentUserId));
+    }
+    // 商品の在庫が変わったので商品キャッシュも無効化
+    revalidateTag(CACHE_TAGS.PRODUCT(productId));
+    revalidateTag(CACHE_TAGS.PRODUCTS);
 
     return Response.json(result, { status: 201 });
   } catch (e: any) {

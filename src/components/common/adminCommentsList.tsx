@@ -9,7 +9,11 @@ type Props = {
   force?: boolean;
 };
 
-export default function AdminCommentsList({ initialComments, showProductLink = false, force = true }: Props) {
+export default function AdminCommentsList({
+  initialComments,
+  showProductLink = false,
+  force = true,
+}: Props) {
   const [comments, setComments] = useState<Comment[]>(initialComments);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [error, setError] = useState("");
@@ -53,7 +57,9 @@ export default function AdminCommentsList({ initialComments, showProductLink = f
       }
       const data = await res.json();
       if (data?.comment) {
-        setComments((prev) => prev.map((c) => (c.id === id ? { ...c, ...data.comment } : c)));
+        setComments((prev) =>
+          prev.map((c) => (c.id === id ? { ...c, ...data.comment } : c))
+        );
         setEditingId(null);
       }
     } catch (e: any) {
@@ -76,9 +82,12 @@ export default function AdminCommentsList({ initialComments, showProductLink = f
           onDelete={() => handleDelete(c.id)}
           onSave={(score, comment) => handleSave(c.id, score, comment)}
           showProductLink={showProductLink}
+          saving={saving}
         />
       ))}
-      {comments.length === 0 && <p className="text-gray-600">レビューがありません。</p>}
+      {comments.length === 0 && (
+        <p className="text-gray-600">レビューがありません。</p>
+      )}
     </div>
   );
 }
@@ -91,6 +100,7 @@ function AdminCommentRow({
   onDelete,
   onSave,
   showProductLink,
+  saving,
 }: {
   comment: Comment;
   editing: boolean;
@@ -99,6 +109,7 @@ function AdminCommentRow({
   onDelete: () => void;
   onSave: (score: number, comment: string) => void;
   showProductLink?: boolean;
+  saving: boolean;
 }) {
   const [draftScore, setDraftScore] = useState(comment.score);
   const [draftComment, setDraftComment] = useState(comment.comment);
@@ -108,13 +119,19 @@ function AdminCommentRow({
       <div className="flex justify-between items-start">
         <div>
           <div className="font-semibold">
-            {(comment.user?.lastName ?? "") + (comment.user?.firstName ? ` ${comment.user.firstName}` : "") || comment.user?.email || "ユーザー"}
+            {(comment.user?.lastName ?? "") +
+              (comment.user?.firstName ? ` ${comment.user.firstName}` : "") ||
+              comment.user?.email ||
+              "ユーザー"}
           </div>
           <div className="text-sm text-gray-500">
             {new Date(comment.createdAt).toLocaleDateString("ja-JP")}
           </div>
           {showProductLink && comment.product && (
-            <a href={`/products/${comment.product.id}`} className="text-sm text-blue-600 hover:underline">
+            <a
+              href={`/products/${comment.product.id}`}
+              className="text-sm text-blue-600 hover:underline"
+            >
               {comment.product.name_jp}
             </a>
           )}
@@ -129,16 +146,20 @@ function AdminCommentRow({
           <div className="flex items-center gap-2">
             <label className="text-sm">評価</label>
             <select
+              title="評価"
               value={draftScore}
               onChange={(e) => setDraftScore(Number(e.target.value))}
               className="border rounded px-2 py-1 text-sm"
             >
               {[5, 4, 3, 2, 1].map((n) => (
-                <option key={n} value={n}>{n}</option>
+                <option key={n} value={n}>
+                  {n}
+                </option>
               ))}
             </select>
           </div>
           <textarea
+            title="コメント"
             className="w-full border rounded px-3 py-2 text-sm"
             rows={3}
             value={draftComment}
@@ -148,10 +169,14 @@ function AdminCommentRow({
             <button
               className="px-3 py-1 rounded bg-blue-600 text-white text-sm"
               onClick={() => onSave(draftScore, draftComment)}
+              disabled={saving}
             >
-              保存
+              {saving ? "保存中..." : "保存"}
             </button>
-            <button className="px-3 py-1 rounded border text-sm" onClick={onCancel}>
+            <button
+              className="px-3 py-1 rounded border text-sm"
+              onClick={onCancel}
+            >
               キャンセル
             </button>
           </div>
