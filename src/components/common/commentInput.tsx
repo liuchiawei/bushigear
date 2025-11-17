@@ -4,7 +4,13 @@ import { useState } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/components/ui/tooltip";
 import { Comment } from "@/lib/type";
+import { cn } from "@/lib/utils";
 
 type CommentInputProps = {
   productId: number;
@@ -86,23 +92,46 @@ export default function CommentInput({
           </span>
         </div>
       )}
-      <div className="flex items-center gap-3">
+      <div className="flex flex-col gap-2">
         <label htmlFor="score" className="text-sm">
           評価
         </label>
-        <select
-          id="score"
-          value={score}
-          onChange={(e) => setScore(Number(e.target.value))}
-          className="border rounded-md px-3 py-2 text-sm"
-        >
-          {[5, 4, 3, 2, 1].map((n) => (
-            <option key={n} value={n}>
-              {n}
-            </option>
+        <div className="flex items-center">
+          {[1, 2, 3, 4, 5].map((n) => (
+            <Tooltip key={n}>
+              <TooltipTrigger asChild>
+                <Button
+                  key={n}
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  onClick={() => setScore(n)}
+                  className={cn(
+                    "group bg-transparent text-xs transition-all duration-200 hover:scale-105 active:scale-95 rounded-full border-none size-8",
+                    score >= n
+                      ? ""
+                      : "text-gray-700 hover:bg-accent hover:text-accent"
+                  )}
+                >
+                  <div
+                    className={cn(
+                      "size-4 transition-all duration-200 rounded-full",
+                      score === n
+                        ? "group-hover:bg-background group-hover:border-accent group-active:bg-accent/60 hover:scale-110 active:scale-95"
+                        : "",
+                      score >= n
+                        ? "bg-accent text-accent group-hover:bg-background group-hover:border-accent group-active:bg-accent/60 hover:scale-105 active:scale-95 hover:bg-accent/80"
+                        : "bg-gray-400 text-gray-400"
+                    )}
+                  />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{n}</p>
+              </TooltipContent>
+            </Tooltip>
           ))}
-        </select>
-        <span className="text-sm text-yellow-500">★ {score}</span>
+        </div>
       </div>
       <div className="space-y-1">
         <label htmlFor="comment" className="text-sm">
