@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { auth } from "@/auth";
+import { unstable_cache, revalidateTag } from "next/cache";
+import { CACHE_TAGS, CACHE_TTL } from "@/lib/cache";
 
 const COMMENT_MIN_SCORE = 1;
 const COMMENT_MAX_SCORE = 5;
@@ -36,36 +38,63 @@ export async function GET(req: Request) {
       : { productId: Number(productIdParam) };
 
   try {
-    const comments = await prisma.comment.findMany({
-      where,
-      include: {
-        user: {
-          select: {
-            id: true,
-            email: true,
-            firstName: true,
-            lastName: true,
-            image: true,
-          },
-        },
-        ...(mine
-          ? {
-              product: {
-                select: {
-                  id: true,
-                  name_jp: true,
-                  name_en: true,
-                  brand: true,
-                  image: true,
-                },
-              },
-            }
-          : {}),
-      },
-      orderBy: { createdAt: "desc" },
-    });
+    // キャッシュキーを生成
+    const cacheKey = mine 
+      ? `comments-mine-${userId}`
+      : userIdParam
+        ? `comments-user-${userIdParam}`
+        : `comments-product-${productIdParam}`;
+    
+    const tags = mine
+      ? [CACHE_TAGS.COMMENT_USER(userId!)]
+      : userIdParam
+        ? [CACHE_TAGS.COMMENT_USER(Number(userIdParam))]
+        : [CACHE_TAGS.COMMENT_PRODUCT(Number(productIdParam!))];
 
-    return NextResponse.json({ comments });
+    // キャッシュされた関数
+    const cachedGetComments = unstable_cache(
+      () => prisma.comment.findMany({
+        where,
+        include: {
+          user: {
+            select: {
+              id: true,
+              email: true,
+              firstName: true,
+              lastName: true,
+              image: true,
+            },
+          },
+          ...(mine
+            ? {
+                product: {
+                  select: {
+                    id: true,
+                    name_jp: true,
+                    name_en: true,
+                    brand: true,
+                    image: true,
+                  },
+                },
+              }
+            : {}),
+        },
+        orderBy: { createdAt: "desc" },
+      }),
+      [cacheKey],
+      {
+        revalidate: CACHE_TTL.SHORT, // 1分キャッシュ（コメントは頻繁に更新される）
+        tags,
+      }
+    );
+
+    const comments = await cachedGetComments();
+
+    // キャッシュヘッダーを設定
+    const headers = new Headers();
+    headers.set("Cache-Control", "public, s-maxage=60, stale-while-revalidate=120");
+
+    return NextResponse.json({ comments }, { headers });
   } catch (e: any) {
     return NextResponse.json({ message: e?.message ?? "Internal Server Error" }, { status: 500 });
   }
@@ -124,6 +153,13 @@ export async function POST(req: Request) {
       },
     });
 
+    // コメント関連のキャッシュを無効化
+    revalidateTag(CACHE_TAGS.COMMENT_PRODUCT(productId));
+    revalidateTag(CACHE_TAGS.COMMENT_USER(userId));
+    revalidateTag(CACHE_TAGS.COMMENTS);
+    // 商品のキャッシュも無効化（コメント数が変わるため）
+    revalidateTag(CACHE_TAGS.PRODUCT(productId));
+
     return NextResponse.json({ comment: newComment }, { status: 201 });
   } catch (e: any) {
     return NextResponse.json({ message: e?.message ?? "Internal Server Error" }, { status: 500 });
@@ -155,7 +191,22 @@ export async function DELETE(req: Request) {
       return NextResponse.json({ message: "Forbidden" }, { status: 403 });
     }
 
+    // 削除前のコメント情報を取得（キャッシュ無効化用）
+    const deletedComment = await prisma.comment.findUnique({
+      where: { id: commentId },
+      select: { productId: true, userId: true },
+    });
+
     await prisma.comment.delete({ where: { id: commentId } });
+    
+    // キャッシュを無効化
+    if (deletedComment) {
+      revalidateTag(CACHE_TAGS.COMMENT_PRODUCT(deletedComment.productId));
+      revalidateTag(CACHE_TAGS.COMMENT_USER(deletedComment.userId));
+      revalidateTag(CACHE_TAGS.COMMENTS);
+      revalidateTag(CACHE_TAGS.PRODUCT(deletedComment.productId));
+    }
+    
     return NextResponse.json({ ok: true, deletedId: commentId });
   } catch (e: any) {
     return NextResponse.json({ message: e?.message ?? "Internal Server Error" }, { status: 500 });
@@ -216,6 +267,11 @@ export async function PATCH(req: Request) {
         },
       },
     });
+
+    // キャッシュを無効化
+    revalidateTag(CACHE_TAGS.COMMENT_PRODUCT(updated.productId));
+    revalidateTag(CACHE_TAGS.COMMENT_USER(updated.userId));
+    revalidateTag(CACHE_TAGS.COMMENTS);
 
     return NextResponse.json({ comment: updated });
   } catch (e: any) {

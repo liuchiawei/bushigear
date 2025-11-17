@@ -1,4 +1,12 @@
 import prisma from "@/lib/prisma";
+import { unstable_cache, revalidateTag } from "next/cache";
+import { CACHE_TAGS, CACHE_TTL } from "@/lib/cache";
+
+async function getCachedProduct(id: number) {
+  return prisma.product.findUnique({
+    where: { id },
+  });
+}
 
 export async function GET(
   _request: Request,
@@ -6,11 +14,26 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    const product = await prisma.product.findUnique({
-      where: { id: parseInt(id) },
-    });
+    const productId = parseInt(id);
+
+    // 個別商品のキャッシュ
+    const cachedGetProduct = unstable_cache(
+      () => getCachedProduct(productId),
+      [`product-${productId}`],
+      {
+        revalidate: CACHE_TTL.MEDIUM,
+        tags: [CACHE_TAGS.PRODUCT(productId), CACHE_TAGS.PRODUCTS],
+      }
+    );
+
+    const product = await cachedGetProduct();
     if (!product) return new Response("Product not found", { status: 404 });
-    return Response.json(product);
+
+    // キャッシュヘッダーを設定
+    const headers = new Headers();
+    headers.set("Cache-Control", "public, s-maxage=300, stale-while-revalidate=600");
+
+    return Response.json(product, { headers });
   } catch (e: any) {
     return new Response(`Internal Server Error: ${e?.message ?? e}`, { status: 500 });
   }
@@ -22,7 +45,14 @@ export async function PUT(
 ) {
   try {
     const { id } = await params;
+    const productId = parseInt(id);
     const data = await request.json();
+
+    // 更新前の商品情報を取得（カテゴリ変更の検出用）
+    const oldProduct = await prisma.product.findUnique({
+      where: { id: productId },
+      select: { category: true },
+    });
 
     const updateData: any = {
       name_en: data.name_en,
@@ -42,9 +72,19 @@ export async function PUT(
     }
 
     const product = await prisma.product.update({
-      where: { id: parseInt(id) },
+      where: { id: productId },
       data: updateData,
     });
+
+    // キャッシュを無効化
+    revalidateTag(CACHE_TAGS.PRODUCT(productId));
+    revalidateTag(CACHE_TAGS.PRODUCTS);
+    if (oldProduct?.category) {
+      revalidateTag(`products-category-${oldProduct.category}`);
+    }
+    if (data.category && data.category !== oldProduct?.category) {
+      revalidateTag(`products-category-${data.category}`);
+    }
 
     return Response.json(product);
   } catch (e: any) {
@@ -58,7 +98,23 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
-    await prisma.product.delete({ where: { id: parseInt(id) } });
+    const productId = parseInt(id);
+
+    // 削除前の商品情報を取得（カテゴリ情報用）
+    const oldProduct = await prisma.product.findUnique({
+      where: { id: productId },
+      select: { category: true },
+    });
+
+    await prisma.product.delete({ where: { id: productId } });
+
+    // キャッシュを無効化
+    revalidateTag(CACHE_TAGS.PRODUCT(productId));
+    revalidateTag(CACHE_TAGS.PRODUCTS);
+    if (oldProduct?.category) {
+      revalidateTag(`products-category-${oldProduct.category}`);
+    }
+
     return new Response(null, { status: 204 });
   } catch (e: any) {
     return new Response(`Internal Server Error: ${e?.message ?? e}`, { status: 500 });

@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { auth } from "@/auth";
+import { revalidateTag } from "next/cache";
+import { CACHE_TAGS } from "@/lib/cache";
 
 async function getCartData(userId: number) {
   const cartItems = await prisma.cart.findMany({
@@ -16,6 +18,11 @@ async function getCartData(userId: number) {
     0
   );
   return { items, total };
+}
+
+// キャッシュ無効化ヘルパー
+function invalidateCartCache(userId: number) {
+  revalidateTag(CACHE_TAGS.CART(userId));
 }
 
 export async function GET() {
@@ -49,19 +56,41 @@ export async function POST(req: Request) {
       { status: 400 }
     );
   }
+  
+  // 既存のカートアイテムを取得
   const existing = await prisma.cart.findUnique({
     where: { userId_productId: { userId, productId } },
+    include: { product: true },
   });
+  
+  let updatedItem;
   if (existing) {
-    await prisma.cart.update({
+    updatedItem = await prisma.cart.update({
       where: { userId_productId: { userId, productId } },
       data: { quantity: existing.quantity + quantity },
+      include: { product: true },
     });
   } else {
-    await prisma.cart.create({ data: { userId, productId, quantity } });
+    updatedItem = await prisma.cart.create({ 
+      data: { userId, productId, quantity },
+      include: { product: true },
+    });
   }
-  const cart = await getCartData(userId);
-  return NextResponse.json({ cart });
+  
+  // キャッシュを無効化
+  invalidateCartCache(userId);
+  
+  // 更新されたアイテムのみを返す（フロントエンドで楽観的更新が可能）
+  const item = {
+    product: updatedItem.product,
+    quantity: updatedItem.quantity,
+  };
+  const total = item.product.price * item.quantity;
+  
+  return NextResponse.json({ 
+    cart: { items: [item], total },
+    updatedItem: item,
+  });
 }
 
 export async function PATCH(req: Request) {
@@ -82,19 +111,40 @@ export async function PATCH(req: Request) {
       { status: 400 }
     );
   }
+  
+  let updatedItem = null;
   if (quantity <= 0) {
     await prisma.cart.delete({
       where: { userId_productId: { userId, productId } },
     }).catch(() => {});
   } else {
-    await prisma.cart.upsert({
+    updatedItem = await prisma.cart.upsert({
       where: { userId_productId: { userId, productId } },
       update: { quantity },
       create: { userId, productId, quantity },
+      include: { product: true },
     });
   }
-  const cart = await getCartData(userId);
-  return NextResponse.json({ cart });
+  
+  // キャッシュを無効化
+  invalidateCartCache(userId);
+  
+  // 更新されたアイテムのみを返す
+  if (updatedItem) {
+    const item = {
+      product: updatedItem.product,
+      quantity: updatedItem.quantity,
+    };
+    return NextResponse.json({ 
+      updatedItem: item,
+      deleted: false,
+    });
+  }
+  
+  return NextResponse.json({ 
+    deleted: true,
+    productId,
+  });
 }
 
 export async function DELETE(req: Request) {
@@ -113,6 +163,7 @@ export async function DELETE(req: Request) {
   } catch {
     productId = undefined;
   }
+  
   if (productId) {
     await prisma.cart.delete({
       where: { userId_productId: { userId, productId } },
@@ -120,6 +171,12 @@ export async function DELETE(req: Request) {
   } else {
     await prisma.cart.deleteMany({ where: { userId } });
   }
-  const cart = await getCartData(userId);
-  return NextResponse.json({ cart });
+  
+  // キャッシュを無効化
+  invalidateCartCache(userId);
+  
+  return NextResponse.json({ 
+    deleted: true,
+    productId: productId || null,
+  });
 }
