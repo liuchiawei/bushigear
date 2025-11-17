@@ -153,7 +153,7 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 
 #### 新增資料表
 
-**1. Account 表**
+Account 表
 
 - **用途**: 儲存 OAuth 提供者（如 Google）的帳號資訊
 - **主要欄位**:
@@ -170,7 +170,7 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 - **外鍵關係**:
   - `userId` → `User.id` (ON DELETE CASCADE)
 
-**2. Session 表**
+Session 表
 
 - **用途**: 儲存用戶會話資訊（使用 JWT 策略時可選）
 - **主要欄位**:
@@ -184,7 +184,7 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 - **外鍵關係**:
   - `userId` → `User.id` (ON DELETE CASCADE)
 
-**3. VerificationToken 表**
+VerificationToken表
 
 - **用途**: 儲存電子郵件驗證 token
 - **主要欄位**:
@@ -337,7 +337,7 @@ AUTH_SECRET=your_auth_secret
 
 ### 3. 購物車 API 優化 (`src/app/api/cart/route.ts`)
 
-#### 主要改進：
+#### 主要改進
 
 - ✅ **減少重複查詢**：操作後不再重新查詢完整購物車
 - ✅ **增量更新**：只返回更新/新增的項目
@@ -352,7 +352,7 @@ AUTH_SECRET=your_auth_secret
 
 ### 4. 喜歡 API 優化 (`src/app/api/likes/route.ts`)
 
-#### 主要改進：
+#### 主要改進
 
 - ✅ **減少重複查詢**：操作後不再重新查詢所有喜歡
 - ✅ **增量更新**：只返回新增/刪除的項目
@@ -494,9 +494,9 @@ AUTH_SECRET=your_auth_secret
 
 ### 📚 相關文件
 
-- NextAuth.js 5.0 文件: https://authjs.dev/
-- Prisma Adapter 文件: https://authjs.dev/getting-started/adapters/prisma
-- Google OAuth 設定指南: https://console.cloud.google.com/
+- NextAuth.js 5.0 文件: <https://authjs.dev/>
+- Prisma Adapter 文件: <https://authjs.dev/getting-started/adapters/prisma>
+- Google OAuth 設定指南: <https://console.cloud.google.com/>
 
 ---
 
