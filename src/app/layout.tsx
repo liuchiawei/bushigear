@@ -68,16 +68,16 @@ export default function RootLayout({
       >
         <Providers>
           {/* <CheckoutProvider stripe={stripePromise} options={{ clientSecret }}> */}
-            <CartProvider>
-              <SidebarProvider defaultOpen={false}>
-                <AppSidebar />
-                <Nav />
-                <main>{children}</main>
-                <Footer />
-                <BackToTop />
-                <AiAssistant />
-              </SidebarProvider>
-            </CartProvider>
+          <CartProvider>
+            <SidebarProvider defaultOpen={false}>
+              <AppSidebar />
+              <Nav />
+              <main>{children}</main>
+              <Footer />
+              <BackToTop />
+              <AiAssistant />
+            </SidebarProvider>
+          </CartProvider>
           {/* </CheckoutProvider> */}
         </Providers>
       </body>

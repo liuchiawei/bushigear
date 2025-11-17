@@ -9,32 +9,41 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
   // directUrl = env("DIRECT_URL")
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  password  String
-  image     String?
-  gender    String?
-  lastName   String?
-  firstName  String?
-  address   String?
-  postalCode String?
-  prefecture String?
-  city       String?
-  street     String?
-  building   String?
-  room       String?
-  birthday  DateTime?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  orders    Order[]
-  carts      Cart[]
-  likes      Like[]
+  id            Int       @id @default(autoincrement())
+  email         String    @unique
+  name          String?   // NextAuth.js 需要的 name 欄位（可選）
+  emailVerified DateTime? // NextAuth.js 需要的 emailVerified 欄位（可選）
+  password      String?   // OAuth 使用者可能沒有密碼，改為可選
+  image         String?
+  gender        String?
+  lastName      String?
+  firstName     String?
+  address       String?
+  postalCode    String?
+  prefecture    String?
+  city          String?
+  street        String?
+  building      String?
+  room          String?
+  birthday      DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // NextAuth.js 關聯
+  accounts Account[]
+  sessions Session[]
+
+  // 現有關聯
+  orders   Order[]
+  carts    Cart[]
+  likes    Like[]
+  comments Comment[]
 }
 
 model Product {
@@ -54,20 +63,22 @@ model Product {
   resources      Resource[]
   carts          Cart[]
   likes          Like[]
+  comments       Comment[]
 }
 
 model Order {
-  id         Int      @id @default(autoincrement())
-  userId     Int?
-  productId  Int
-  quantity   Int
-  createdAt  DateTime @default(now())
-  lastName   String?
-  firstName  String?
-  email      String?
-  address    String?
-  product    Product  @relation(fields: [productId], references: [id], onDelete: Restrict)
-  user       User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  id        Int      @id @default(autoincrement())
+  userId    Int?
+  productId Int
+  quantity  Int
+  createdAt DateTime @default(now())
+  lastName  String?
+  firstName String?
+  email     String?
+  address   String?
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Restrict)
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
   @@index([productId])
   @@index([userId])
 }
@@ -81,19 +92,19 @@ model Resource {
   updatedAt  DateTime    @updatedAt
   embeddings Embedding[]
   product    Product?    @relation(fields: [productId], references: [id], onDelete: SetNull)
-  
+
   @@index([type])
   @@index([productId])
 }
 
 model Embedding {
-  id         Int      @id @default(autoincrement())
+  id         Int                          @id @default(autoincrement())
   resourceId Int
-  content    String   @db.Text
+  content    String                       @db.Text
   embedding  Unsupported("vector(1536)")?
-  createdAt  DateTime @default(now())
-  resource   Resource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
-  
+  createdAt  DateTime                     @default(now())
+  resource   Resource                     @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+
   @@index([resourceId])
 }
 
@@ -122,4 +133,57 @@ model Like {
   @@unique([userId, productId])
   @@index([userId])
   @@index([productId])
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  score     Int
+  comment   String   @db.Text
+  productId Int
+  userId    Int
+  createdAt DateTime @default(now())
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
+  @@index([userId])
+}
+
+// NextAuth.js 所需的模型
+model Account {
+  id                String  @id @default(cuid())
+  userId            Int
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       Int
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
 }

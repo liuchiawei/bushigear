@@ -9,6 +9,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { Comment } from "@/lib/type";
 import {
   Tooltip,
   TooltipContent,
@@ -72,16 +73,18 @@ function MyPageContent() {
   const initialTab =
     initialTabParam === "cart" ||
     initialTabParam === "orders" ||
-    initialTabParam === "likes"
-      ? (initialTabParam as "cart" | "orders" | "likes")
+    initialTabParam === "likes" ||
+    initialTabParam === "comments"
+      ? (initialTabParam as "cart" | "orders" | "likes" | "comments")
       : "profile";
 
   const [activeTab, setActiveTab] = useState<
-    "profile" | "cart" | "orders" | "likes"
+    "profile" | "cart" | "orders" | "likes" | "comments"
   >(initialTab);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [orders, setOrders] = useState<OrderItem[]>([]);
   const [likes, setLikes] = useState<LikeItem[]>([]);
+  const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
   const [error, setError] = useState("");
@@ -113,6 +116,7 @@ function MyPageContent() {
       fetchProfile();
       fetchOrders();
       fetchLikes();
+      fetchComments();
     }
   }, [status]);
 
@@ -123,7 +127,8 @@ function MyPageContent() {
       tabParam === "profile" ||
       tabParam === "cart" ||
       tabParam === "orders" ||
-      tabParam === "likes"
+      tabParam === "likes" ||
+      tabParam === "comments"
     ) {
       setActiveTab(tabParam);
     }
@@ -182,6 +187,33 @@ function MyPageContent() {
       setLikes(likesData as LikeItem[]);
     } catch (e: any) {
       console.error("Failed to fetch likes:", e);
+    }
+  };
+
+  const fetchComments = async () => {
+    try {
+      const res = await fetch("/api/comment?mine=1");
+      if (!res.ok) throw new Error("レビューの取得に失敗しました");
+      const data = await res.json();
+      const commentsData = Array.isArray(data.comments) ? data.comments : [];
+      setComments(commentsData as Comment[]);
+    } catch (e: any) {
+      console.error("Failed to fetch comments:", e);
+    }
+  };
+
+  const handleDeleteComment = async (id: number) => {
+    if (!confirm("このレビューを削除しますか？")) return;
+    try {
+      const res = await fetch("/api/comment", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id }),
+      });
+      if (!res.ok) throw new Error("削除に失敗しました");
+      setComments((prev) => prev.filter((c) => c.id !== id));
+    } catch (e) {
+      alert((e as Error).message);
     }
   };
 
@@ -375,6 +407,12 @@ function MyPageContent() {
                 }`}
               >
                 お気に入り ({likes.length})
+              </button>
+              <button
+                onClick={() => setActiveTab("comments")}
+                className={`px-6 py-4 text-sm font-medium border-b-2 transition-colors cursor-pointer ${activeTab === "comments" ? "border-accent text-primary" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}`}
+              >
+                レビュー ({comments.length})
               </button>
             </nav>
           </div>
@@ -808,7 +846,7 @@ function MyPageContent() {
                               className="object-cover rounded"
                             />
                           </div>
-                          <div className="flex-grow">
+                          <div className="grow">
                             <div className="flex justify-between items-start">
                               <div>
                                 <h3 className="font-semibold text-lg">
@@ -873,7 +911,7 @@ function MyPageContent() {
                               className="object-cover rounded"
                             />
                           </div>
-                          <div className="flex-grow">
+                          <div className="grow">
                             <div className="flex justify-between items-start">
                               <div>
                                 <h3 className="font-semibold text-lg">
@@ -895,6 +933,68 @@ function MyPageContent() {
                                 </Link>
                               </div>
                             </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+            {/* Comments Tab */}
+            {activeTab === "comments" && (
+              <div>
+                <h2 className="text-2xl font-semibold mb-6">あなたのレビュー</h2>
+                {comments.length === 0 ? (
+                  <div className="text-center py-12">
+                    <p className="text-gray-500 mb-4">まだレビューはありません</p>
+                    <Button asChild>
+                      <Link href="/products">商品を見る</Link>
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {comments.map((comment) => (
+                      <div key={comment.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                        <div className="flex items-start gap-4">
+                          {comment.product?.image ? (
+                            <div className="w-20 h-20 relative shrink-0">
+                              <Image src={comment.product.image} alt={comment.product.name_jp} fill className="object-cover rounded" />
+                            </div>
+                          ) : null}
+                          <div className="grow">
+                            <div className="flex justify-between items-start">
+                              <div>
+                                <h3 className="font-semibold text-lg">
+                                  {comment.product?.name_jp ?? "商品"}
+                                </h3>
+                                <p className="text-sm text-muted-foreground">
+                                  {comment.product?.brand ?? ""}
+                                </p>
+                                <p className="text-xs text-gray-500 mt-1">
+                                  {new Date(comment.createdAt).toLocaleDateString("ja-JP")}
+                                </p>
+                              </div>
+                              <div className="text-right text-yellow-500 font-semibold">
+                                {"★".repeat(Math.round(comment.score)).padEnd(5, "☆")}
+                              </div>
+                            </div>
+                            <div className="flex justify-between items-start mt-3 gap-2">
+                              <p className="text-sm whitespace-pre-line">{comment.comment}</p>
+                              <button
+                                className="text-xs text-red-500 hover:underline"
+                                onClick={() => handleDeleteComment(comment.id)}
+                              >
+                                削除
+                              </button>
+                            </div>
+                            {comment.product?.id && (
+                              <div className="mt-3 text-right">
+                                <Link href={`/products/${comment.product.id}`} className="text-primary hover:underline text-sm">
+                                  商品ページへ
+                                </Link>
+                              </div>
+                            )}
                           </div>
                         </div>
                       </div>

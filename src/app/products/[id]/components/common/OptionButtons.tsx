@@ -136,6 +136,13 @@ export default function OptionButtons({ handleAddToCart, productId }: OptionButt
               variant="outline"
               size="icon"
               className="rounded-full hover:text-background"
+              onClick={(e) => {
+                e.preventDefault();
+                const el = document.getElementById("reviews");
+                if (el) {
+                  el.scrollIntoView({ behavior: "smooth" });
+                }
+              }}
             >
               <MessageCircle />
             </Button>
