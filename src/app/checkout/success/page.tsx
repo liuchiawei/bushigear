@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -21,7 +21,8 @@ interface Order {
   };
 }
 
-export default function CheckoutSuccessPage() {
+// useSearchParams を使用するコンポーネントを分離
+function CheckoutSuccessContent() {
   const searchParams = useSearchParams();
   const { clearCart } = useCart();
   const [loading, setLoading] = useState(true);
@@ -181,6 +182,26 @@ export default function CheckoutSuccessPage() {
         </div>
       </div>
     </main>
+  );
+}
+
+// Suspense boundary でラップしたメインコンポーネント
+export default function CheckoutSuccessPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="w-full min-h-screen py-16">
+          <div className="w-full max-w-4xl mx-auto px-4">
+            <div className="text-center py-16">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto mb-4"></div>
+              <p className="text-lg text-gray-600">読み込み中...</p>
+            </div>
+          </div>
+        </main>
+      }
+    >
+      <CheckoutSuccessContent />
+    </Suspense>
   );
 }
 
