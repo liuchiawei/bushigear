@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function CheckoutPage() {
-  const { cart, clearCart } = useCart();
+  const { cart } = useCart();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
 
@@ -77,29 +77,40 @@ export default function CheckoutPage() {
         setIsProcessing(false);
         return;
       }
-      for (const item of cart.items) {
-        const res = await fetch("/api/orders", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
+
+      // Stripe Checkout Session を作成
+      const res = await fetch("/api/checkout/create-session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          items: cart.items.map((item) => ({
             productId: item.product.id,
             quantity: item.quantity,
+          })),
+          customer: {
             lastName: customer.lastName,
             firstName: customer.firstName,
             email: customer.email,
             address: customer.address,
-          }),
-        });
-        if (!res.ok) {
-          const msg = await res.text();
-          throw new Error(`注文失敗: ${msg}`);
-        }
+          },
+        }),
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || "チェックアウトセッションの作成に失敗しました");
       }
-      clearCart();
-      alert("ご注文ありがとうございます！");
+
+      const data = await res.json();
+      
+      // Stripe Checkout ページにリダイレクト
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error("チェックアウト URL が取得できませんでした");
+      }
     } catch (e: any) {
       alert(e?.message ?? "注文に失敗しました");
-    } finally {
       setIsProcessing(false);
     }
   };
@@ -169,22 +180,26 @@ export default function CheckoutPage() {
           <div>
             <h2 className="text-2xl font-semibold mb-6">お客様情報</h2>
             <div className="space-y-6">
-              <div className="p-6 border rounded-lg bg-yellow-50 border-yellow-200">
-                <h3 className="font-semibold text-yellow-800 mb-2">
-                  ⚠️ デモ機能について
+              <div className="p-6 border rounded-lg bg-blue-50 border-blue-200">
+                <h3 className="font-semibold text-blue-800 mb-2">
+                  💳 安全な決済について
                 </h3>
-                <p className="text-sm text-yellow-700">
-                  これはデモ版です。実際の支払い処理は行われません。
+                <p className="text-sm text-blue-700">
+                  お支払いは Stripe の安全な決済システムを使用しています。
                   <br />
-                  データベース統合時には以下の機能を実装してください：
+                  クレジットカード情報は当社では保存されません。
                 </p>
-                <ul className="text-sm text-yellow-700 mt-2 list-disc list-inside">
-                  <li>ユーザー認証・ログイン機能</li>
-                  <li>配送先住所入力フォーム</li>
-                  <li>支払い方法選択（クレジットカード、PayPal等）</li>
-                  <li>注文確認メール送信</li>
-                  <li>注文履歴管理</li>
-                </ul>
+                <p className="text-sm text-blue-700 mt-2">
+                  <a
+                    href="/legal/tokusho"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline"
+                  >
+                    特定商取引法に基づく表記
+                  </a>
+                  をご確認ください。
+                </p>
               </div>
               {/* editable form fields */}
               <div className="space-y-4">
@@ -275,15 +290,8 @@ export default function CheckoutPage() {
                   disabled={isProcessing}
                   className="flex-1"
                   size="lg"
-                  asChild
                 >
-                  {isProcessing ? (
-                    <span>処理中...</span>
-                  ) : (
-                    <Link href="https://buy.stripe.com/7sY3cvdox5QL2WD3O61ZS00" target="_blank">
-                      注文を確定する
-                    </Link>
-                  )}
+                  {isProcessing ? "処理中..." : "注文を確定する"}
                 </Button>
               </div>
             </div>

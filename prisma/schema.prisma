@@ -67,20 +67,25 @@ model Product {
 }
 
 model Order {
-  id        Int      @id @default(autoincrement())
-  userId    Int?
-  productId Int
-  quantity  Int
-  createdAt DateTime @default(now())
-  lastName  String?
-  firstName String?
-  email     String?
-  address   String?
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Restrict)
-  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  id               Int       @id @default(autoincrement())
+  userId           Int?
+  productId        Int
+  quantity         Int
+  createdAt        DateTime  @default(now())
+  lastName         String?
+  firstName        String?
+  email            String?
+  address          String?
+  checkoutSessionId String?  @unique // Stripe Checkout Session ID
+  paymentStatus    String?   // pending, succeeded, failed, canceled
+  total            Int?      // 注文総額
+  stripeCustomerId String?   // Stripe Customer ID（オプション）
+  product          Product   @relation(fields: [productId], references: [id], onDelete: Restrict)
+  user             User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
 
   @@index([productId])
   @@index([userId])
+  @@index([checkoutSessionId])
 }
 
 model Resource {
