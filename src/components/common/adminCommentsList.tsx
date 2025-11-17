@@ -129,6 +129,7 @@ function AdminCommentRow({
           <div className="flex items-center gap-2">
             <label className="text-sm">評価</label>
             <select
+              title="評価"
               value={draftScore}
               onChange={(e) => setDraftScore(Number(e.target.value))}
               className="border rounded px-2 py-1 text-sm"
@@ -139,6 +140,7 @@ function AdminCommentRow({
             </select>
           </div>
           <textarea
+            title="コメント"
             className="w-full border rounded px-3 py-2 text-sm"
             rows={3}
             value={draftComment}
