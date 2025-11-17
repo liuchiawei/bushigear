@@ -48,7 +48,6 @@ export async function POST(request: NextRequest) {
     }
 
     // 在庫確認と合計金額計算
-    let totalAmount = 0;
     const lineItems: Array<{
       price_data: {
         currency: string;
@@ -77,9 +76,6 @@ export async function POST(request: NextRequest) {
           { status: 409 }
         );
       }
-
-      const itemTotal = product.price * item.quantity;
-      totalAmount += itemTotal;
 
       lineItems.push({
         price_data: {
