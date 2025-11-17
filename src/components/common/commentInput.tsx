@@ -11,7 +11,10 @@ type CommentInputProps = {
   onSubmitted: (comment: Comment) => void;
 };
 
-export default function CommentInput({ productId, onSubmitted }: CommentInputProps) {
+export default function CommentInput({
+  productId,
+  onSubmitted,
+}: CommentInputProps) {
   const { data: session, status } = useSession();
   const [score, setScore] = useState(5);
   const [comment, setComment] = useState("");
@@ -58,7 +61,9 @@ export default function CommentInput({ productId, onSubmitted }: CommentInputPro
   if (status === "unauthenticated") {
     return (
       <div className="rounded-lg border bg-white/50 backdrop-blur-sm p-4">
-        <p className="text-sm text-muted-foreground mb-3">レビューを投稿するにはログインしてください。</p>
+        <p className="text-sm text-muted-foreground mb-3">
+          レビューを投稿するにはログインしてください。
+        </p>
         <Button asChild>
           <Link href={`/login?redirect=/products/${productId}`}>ログイン</Link>
         </Button>
@@ -68,8 +73,23 @@ export default function CommentInput({ productId, onSubmitted }: CommentInputPro
 
   return (
     <div className="rounded-lg border bg-white/50 backdrop-blur-sm p-4 space-y-3">
+      {/* 現在のユーザー情報を表示 */}
+      {session?.user && (
+        <div className="flex items-center gap-2 pb-2 border-b">
+          <div className="size-8 rounded-full bg-gray-200 flex items-center justify-center text-xs font-semibold text-gray-600">
+            {session.user.name?.[0]?.toUpperCase() ||
+              session.user.email?.[0]?.toUpperCase() ||
+              "U"}
+          </div>
+          <span className="text-sm text-muted-foreground">
+            {session.user.name || session.user.email} としてレビューを投稿します
+          </span>
+        </div>
+      )}
       <div className="flex items-center gap-3">
-        <label htmlFor="score" className="text-sm">評価</label>
+        <label htmlFor="score" className="text-sm">
+          評価
+        </label>
         <select
           id="score"
           value={score}
@@ -77,13 +97,17 @@ export default function CommentInput({ productId, onSubmitted }: CommentInputPro
           className="border rounded-md px-3 py-2 text-sm"
         >
           {[5, 4, 3, 2, 1].map((n) => (
-            <option key={n} value={n}>{n}</option>
+            <option key={n} value={n}>
+              {n}
+            </option>
           ))}
         </select>
         <span className="text-sm text-yellow-500">★ {score}</span>
       </div>
       <div className="space-y-1">
-        <label htmlFor="comment" className="text-sm">コメント</label>
+        <label htmlFor="comment" className="text-sm">
+          コメント
+        </label>
         <textarea
           id="comment"
           value={comment}
