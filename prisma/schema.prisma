@@ -15,42 +15,35 @@ datasource db {
 }
 
 model User {
-  id         Int       @id @default(autoincrement())
-  email      String    @unique
-  password   String? // OAuth 使用者可能沒有密碼，改為可選
-  image      String?
-  gender     String?
-  lastName   String?
-  firstName  String?
-  address    String?
-  postalCode String?
-  prefecture String?
-  city       String?
-  street     String?
-  building   String?
-  room       String?
-<<<<<<< HEAD
-  birthday   DateTime?
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  id            Int       @id @default(autoincrement())
+  email         String    @unique
+  name          String?   // NextAuth.js 需要的 name 欄位（可選）
+  emailVerified DateTime? // NextAuth.js 需要的 emailVerified 欄位（可選）
+  password      String?   // OAuth 使用者可能沒有密碼，改為可選
+  image         String?
+  gender        String?
+  lastName      String?
+  firstName     String?
+  address       String?
+  postalCode    String?
+  prefecture    String?
+  city          String?
+  street        String?
+  building      String?
+  room          String?
+  birthday      DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 
   // NextAuth.js 關聯
   accounts Account[]
   sessions Session[]
 
   // 現有關聯
-  orders Order[]
-  carts  Cart[]
-  likes  Like[]
-=======
-  birthday  DateTime?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  orders    Order[]
-  carts      Cart[]
-  likes      Like[]
+  orders   Order[]
+  carts    Cart[]
+  likes    Like[]
   comments Comment[]
->>>>>>> b76ffb1fcae5face0f7912e8828a49550a281e37
 }
 
 model Product {
@@ -142,7 +135,20 @@ model Like {
   @@index([productId])
 }
 
-<<<<<<< HEAD
+model Comment {
+  id        Int      @id @default(autoincrement())
+  score     Int
+  comment   String   @db.Text
+  productId Int
+  userId    Int
+  createdAt DateTime @default(now())
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
+  @@index([userId])
+}
+
 // NextAuth.js 所需的模型
 model Account {
   id                String  @id @default(cuid())
@@ -181,18 +187,3 @@ model VerificationToken {
 
   @@unique([identifier, token])
 }
-=======
-model Comment {
-  id        Int      @id @default(autoincrement())
-  score     Int
-  comment   String   @db.Text
-  productId Int
-  userId    Int
-  createdAt DateTime @default(now())
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([productId])
-  @@index([userId])
-}
->>>>>>> b76ffb1fcae5face0f7912e8828a49550a281e37
