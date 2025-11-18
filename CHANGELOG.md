@@ -4,6 +4,66 @@
 
 ---
 
+## [2025-01-XX] - 評論 API 購買驗證可配置化
+
+### 🎯 概述
+
+本次更新為評論 API 添加了環境變數控制功能，允許在測試階段讓未購買用戶也可以評論商品，同時保留未來正式上線後改為只有購買商品的用戶才能評論的可能性。
+
+### 🔧 API 變更
+
+#### 更新 API 路由
+
+**POST `/api/comment`**
+
+- 新增環境變數 `REQUIRE_PURCHASE_FOR_COMMENT` 控制購買驗證
+- 默認行為：允許未購買用戶評論（測試階段）
+- 當 `REQUIRE_PURCHASE_FOR_COMMENT=true` 時，僅允許購買用戶評論（正式上線）
+
+### 🔐 環境變數要求
+
+新增以下環境變數（可選）：
+
+```env
+# 評論購買驗證控制
+# 測試階段：不設置或設為 false（默認），允許未購買用戶評論
+# 正式上線：設為 true，僅允許購買用戶評論
+REQUIRE_PURCHASE_FOR_COMMENT=false
+```
+
+### 🚀 部署注意事項
+
+1. **測試階段**:
+
+   - 不設置 `REQUIRE_PURCHASE_FOR_COMMENT` 環境變數，或設為 `false`
+   - 所有登入用戶都可以評論商品，無需購買驗證
+
+2. **正式上線**:
+   - 設置 `REQUIRE_PURCHASE_FOR_COMMENT=true`
+   - 僅允許已購買該商品的用戶評論
+
+### ✅ 測試檢查清單
+
+- [ ] 測試階段：未購買用戶可以成功評論商品
+- [ ] 測試階段：已購買用戶可以正常評論商品
+- [ ] 正式模式：設置 `REQUIRE_PURCHASE_FOR_COMMENT=true` 後，未購買用戶無法評論
+- [ ] 正式模式：已購買用戶可以正常評論商品
+
+### 🔄 向後相容性
+
+- ✅ 默認行為改變（從要求購買改為不要求），但這是預期的測試階段行為
+- ✅ 正式上線時通過環境變數切換回原行為
+- ✅ 現有的評論 API 其他功能完全相容
+
+### 💡 技術細節
+
+- **控制機制**: 通過環境變數 `REQUIRE_PURCHASE_FOR_COMMENT` 控制
+- **默認值**: `false`（允許未購買用戶評論）
+- **切換方式**: 無需修改代碼，僅需更改環境變數即可切換行為
+- **購買驗證邏輯**: 檢查 Order 表中是否存在該用戶對該商品的訂單記錄
+
+---
+
 ## [2025-01-XX] - Stripe 信用卡支付整合
 
 ### 🎯 概述
@@ -93,7 +153,6 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 ### 📝 Migration 檔案
 
 本次更新包含以下 migration：
-
 **20251117075714_add_stripe_payment_fields**
 
 - 在 Order 表中新增支付相關欄位
@@ -184,7 +243,7 @@ Session 表
 - **外鍵關係**:
   - `userId` → `User.id` (ON DELETE CASCADE)
 
-VerificationToken表
+VerificationToken 表
 
 - **用途**: 儲存電子郵件驗證 token
 - **主要欄位**:

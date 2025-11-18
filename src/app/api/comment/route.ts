@@ -124,13 +124,20 @@ export async function POST(req: Request) {
       return NextResponse.json({ message: "Comment is required" }, { status: 400 });
     }
 
-    const hasOrder = await prisma.order.findFirst({
-      where: { userId, productId },
-      select: { id: true },
-    });
+    // 購買驗證檢查（可通過環境變數控制）
+    // 測試階段：REQUIRE_PURCHASE_FOR_COMMENT=false 或不設置，允許未購買用戶評論
+    // 正式上線：REQUIRE_PURCHASE_FOR_COMMENT=true，僅允許購買用戶評論
+    const requirePurchase = process.env.REQUIRE_PURCHASE_FOR_COMMENT === "true";
+    
+    if (requirePurchase) {
+      const hasOrder = await prisma.order.findFirst({
+        where: { userId, productId },
+        select: { id: true },
+      });
 
-    if (!hasOrder) {
-      return NextResponse.json({ message: "購入履歴がありません" }, { status: 403 });
+      if (!hasOrder) {
+        return NextResponse.json({ message: "購入履歴がありません" }, { status: 403 });
+      }
     }
 
     const newComment = await prisma.comment.create({
