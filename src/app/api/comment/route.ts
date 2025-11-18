@@ -124,13 +124,20 @@ export async function POST(req: Request) {
       return NextResponse.json({ message: "Comment is required" }, { status: 400 });
     }
 
-    const hasOrder = await prisma.order.findFirst({
-      where: { userId, productId },
-      select: { id: true },
-    });
+    // 購買驗證檢查（可通過環境變數控制）
+    // 測試階段：REQUIRE_PURCHASE_FOR_COMMENT=false 或不設置，允許未購買用戶評論
+    // 正式上線：REQUIRE_PURCHASE_FOR_COMMENT=true，僅允許購買用戶評論
+    const requirePurchase = process.env.REQUIRE_PURCHASE_FOR_COMMENT === "true";
+    
+    if (requirePurchase) {
+      const hasOrder = await prisma.order.findFirst({
+        where: { userId, productId },
+        select: { id: true },
+      });
 
-    if (!hasOrder) {
-      return NextResponse.json({ message: "購入履歴がありません" }, { status: 403 });
+      if (!hasOrder) {
+        return NextResponse.json({ message: "購入履歴がありません" }, { status: 403 });
+      }
     }
 
     const newComment = await prisma.comment.create({
@@ -160,7 +167,20 @@ export async function POST(req: Request) {
     // 商品のキャッシュも無効化（コメント数が変わるため）
     revalidateTag(CACHE_TAGS.PRODUCT(productId));
 
-    return NextResponse.json({ comment: newComment }, { status: 201 });
+    // 確保返回的數據結構正確，特別是處理 null 值和日期序列化
+    const serializedComment = {
+      ...newComment,
+      createdAt: newComment.createdAt.toISOString(),
+      user: newComment.user ? {
+        ...newComment.user,
+        // 確保 image 為 null 而不是空字串
+        image: newComment.user.image && newComment.user.image.trim() !== "" 
+          ? newComment.user.image 
+          : null,
+      } : undefined,
+    };
+
+    return NextResponse.json({ comment: serializedComment }, { status: 201 });
   } catch (e: any) {
     return NextResponse.json({ message: e?.message ?? "Internal Server Error" }, { status: 500 });
   }

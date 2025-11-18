@@ -66,7 +66,7 @@ export default function Comments({
             <div className="flex items-center gap-2">
               <AvatarLinkable
                 href={c.userId === currentUserId ? "/mypage" : undefined}
-                image={c.user?.image}
+                image={c.user?.image ?? null}
                 alt={c.user?.email ?? "avatar"}
                 fallback={(
                   c.user?.firstName?.[0] ||
@@ -122,13 +122,36 @@ function AvatarLinkable({
   alt: string;
   fallback: string;
 }) {
-  const avatar = image ? (
+  // 嚴格檢查 image 是否為有效的 URL
+  // 必須是字符串，不為空，且是有效的 URL 格式
+  const isValidImageUrl = (img: string | null | undefined): boolean => {
+    if (!img) return false;
+    if (typeof img !== "string") return false;
+    const trimmed = img.trim();
+    if (trimmed === "") return false;
+    // 檢查是否為有效的 URL 格式
+    return (
+      trimmed.startsWith("http://") ||
+      trimmed.startsWith("https://") ||
+      trimmed.startsWith("/") ||
+      trimmed.startsWith("data:image/")
+    );
+  };
+  
+  const hasValidImage = isValidImageUrl(image);
+  
+  const avatar = hasValidImage && image ? (
     <Image
       src={image}
       alt={alt}
       width={32}
       height={32}
       className="rounded-full"
+      onError={(e) => {
+        // 如果圖片載入失敗，隱藏 Image 組件
+        const target = e.target as HTMLImageElement;
+        target.style.display = "none";
+      }}
     />
   ) : (
     <div className="size-8 rounded-full bg-gray-200 flex items-center justify-center text-xs font-semibold text-gray-600">

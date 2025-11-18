@@ -53,7 +53,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
     }
   }, [status]);
 
-  const addToCart = async (product: Product, quantity: number = 1) => {
+  const addToCart = async (product: Product, quantity: number = 1): Promise<void> => {
     if (session?.user?.id) {
       try {
         const res = await fetch("/api/cart", {
@@ -63,10 +63,41 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
         });
         if (res.ok) {
           const data = await res.json();
-          setCart(data.cart ?? { items: [], total: 0 });
+          // 楽観的更新: API が updatedItem を返す場合、それを既存のカートにマージ
+          if (data.updatedItem) {
+            setCart((prevCart) => {
+              const existingIndex = prevCart.items.findIndex(
+                (item) => item.product.id === product.id
+              );
+              if (existingIndex >= 0) {
+                const updatedItems = [...prevCart.items];
+                updatedItems[existingIndex] = data.updatedItem;
+                return {
+                  items: updatedItems,
+                  total: updatedItems.reduce(
+                    (sum, item) => sum + item.product.price * item.quantity,
+                    0
+                  ),
+                };
+              } else {
+                return {
+                  items: [...prevCart.items, data.updatedItem],
+                  total: prevCart.total + data.updatedItem.product.price * data.updatedItem.quantity,
+                };
+              }
+            });
+          } else {
+            // フォールバック: 完全なカートデータを取得
+            const cartRes = await fetch("/api/cart", { cache: "no-store" });
+            if (cartRes.ok) {
+              const cartData = await cartRes.json();
+              setCart(cartData.cart ?? { items: [], total: 0 });
+            }
+          }
         }
       } catch (e) {
         console.error("Error adding to cart:", e);
+        throw e;
       }
     } else {
       const updatedCart = cartUtils.addToCart(product, quantity);

@@ -2,11 +2,11 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
 import OptionButtons from "./OptionButtons";
 import { useCart } from "@/contexts/CartContext";
 import { Product } from "@/lib/type";
 import content from "@/data/content.json";
-import Link from "next/link";
 
 interface AddToCartButtonProps {
   product: Product;
@@ -16,16 +16,24 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
   const { addToCart } = useCart();
   const [quantity, setQuantity] = useState(1);
   const [isAdding, setIsAdding] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const handleAddToCart = async () => {
     setIsAdding(true);
+    setIsSuccess(false);
+    
     try {
-      addToCart(product, quantity);
-      // Provide user feedback
-      setTimeout(() => setIsAdding(false), 1000);
+      await addToCart(product, quantity);
+      setIsSuccess(true);
+      // Reset after showing success feedback
+      setTimeout(() => {
+        setIsAdding(false);
+        setIsSuccess(false);
+      }, 1500);
     } catch (error) {
       console.error("Error adding to cart:", error);
       setIsAdding(false);
+      setIsSuccess(false);
     }
   };
 
@@ -39,7 +47,8 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
           id="quantity"
           value={quantity}
           onChange={(e) => setQuantity(Number(e.target.value))}
-          className="border rounded-md px-3 py-1 text-sm"
+          disabled={isAdding}
+          className="border rounded-md px-3 py-1 text-sm disabled:opacity-50"
         >
           {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
             <option key={num} value={num}>
@@ -50,12 +59,19 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
       </div>
       <OptionButtons handleAddToCart={handleAddToCart} productId={product.id} />
 
-      <Button onClick={handleAddToCart} disabled={isAdding} asChild>
-        <Link href="/cart" className="w-full col-span-2">
-          {isAdding
-            ? "カートに追加中..."
-            : content.products_detail.directly_buy.jp}
-        </Link>
+      <Button 
+        onClick={handleAddToCart} 
+        disabled={isAdding}
+        className={`w-full col-span-2 ${isSuccess ? 'bg-green-600 hover:bg-green-700' : ''}`}
+      >
+        {isAdding ? (
+          <>
+            <Spinner size="sm" variant="white" />
+            {isSuccess ? "追加しました！" : "カートに追加中..."}
+          </>
+        ) : (
+          content.products_detail.directly_buy.jp
+        )}
       </Button>
     </div>
   );

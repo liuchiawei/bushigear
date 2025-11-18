@@ -1,4 +1,4 @@
-import { unstable_cache } from "next/cache";
+import { unstable_cache, revalidateTag } from "next/cache";
 
 // キャッシュ設定の定数
 export const CACHE_TTL = {
@@ -24,7 +24,9 @@ export const CACHE_TAGS = {
 /**
  * キャッシュされた関数を作成するヘルパー
  */
-export function createCachedFunction<T extends (...args: any[]) => Promise<any>>(
+export function createCachedFunction<
+  T extends (...args: any[]) => Promise<any>
+>(
   fn: T,
   keyPrefix: string,
   ttl: number = CACHE_TTL.MEDIUM,
@@ -36,3 +38,17 @@ export function createCachedFunction<T extends (...args: any[]) => Promise<any>>
   }) as T;
 }
 
+/**
+ * ユーザー関連のすべてのキャッシュを無効化するヘルパー関数
+ * ログイン時に使用して、ユーザーの最新データを確実に取得できるようにする
+ */
+export function invalidateUserCaches(userId: number | string): void {
+  const userIdNum = typeof userId === "string" ? Number(userId) : userId;
+  if (isNaN(userIdNum)) return;
+
+  revalidateTag(CACHE_TAGS.USER(userIdNum));
+  revalidateTag(CACHE_TAGS.CART(userIdNum));
+  revalidateTag(CACHE_TAGS.ORDERS(userIdNum));
+  revalidateTag(CACHE_TAGS.LIKES(userIdNum));
+  revalidateTag(CACHE_TAGS.COMMENT_USER(userIdNum));
+}

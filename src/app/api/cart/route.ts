@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { auth } from "@/auth";
-import { revalidateTag } from "next/cache";
-import { CACHE_TAGS } from "@/lib/cache";
+import { revalidateTag, unstable_cache } from "next/cache";
+import { CACHE_TAGS, CACHE_TTL } from "@/lib/cache";
 
 async function getCartData(userId: number) {
   const cartItems = await prisma.cart.findMany({
@@ -34,8 +34,24 @@ export async function GET() {
     );
   }
   const userId = Number(session.user.id);
-  const cart = await getCartData(userId);
-  return NextResponse.json({ cart });
+  
+  // キャッシュされた関数を作成
+  const cachedGetCartData = unstable_cache(
+    () => getCartData(userId),
+    [`cart-${userId}`],
+    {
+      revalidate: CACHE_TTL.SHORT, // 60秒
+      tags: [CACHE_TAGS.CART(userId)],
+    }
+  );
+  
+  const cart = await cachedGetCartData();
+  
+  // キャッシュヘッダーを設定
+  const headers = new Headers();
+  headers.set("Cache-Control", "private, s-maxage=60, stale-while-revalidate=120");
+  
+  return NextResponse.json({ cart }, { headers });
 }
 
 export async function POST(req: Request) {

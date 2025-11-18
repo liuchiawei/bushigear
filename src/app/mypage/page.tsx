@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useState, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCart } from "@/contexts/CartContext";
@@ -105,35 +105,6 @@ function MyPageContent() {
     room: "",
   });
 
-  useEffect(() => {
-    if (status === "unauthenticated") {
-      router.push(`/login?redirect=/mypage`);
-    }
-  }, [status, router]);
-
-  useEffect(() => {
-    if (status === "authenticated") {
-      fetchProfile();
-      fetchOrders();
-      fetchLikes();
-      fetchComments();
-    }
-  }, [status]);
-
-  useEffect(() => {
-    if (!searchParams) return;
-    const tabParam = searchParams.get("tab");
-    if (
-      tabParam === "profile" ||
-      tabParam === "cart" ||
-      tabParam === "orders" ||
-      tabParam === "likes" ||
-      tabParam === "comments"
-    ) {
-      setActiveTab(tabParam);
-    }
-  }, [searchParams]);
-
   const fetchProfile = async () => {
     try {
       const res = await fetch("/api/profile");
@@ -164,7 +135,7 @@ function MyPageContent() {
     }
   };
 
-  const fetchOrders = async () => {
+  const fetchOrders = useCallback(async () => {
     try {
       const res = await fetch("/api/orders");
       if (!res.ok) throw new Error("注文履歴の取得に失敗しました");
@@ -176,7 +147,7 @@ function MyPageContent() {
     } catch (e: any) {
       console.error("Failed to fetch orders:", e);
     }
-  };
+  }, [session?.user?.id]);
 
   const fetchLikes = async () => {
     try {
@@ -201,6 +172,35 @@ function MyPageContent() {
       console.error("Failed to fetch comments:", e);
     }
   };
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push(`/login?redirect=/mypage`);
+    }
+  }, [status, router]);
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      fetchProfile();
+      fetchOrders();
+      fetchLikes();
+      fetchComments();
+    }
+  }, [status, fetchOrders]);
+
+  useEffect(() => {
+    if (!searchParams) return;
+    const tabParam = searchParams.get("tab");
+    if (
+      tabParam === "profile" ||
+      tabParam === "cart" ||
+      tabParam === "orders" ||
+      tabParam === "likes" ||
+      tabParam === "comments"
+    ) {
+      setActiveTab(tabParam);
+    }
+  }, [searchParams]);
 
   const handleDeleteComment = async (id: number) => {
     if (!confirm("このレビューを削除しますか？")) return;
@@ -334,7 +334,12 @@ function MyPageContent() {
           <div className="flex items-center gap-4">
             <Avatar className="size-16">
               <AvatarImage
-                src={profile?.image || session?.user?.image || ""}
+                src={
+                  (profile?.image && profile.image.trim() !== "") ||
+                  (session?.user?.image && session.user.image.trim() !== "")
+                    ? (profile?.image || session?.user?.image || undefined)
+                    : undefined
+                }
                 alt={
                   profile?.lastName || profile?.firstName
                     ? `${profile?.lastName || ""} ${
@@ -445,9 +450,11 @@ function MyPageContent() {
                       </label>
                       <div className="flex items-center gap-4">
                         {form.image && (
-                          <img
+                          <Image
                             src={form.image}
                             alt="Avatar preview"
+                            width={96}
+                            height={96}
                             className="w-24 h-24 rounded-full object-cover"
                           />
                         )}
@@ -637,7 +644,12 @@ function MyPageContent() {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <Avatar className="size-60 row-span-2 mx-auto">
                       <AvatarImage
-                        src={profile?.image || session?.user?.image || ""}
+                        src={
+                          (profile?.image && profile.image.trim() !== "") ||
+                          (session?.user?.image && session.user.image.trim() !== "")
+                            ? (profile?.image || session?.user?.image || undefined)
+                            : undefined
+                        }
                         alt={profile?.lastName || profile?.firstName || ""}
                       />
                       <AvatarFallback>

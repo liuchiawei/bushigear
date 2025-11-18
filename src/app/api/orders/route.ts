@@ -1,38 +1,55 @@
 import prisma from "@/lib/prisma";
 import { auth } from "@/auth";
-import { revalidateTag } from "next/cache";
-import { CACHE_TAGS } from "@/lib/cache";
+import { revalidateTag, unstable_cache } from "next/cache";
+import { CACHE_TAGS, CACHE_TTL } from "@/lib/cache";
+
+async function getOrdersData(userId: number | null) {
+  const where = userId ? { userId } : undefined;
+  
+  return await prisma.order.findMany({
+    where,
+    include: {
+      product: true,
+      user: {
+        select: {
+          id: true,
+          email: true,
+          lastName: true,
+          firstName: true,
+          postalCode: true,
+          prefecture: true,
+          city: true,
+          street: true,
+          building: true,
+          room: true,
+          address: true,
+        },
+      },
+    },
+    orderBy: { id: "desc" },
+  });
+}
 
 export async function GET() {
   try {
     const session = await auth();
     const userId = session?.user?.id ? Number(session.user.id) : null;
     
-    // ユーザーがログインしている場合、自分の注文のみを取得（パフォーマンス向上）
-    const where = userId ? { userId } : undefined;
+    // キャッシュキーとタグを生成
+    const cacheKey = userId ? `orders-${userId}` : "orders-all";
+    const tags = userId ? [CACHE_TAGS.ORDERS(userId)] : [];
     
-    const orders = await prisma.order.findMany({
-      where,
-      include: {
-        product: true,
-        user: {
-          select: {
-            id: true,
-            email: true,
-            lastName: true,
-            firstName: true,
-            postalCode: true,
-            prefecture: true,
-            city: true,
-            street: true,
-            building: true,
-            room: true,
-            address: true,
-          },
-        },
-      },
-      orderBy: { id: "desc" },
-    });
+    // キャッシュされた関数を作成
+    const cachedGetOrders = unstable_cache(
+      () => getOrdersData(userId),
+      [cacheKey],
+      {
+        revalidate: CACHE_TTL.MEDIUM, // 300秒
+        tags,
+      }
+    );
+    
+    const orders = await cachedGetOrders();
     
     // キャッシュヘッダーを設定（ユーザー固有のデータなので短め）
     const headers = new Headers();

@@ -9,6 +9,8 @@ import {
   TooltipTrigger,
   TooltipContent,
 } from "@/components/ui/tooltip";
+import { Spinner } from "@/components/ui/spinner";
+import { MessageSquare } from "lucide-react";
 import { Comment } from "@/lib/type";
 import { cn } from "@/lib/utils";
 
@@ -108,9 +110,7 @@ export default function CommentInput({
                   onClick={() => setScore(n)}
                   className={cn(
                     "group bg-transparent text-xs transition-all duration-200 hover:scale-105 active:scale-95 rounded-full border-none size-8",
-                    score >= n
-                      ? ""
-                      : "text-gray-700 hover:bg-accent hover:text-accent"
+                    score >= n ? "" : "text-gray-700 hover:text-accent"
                   )}
                 >
                   <div
@@ -120,7 +120,7 @@ export default function CommentInput({
                         ? "group-hover:bg-background group-hover:border-accent group-active:bg-accent/60 hover:scale-110 active:scale-95"
                         : "",
                       score >= n
-                        ? "bg-accent text-accent group-hover:bg-background group-hover:border-accent group-active:bg-accent/60 hover:scale-105 active:scale-95 hover:bg-accent/80"
+                        ? "bg-accent text-accent group-hover:bg-background group-hover:border-accent group-active:bg-accent/60 hover:scale-105 active:scale-95"
                         : "bg-gray-400 text-gray-400"
                     )}
                   />
@@ -147,8 +147,16 @@ export default function CommentInput({
         />
       </div>
       {error && <p className="text-sm text-destructive">{error}</p>}
-      <Button onClick={handleSubmit} disabled={loading}>
-        {loading ? "投稿中..." : "レビューを投稿"}
+      <Button onClick={handleSubmit} disabled={loading} className="w-full">
+        {loading ? (
+          <>
+            <Spinner size="sm" variant="white" /> 投稿中...
+          </>
+        ) : (
+          <>
+            <MessageSquare className="size-4 mr-1" /> レビューを投稿
+          </>
+        )}
       </Button>
     </div>
   );
