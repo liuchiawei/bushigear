@@ -334,7 +334,12 @@ function MyPageContent() {
           <div className="flex items-center gap-4">
             <Avatar className="size-16">
               <AvatarImage
-                src={profile?.image || session?.user?.image || ""}
+                src={
+                  (profile?.image && profile.image.trim() !== "") ||
+                  (session?.user?.image && session.user.image.trim() !== "")
+                    ? (profile?.image || session?.user?.image || undefined)
+                    : undefined
+                }
                 alt={
                   profile?.lastName || profile?.firstName
                     ? `${profile?.lastName || ""} ${
@@ -637,7 +642,12 @@ function MyPageContent() {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <Avatar className="size-60 row-span-2 mx-auto">
                       <AvatarImage
-                        src={profile?.image || session?.user?.image || ""}
+                        src={
+                          (profile?.image && profile.image.trim() !== "") ||
+                          (session?.user?.image && session.user.image.trim() !== "")
+                            ? (profile?.image || session?.user?.image || undefined)
+                            : undefined
+                        }
                         alt={profile?.lastName || profile?.firstName || ""}
                       />
                       <AvatarFallback>

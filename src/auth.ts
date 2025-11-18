@@ -4,6 +4,7 @@ import Credentials from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
+import { invalidateUserCaches } from "@/lib/cache";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(prisma),
@@ -70,6 +71,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         token.name = user.name;
         token.email = user.email;
         token.picture = user.image;
+        
+        // ログイン時にユーザー関連のキャッシュを無効化して最新データを確実に取得
+        if (user.id) {
+          invalidateUserCaches(user.id);
+        }
       }
       // 既存の token に user 情報がない場合のみ DB から取得（初回ログイン後の更新時）
       if (token.sub && !token.name) {

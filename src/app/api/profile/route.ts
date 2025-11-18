@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { auth } from "@/auth";
-import { revalidateTag } from "next/cache";
-import { CACHE_TAGS } from "@/lib/cache";
+import { revalidateTag, unstable_cache } from "next/cache";
+import { CACHE_TAGS, CACHE_TTL } from "@/lib/cache";
 
 const buildFullAddress = (
   p?: string,
@@ -103,14 +103,7 @@ export async function PATCH(req: Request) {
   }
 }
 
-export async function GET() {
-  const session = await auth();
-  if (!session?.user?.id) {
-    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-  }
-  
-  const userId = Number(session.user.id);
-  
+async function getUserProfileData(userId: number, sessionUser: any) {
   // Session から基本情報を取得（既に最適化済み）
   // 詳細なプロフィール情報のみ DB から取得
   const me = await prisma.user.findUnique({
@@ -134,12 +127,37 @@ export async function GET() {
   });
   
   // Session の情報と DB の情報をマージ（Session が最新の場合）
-  const user = me ? {
+  return me ? {
     ...me,
     // Session の image と name が最新の場合は優先
-    image: session.user.image || me.image,
-    name: session.user.name || (me.firstName && me.lastName ? `${me.lastName} ${me.firstName}` : me.email),
+    image: sessionUser.image || me.image,
+    name: sessionUser.name || (me.firstName && me.lastName ? `${me.lastName} ${me.firstName}` : me.email),
   } : null;
+}
+
+export async function GET() {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+  }
   
-  return NextResponse.json({ user });
+  const userId = Number(session.user.id);
+  
+  // キャッシュされた関数を作成
+  const cachedGetUserProfile = unstable_cache(
+    () => getUserProfileData(userId, session.user),
+    [`profile-${userId}`],
+    {
+      revalidate: CACHE_TTL.MEDIUM, // 300秒
+      tags: [CACHE_TAGS.USER(userId)],
+    }
+  );
+  
+  const user = await cachedGetUserProfile();
+  
+  // キャッシュヘッダーを設定
+  const headers = new Headers();
+  headers.set("Cache-Control", "private, s-maxage=60, stale-while-revalidate=120");
+  
+  return NextResponse.json({ user }, { headers });
 }

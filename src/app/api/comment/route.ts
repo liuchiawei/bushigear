@@ -167,7 +167,20 @@ export async function POST(req: Request) {
     // 商品のキャッシュも無効化（コメント数が変わるため）
     revalidateTag(CACHE_TAGS.PRODUCT(productId));
 
-    return NextResponse.json({ comment: newComment }, { status: 201 });
+    // 確保返回的數據結構正確，特別是處理 null 值和日期序列化
+    const serializedComment = {
+      ...newComment,
+      createdAt: newComment.createdAt.toISOString(),
+      user: newComment.user ? {
+        ...newComment.user,
+        // 確保 image 為 null 而不是空字串
+        image: newComment.user.image && newComment.user.image.trim() !== "" 
+          ? newComment.user.image 
+          : null,
+      } : undefined,
+    };
+
+    return NextResponse.json({ comment: serializedComment }, { status: 201 });
   } catch (e: any) {
     return NextResponse.json({ message: e?.message ?? "Internal Server Error" }, { status: 500 });
   }

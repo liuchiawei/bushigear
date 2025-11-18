@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, Check } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { Product } from "@/lib/type";
+import { Spinner } from "@/components/ui/spinner";
 
 interface AddToCartProps {
   product: Product;
@@ -18,19 +19,27 @@ export default function AddToCart({
 }: AddToCartProps) {
   const { addToCart } = useCart();
   const [isAdding, setIsAdding] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
 
     setIsAdding(true);
+    setIsSuccess(false);
+    
     try {
-      addToCart(product, quantity);
-      // Provide user feedback
-      setTimeout(() => setIsAdding(false), 800);
+      await addToCart(product, quantity);
+      setIsSuccess(true);
+      // Reset success state after showing feedback
+      setTimeout(() => {
+        setIsAdding(false);
+        setIsSuccess(false);
+      }, 1500);
     } catch (error) {
       console.error("Error adding to cart:", error);
       setIsAdding(false);
+      setIsSuccess(false);
     }
   };
 
@@ -49,25 +58,25 @@ export default function AddToCart({
         hover:*:text-white
         shadow-sm hover:shadow-md
         transition-all duration-200
-        disabled:opacity-50
+        disabled:opacity-50 disabled:cursor-not-allowed
+        ${isSuccess ? 'bg-green-500/80' : ''}
         ${className}
       `}
       title="カートに追加"
     >
-      <ShoppingCart
-        className={`
-          size-4
-          text-gray-700
-          group-hover:text-black
-          transition-colors duration-200
-          ${isAdding ? 'animate-pulse' : ''}
-        `}
-      />
-
-      {isAdding && (
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="size-3 border-2 border-green-500 border-t-transparent rounded-full animate-spin" />
-        </div>
+      {isAdding && !isSuccess ? (
+        <Spinner size="sm" className="text-gray-700 group-hover:text-white" />
+      ) : isSuccess ? (
+        <Check className="size-4 text-white" />
+      ) : (
+        <ShoppingCart
+          className={`
+            size-4
+            text-gray-700
+            group-hover:text-white
+            transition-colors duration-200
+          `}
+        />
       )}
     </button>
   );

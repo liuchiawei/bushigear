@@ -1,6 +1,8 @@
 import { NextResponse, NextRequest } from "next/server";
 import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
+import { revalidateTag } from "next/cache";
+import { CACHE_TAGS } from "@/lib/cache";
 
 const toNull = (v: unknown) => {
     if (typeof v !== "string") return v ?? null;
@@ -66,7 +68,7 @@ export async function POST(req: NextRequest) {
         ].filter(Boolean);
         const fullAddress = fullAddressParts.join(" ");
 
-        await prisma.user.create({
+        const newUser = await prisma.user.create({
             data: {
                 email,
                 password: hashed,
@@ -84,6 +86,12 @@ export async function POST(req: NextRequest) {
                 address: fullAddress || null,
             },
         });
+
+        // キャッシュを無効化（新規ユーザー登録時）
+        // 将来の「新規ユーザー向けおすすめ商品」機能のために商品リストキャッシュを無効化
+        revalidateTag(CACHE_TAGS.PRODUCTS);
+        // ユーザーリストキャッシュがあれば無効化（将来の拡張用）
+        // 新規ユーザーの個人キャッシュはまだ存在しないため、ここでは無効化不要
 
         return NextResponse.json({ message: "ユーザー登録が完了しました" }, { status: 201 });
     } catch (err: any) {

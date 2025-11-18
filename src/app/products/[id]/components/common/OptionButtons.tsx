@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
 import {
   Tooltip,
   TooltipContent,
@@ -22,9 +23,12 @@ export default function OptionButtons({ handleAddToCart, productId }: OptionButt
   const { data: session, status } = useSession();
   const router = useRouter();
   const [liked, setLiked] = useState(false);
+  const [isLiking, setIsLiking] = useState(false);
+  const [isLoadingLikes, setIsLoadingLikes] = useState(true);
 
   useEffect(() => {
     if (status === "authenticated") {
+      setIsLoadingLikes(true);
       (async () => {
         try {
           const res = await fetch("/api/likes", { cache: "no-store" });
@@ -39,8 +43,12 @@ export default function OptionButtons({ handleAddToCart, productId }: OptionButt
             setLiked(found);
           }
         } catch {
+        } finally {
+          setIsLoadingLikes(false);
         }
       })();
+    } else {
+      setIsLoadingLikes(false);
     }
   }, [status, productId]);
 
@@ -49,15 +57,22 @@ export default function OptionButtons({ handleAddToCart, productId }: OptionButt
       router.push("/login");
       return;
     }
+    
+    // 楽観的更新
+    const previousLiked = liked;
+    setLiked(!liked);
+    setIsLiking(true);
+    
     try {
-      if (liked) {
+      if (previousLiked) {
         const res = await fetch("/api/likes", {
           method: "DELETE",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ productId }),
         });
-        if (res.ok) {
-          setLiked(false);
+        if (!res.ok) {
+          // エラー時は元に戻す
+          setLiked(previousLiked);
         }
       } else {
         const res = await fetch("/api/likes", {
@@ -65,12 +80,17 @@ export default function OptionButtons({ handleAddToCart, productId }: OptionButt
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ productId }),
         });
-        if (res.ok) {
-          setLiked(true);
+        if (!res.ok) {
+          // エラー時は元に戻す
+          setLiked(previousLiked);
         }
       }
     } catch (err) {
       console.error("like error", err);
+      // エラー時は元に戻す
+      setLiked(previousLiked);
+    } finally {
+      setIsLiking(false);
     }
   };
 
@@ -82,13 +102,18 @@ export default function OptionButtons({ handleAddToCart, productId }: OptionButt
             <Button
               variant="outline"
               size="icon"
-              className={`rounded-full hover:text-background ${liked ? "text-red-500" : ""}`}
+              className={`rounded-full hover:text-background ${liked ? "text-red-500 hover:text-red-600" : ""}`}
               onClick={(e) => {
                 e.preventDefault();
                 handleLike();
               }}
+              disabled={isLiking || isLoadingLikes}
             >
-              <Heart />
+              {isLiking ? (
+                <Spinner size="sm" className={liked ? "text-red-500" : ""} />
+              ) : (
+                <Heart className={liked ? "fill-current" : ""} />
+              )}
             </Button>
           </TooltipTrigger>
           <TooltipContent>

@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { auth } from "@/auth";
-import { revalidateTag } from "next/cache";
-import { CACHE_TAGS } from "@/lib/cache";
+import { revalidateTag, unstable_cache } from "next/cache";
+import { CACHE_TAGS, CACHE_TTL } from "@/lib/cache";
 
 async function getLikes(userId: number) {
   const likes = await prisma.like.findMany({
@@ -26,8 +26,24 @@ export async function GET() {
     );
   }
   const userId = Number(session.user.id);
-  const likes = await getLikes(userId);
-  return NextResponse.json({ likes });
+  
+  // キャッシュされた関数を作成
+  const cachedGetLikes = unstable_cache(
+    () => getLikes(userId),
+    [`likes-${userId}`],
+    {
+      revalidate: CACHE_TTL.SHORT, // 60秒
+      tags: [CACHE_TAGS.LIKES(userId)],
+    }
+  );
+  
+  const likes = await cachedGetLikes();
+  
+  // キャッシュヘッダーを設定
+  const headers = new Headers();
+  headers.set("Cache-Control", "private, s-maxage=60, stale-while-revalidate=120");
+  
+  return NextResponse.json({ likes }, { headers });
 }
 
 export async function POST(req: Request) {

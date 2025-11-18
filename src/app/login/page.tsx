@@ -3,6 +3,10 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { signIn, signOut, useSession } from "next-auth/react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Spinner } from "@/components/ui/spinner";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -10,9 +14,24 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
 
   if (status === "loading") {
-    return <div className="p-8">読み込み中...</div>;
+    return (
+      <main className="p-8 max-w-md mx-auto">
+        <Skeleton className="h-8 w-32 mb-4" />
+        <div className="space-y-4">
+          <Skeleton className="h-10 w-full" />
+          <Skeleton className="h-10 w-full" />
+          <Skeleton className="h-10 w-full" />
+        </div>
+        <div className="mt-6 flex items-center justify-center gap-2">
+          <Spinner size="sm" />
+          <span className="text-sm text-muted-foreground">読み込み中...</span>
+        </div>
+      </main>
+    );
   }
 
   if (session) {
@@ -20,12 +39,13 @@ export default function LoginPage() {
       <main className="p-8 max-w-md mx-auto text-center">
         <h1 className="text-2xl font-bold mb-4">ログイン済み</h1>
         <p className="mb-4">ようこそ、{session.user?.email}</p>
-        <button
+        <Button
           onClick={() => signOut()}
-          className="w-full bg-red-500 text-white px-4 py-2 rounded cursor-pointer"
+          variant="destructive"
+          className="w-full"
         >
           ログアウト
-        </button>
+        </Button>
       </main>
     );
   }
@@ -33,62 +53,112 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    const res = await signIn("credentials", {
-      redirect: false,
-      email,
-      password,
-    });
-    if (res?.error) {
-      setError("ログインに失敗しました");
-    } else {
-      router.push("/");
+    setLoading(true);
+    
+    try {
+      const res = await signIn("credentials", {
+        redirect: false,
+        email,
+        password,
+      });
+      
+      if (res?.error) {
+        setError("ログインに失敗しました。メールアドレスとパスワードを確認してください。");
+      } else {
+        router.push("/");
+      }
+    } catch (err) {
+      setError("予期しないエラーが発生しました。もう一度お試しください。");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    setError("");
+    setGoogleLoading(true);
+    try {
+      await signIn("google");
+    } catch (err) {
+      setError("Googleログインに失敗しました。もう一度お試しください。");
+      setGoogleLoading(false);
     }
   };
 
   return (
     <main className="p-8 max-w-md mx-auto">
-      <h1 className="text-2xl font-bold mb-4">ログイン</h1>
-      {error && <p className="text-red-600 mb-4">{error}</p>}
+      <h1 className="text-2xl font-bold mb-6">ログイン</h1>
+      
+      {error && (
+        <div className="mb-4 p-3 bg-destructive/10 border border-destructive/20 rounded-md">
+          <p className="text-sm text-destructive">{error}</p>
+        </div>
+      )}
+      
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm mb-1">Email</label>
-          <input
+          <label className="block text-sm font-medium mb-1">Email</label>
+          <Input
             title="email"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full p-2 border rounded"
+            disabled={loading || googleLoading}
             required
           />
         </div>
         <div>
-          <label className="block text-sm mb-1">Password</label>
-          <input
+          <label className="block text-sm font-medium mb-1">Password</label>
+          <Input
             title="password"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full p-2 border rounded"
+            disabled={loading || googleLoading}
             required
           />
         </div>
-        <button
+        <Button
           type="submit"
-          className="w-full bg-indigo-600 text-white px-4 py-2 rounded cursor-pointer"
+          className="w-full"
+          disabled={loading || googleLoading}
         >
-          ログイン
-        </button>
+          {loading ? (
+            <>
+              <Spinner size="sm" variant="white" />
+              ログイン中...
+            </>
+          ) : (
+            "ログイン"
+          )}
+        </Button>
       </form>
-      <hr className="my-6" />
-      <button
-        onClick={() => signIn("google")}
-        className="w-full bg-red-500 text-white px-4 py-2 rounded cursor-pointer"
+      
+      <div className="my-6 flex items-center gap-4">
+        <div className="flex-1 border-t"></div>
+        <span className="text-sm text-muted-foreground">または</span>
+        <div className="flex-1 border-t"></div>
+      </div>
+      
+      <Button
+        onClick={handleGoogleSignIn}
+        variant="outline"
+        className="w-full"
+        disabled={loading || googleLoading}
       >
-        Googleでログイン
-      </button>
-      <p className="mt-4 text-center">
+        {googleLoading ? (
+          <>
+            <Spinner size="sm" />
+            Googleでログイン中...
+          </>
+        ) : (
+          "Googleでログイン"
+        )}
+      </Button>
+      
+      <p className="mt-6 text-center text-sm">
         新規登録は{" "}
-        <a href="/register" className="text-blue-600 underline cursor-pointer">
+        <a href="/register" className="text-primary underline hover:no-underline">
           こちら
         </a>
       </p>

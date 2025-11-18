@@ -4,6 +4,10 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { PREFECTURES } from "@/constants/prefectures";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Spinner } from "@/components/ui/spinner";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -23,7 +27,9 @@ export default function RegisterPage() {
   });
   const [avatarUrl, setAvatarUrl] = useState("");
   const [uploading, setUploading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [googleLoading, setGoogleLoading] = useState(false);
 
   const onChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -133,101 +139,136 @@ export default function RegisterPage() {
       room: sanitize(form.room || ""),
     };
 
-    const res = await fetch("/api/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-    if (res.ok) {
-      router.push("/login");
-    } else {
-      const data = await res.json().catch(() => null);
-      setError(data?.message || "登録に失敗しました");
+    setSubmitting(true);
+    try {
+      const res = await fetch("/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      
+      if (res.ok) {
+        router.push("/login?registered=true");
+      } else {
+        const data = await res.json().catch(() => null);
+        setError(data?.message || "登録に失敗しました");
+      }
+    } catch (err) {
+      setError("予期しないエラーが発生しました。もう一度お試しください。");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    setError("");
+    setGoogleLoading(true);
+    try {
+      await signIn("google");
+    } catch (err) {
+      setError("Google登録に失敗しました。もう一度お試しください。");
+      setGoogleLoading(false);
     }
   };
 
   return (
     <main className="p-8 max-w-md mx-auto">
-      <h1 className="text-2xl font-bold mb-4">新規登録</h1>
-      {error && <p className="text-red-600 mb-4">{error}</p>}
+      <h1 className="text-2xl font-bold mb-6">新規登録</h1>
+      
+      {error && (
+        <div className="mb-4 p-3 bg-destructive/10 border border-destructive/20 rounded-md">
+          <p className="text-sm text-destructive">{error}</p>
+        </div>
+      )}
+      
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm mb-1">プロフィール画像（任意）</label>
+          <label className="block text-sm font-medium mb-1">プロフィール画像（任意）</label>
           {avatarUrl && (
             <div className="mb-2">
               <img
                 src={avatarUrl}
                 alt="Avatar preview"
-                className="w-24 h-24 rounded-full object-cover"
+                className="w-24 h-24 rounded-full object-cover border-2 border-gray-200"
               />
             </div>
           )}
-          <input
-            title="avatar"
-            type="file"
-            accept="image/*"
-            onChange={handleAvatarUpload}
-            disabled={uploading}
-            className="w-full p-2 border rounded"
-          />
-          {uploading && <p className="text-sm text-gray-500 mt-1">アップロード中...</p>}
+          <div className="relative">
+            <input
+              title="avatar"
+              type="file"
+              accept="image/*"
+              onChange={handleAvatarUpload}
+              disabled={uploading || submitting || googleLoading}
+              className="w-full p-2 border rounded file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-sm file:font-medium file:bg-primary file:text-primary-foreground hover:file:bg-primary/90 disabled:opacity-50"
+            />
+            {uploading && (
+              <div className="absolute inset-0 flex items-center justify-center bg-background/80 rounded">
+                <div className="flex items-center gap-2">
+                  <Spinner size="sm" />
+                  <span className="text-sm">アップロード中...</span>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
         <div>
-          <label className="block text-sm mb-1">氏</label>
-          <input
+          <label className="block text-sm font-medium mb-1">氏</label>
+          <Input
             title="lastName"
             name="lastName"
             type="text"
             value={form.lastName}
             onChange={onChange}
-            className="w-full p-2 border rounded"
+            disabled={submitting || googleLoading}
             required
           />
         </div>
         <div>
-          <label className="block text-sm mb-1">名</label>
-          <input
+          <label className="block text-sm font-medium mb-1">名</label>
+          <Input
             title="firstName"
             name="firstName"
             type="text"
             value={form.firstName}
             onChange={onChange}
-            className="w-full p-2 border rounded"
+            disabled={submitting || googleLoading}
             required
           />
         </div>
         <div>
-          <label className="block text-sm mb-1">Email</label>
-          <input
+          <label className="block text-sm font-medium mb-1">Email</label>
+          <Input
             title="email"
             name="email"
             type="email"
             value={form.email}
             onChange={onChange}
-            className="w-full p-2 border rounded"
+            disabled={submitting || googleLoading}
             required
           />
         </div>
         <div>
-          <label className="block text-sm mb-1">Password</label>
-          <input
+          <label className="block text-sm font-medium mb-1">Password</label>
+          <Input
             title="password"
             name="password"
             type="password"
             value={form.password}
             onChange={onChange}
-            className="w-full p-2 border rounded"
+            disabled={submitting || googleLoading}
             required
           />
         </div>
         <div>
-          <label className="block text-sm mb-1">性別</label>
+          <label className="block text-sm font-medium mb-1">性別</label>
           <select
             title="gender"
             name="gender"
             value={form.gender}
             onChange={onChange}
-            className="w-full p-2 border rounded"
+            disabled={submitting || googleLoading}
+            className="w-full h-9 px-3 py-1 text-sm border rounded-md bg-background disabled:opacity-50 disabled:cursor-not-allowed"
             required
           >
             <option value="">選択してください</option>
@@ -238,24 +279,26 @@ export default function RegisterPage() {
         </div>
         <div>
           <h2 className="text-lg font-semibold mt-6 mb-2">住所</h2>
-          <label className="block text-sm mb-1">郵便番号（半角数字）</label>
-          <input
+          <label className="block text-sm font-medium mb-1">郵便番号（半角数字）</label>
+          <Input
             name="postalCode"
             value={form.postalCode}
             onChange={onChange}
             inputMode="numeric"
             placeholder="123-4567"
-            className="w-full p-2 border rounded mb-3"
+            disabled={submitting || googleLoading}
+            className="mb-3"
           />
 
           {/* 都道府県（選單） */}
-          <label className="block text-sm mb-1">都道府県</label>
+          <label className="block text-sm font-medium mb-1">都道府県</label>
           <select
             title="prefecture"
             name="prefecture"
             value={form.prefecture}
             onChange={onChange}
-            className="w-full p-2 border rounded mb-3"
+            disabled={submitting || googleLoading}
+            className="w-full h-9 px-3 py-1 text-sm border rounded-md bg-background disabled:opacity-50 disabled:cursor-not-allowed mb-3"
           >
             <option value="">選択してください</option>
             {PREFECTURES.map((p) => (
@@ -266,73 +309,107 @@ export default function RegisterPage() {
           </select>
 
           {/* 市区町村 */}
-          <label className="block text-sm mb-1">市区町村</label>
-          <input
+          <label className="block text-sm font-medium mb-1">市区町村</label>
+          <Input
             title="city"
             name="city"
             value={form.city}
             onChange={onChange}
-            className="w-full p-2 border rounded mb-3"
+            disabled={submitting || googleLoading}
+            className="mb-3"
           />
 
           {/* 丁目・番地・号（数字は半角数字） */}
-          <label className="block text-sm mb-1">
+          <label className="block text-sm font-medium mb-1">
             丁目・番地・号（数字は半角）
           </label>
-          <input
+          <Input
             title="street"
             name="street"
             value={form.street}
             onChange={onChange}
-            className="w-full p-2 border rounded mb-3"
+            disabled={submitting || googleLoading}
+            className="mb-3"
           />
 
           {/* 建物名／会社名（任意） */}
-          <label className="block text-sm mb-1">建物名／会社名（任意）</label>
-          <input
+          <label className="block text-sm font-medium mb-1">建物名／会社名（任意）</label>
+          <Input
             title="building"
             name="building"
             value={form.building}
             onChange={onChange}
-            className="w-full p-2 border rounded mb-3"
+            disabled={submitting || googleLoading}
+            className="mb-3"
           />
 
           {/* 部屋番号（任意） */}
-          <label className="block text-sm mb-1">部屋番号（任意）</label>
-          <input
+          <label className="block text-sm font-medium mb-1">部屋番号（任意）</label>
+          <Input
             title="room"
             name="room"
             value={form.room}
             onChange={onChange}
-            className="w-full p-2 border rounded mb-4"
+            disabled={submitting || googleLoading}
+            className="mb-4"
           />
         </div>
         <div>
-          <label className="block text-sm mb-1">誕生日</label>
-          <input
+          <label className="block text-sm font-medium mb-1">誕生日</label>
+          <Input
             title="birthday"
             name="birthday"
             type="date"
             value={form.birthday}
             onChange={onChange}
-            className="w-full p-2 border rounded"
+            disabled={submitting || googleLoading}
             required
           />
         </div>
-        <button
+        <Button
           type="submit"
-          className="w-full bg-indigo-600 text-white px-4 py-2 rounded"
+          className="w-full"
+          disabled={submitting || googleLoading}
         >
-          登録
-        </button>
+          {submitting ? (
+            <>
+              <Spinner size="sm" variant="white" />
+              登録中...
+            </>
+          ) : (
+            "登録"
+          )}
+        </Button>
       </form>
-      <hr className="my-6" />
-      <button
-        onClick={() => signIn("google")}
-        className="w-full bg-red-500 text-white px-4 py-2 rounded"
+      
+      <div className="my-6 flex items-center gap-4">
+        <div className="flex-1 border-t"></div>
+        <span className="text-sm text-muted-foreground">または</span>
+        <div className="flex-1 border-t"></div>
+      </div>
+      
+      <Button
+        onClick={handleGoogleSignIn}
+        variant="outline"
+        className="w-full"
+        disabled={submitting || googleLoading}
       >
-        Googleで登録
-      </button>
+        {googleLoading ? (
+          <>
+            <Spinner size="sm" />
+            Googleで登録中...
+          </>
+        ) : (
+          "Googleで登録"
+        )}
+      </Button>
+      
+      <p className="mt-6 text-center text-sm">
+        既にアカウントをお持ちの方は{" "}
+        <a href="/login" className="text-primary underline hover:no-underline">
+          こちら
+        </a>
+      </p>
     </main>
   );
 }

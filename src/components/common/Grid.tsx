@@ -31,8 +31,8 @@ export default function Grid({ product }: { product: Product }) {
           height={200}
           className="group-hover:scale-105 transition-transform duration-200"
         />
-        {/* AddToCart button positioned in top-right corner */}
-        <div className="absolute bottom-0 right-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+        {/* AddToCart button positioned in bottom-right corner */}
+        <div className="absolute bottom-1 right-1 opacity-50 group-hover:opacity-100 transition-opacity duration-200">
           <AddToCart product={product} />
         </div>
       </Link>
