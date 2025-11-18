@@ -20,6 +20,8 @@ import Image from "next/image";
 
 export default function Nav() {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isMouseNearTop, setIsMouseNearTop] = useState(false);
+
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 0);
@@ -30,11 +32,26 @@ export default function Nav() {
     };
   }, []);
 
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      // 當滑鼠在視窗上方 100px 以內時顯示導覽列
+      setIsMouseNearTop(e.clientY <= 100);
+    };
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+    };
+  }, []);
+
   return (
     <NavigationMenu
       viewport={false}
       className={`fixed top-0 left-0 right-0 w-full px-4 py-2 z-20 bg-white/40 backdrop-blur-sm shadow-sm transition-all duration-300
-      ${isScrolled ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-full"}`}
+      ${
+        isScrolled || isMouseNearTop
+          ? "opacity-100 translate-y-0"
+          : "opacity-0 -translate-y-full"
+      }`}
     >
       <SidebarTrigger />
       <Link
