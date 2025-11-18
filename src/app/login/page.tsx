@@ -67,7 +67,7 @@ export default function LoginPage() {
       } else {
         router.push("/");
       }
-    } catch (err) {
+    } catch {
       setError("予期しないエラーが発生しました。もう一度お試しください。");
     } finally {
       setLoading(false);
@@ -79,7 +79,7 @@ export default function LoginPage() {
     setGoogleLoading(true);
     try {
       await signIn("google");
-    } catch (err) {
+    } catch {
       setError("Googleログインに失敗しました。もう一度お試しください。");
       setGoogleLoading(false);
     }

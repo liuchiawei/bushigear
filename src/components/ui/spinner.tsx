@@ -27,7 +27,7 @@ const spinnerVariants = cva("animate-spin", {
 });
 
 export interface SpinnerProps
-  extends React.ComponentPropsWithoutRef<typeof Loader2>,
+  extends Omit<React.ComponentPropsWithoutRef<typeof Loader2>, "size">,
     VariantProps<typeof spinnerVariants> {
   className?: string;
 }

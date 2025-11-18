@@ -7,12 +7,16 @@ export default function TokushoPage() {
 
         <div className="bg-white border rounded-lg p-6 space-y-6">
           <section>
-            <h2 className="text-xl font-semibold mb-4 pb-2 border-b">販売業者名</h2>
+            <h2 className="text-xl font-semibold mb-4 pb-2 border-b">
+              販売業者名
+            </h2>
             <p className="text-gray-700">ブシギア（BUSHIGEAR）</p>
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold mb-4 pb-2 border-b">運営責任者名</h2>
+            <h2 className="text-xl font-semibold mb-4 pb-2 border-b">
+              運営責任者名
+            </h2>
             <p className="text-gray-700">代表責任者</p>
           </section>
 
@@ -43,20 +47,26 @@ export default function TokushoPage() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold mb-4 pb-2 border-b">販売価格</h2>
+            <h2 className="text-xl font-semibold mb-4 pb-2 border-b">
+              販売価格
+            </h2>
             <p className="text-gray-700">
               各商品ページに記載の価格（消費税込み）
             </p>
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold mb-4 pb-2 border-b">商品代金以外の必要料金</h2>
+            <h2 className="text-xl font-semibold mb-4 pb-2 border-b">
+              商品代金以外の必要料金
+            </h2>
             <div className="text-gray-700 space-y-2">
               <p>
-                <strong>送料:</strong> 全国一律500円（5,000円以上のご購入で送料無料）
+                <strong>送料:</strong>{" "}
+                全国一律500円（5,000円以上のご購入で送料無料）
               </p>
               <p>
-                <strong>手数料:</strong> クレジットカード決済手数料はお客様のご負担となります
+                <strong>手数料:</strong>{" "}
+                クレジットカード決済手数料はお客様のご負担となります
               </p>
               <p>
                 <strong>消費税:</strong> 商品価格に含まれています
@@ -65,10 +75,13 @@ export default function TokushoPage() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold mb-4 pb-2 border-b">支払方法および支払時期</h2>
+            <h2 className="text-xl font-semibold mb-4 pb-2 border-b">
+              支払方法および支払時期
+            </h2>
             <div className="text-gray-700 space-y-2">
               <p>
-                <strong>支払方法:</strong> クレジットカード決済（Visa、MasterCard、American Express、JCB）
+                <strong>支払方法:</strong>{" "}
+                クレジットカード決済（Visa、MasterCard、American Express、JCB）
               </p>
               <p>
                 <strong>支払時期:</strong> ご注文時にお支払いが確定します
@@ -77,7 +90,9 @@ export default function TokushoPage() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold mb-4 pb-2 border-b">商品の引渡時期</h2>
+            <h2 className="text-xl font-semibold mb-4 pb-2 border-b">
+              商品の引渡時期
+            </h2>
             <p className="text-gray-700">
               ご注文確認後、3営業日以内に発送いたします。
               <br />
@@ -86,7 +101,9 @@ export default function TokushoPage() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold mb-4 pb-2 border-b">返品・キャンセルについて</h2>
+            <h2 className="text-xl font-semibold mb-4 pb-2 border-b">
+              返品・キャンセルについて
+            </h2>
             <div className="text-gray-700 space-y-3">
               <div>
                 <h3 className="font-semibold mb-2">返品・交換について</h3>
@@ -131,9 +148,7 @@ export default function TokushoPage() {
                 <br />
                 クレジットカード情報は当社では保存されません。
               </p>
-              <p>
-                ご不明な点がございましたら、お気軽にお問い合わせください。
-              </p>
+              <p>ご不明な点がございましたら、お気軽にお問い合わせください。</p>
             </div>
           </section>
 
@@ -147,4 +162,3 @@ export default function TokushoPage() {
     </main>
   );
 }
-

@@ -68,7 +68,7 @@ export async function POST(req: NextRequest) {
         ].filter(Boolean);
         const fullAddress = fullAddressParts.join(" ");
 
-        const newUser = await prisma.user.create({
+        await prisma.user.create({
             data: {
                 email,
                 password: hashed,

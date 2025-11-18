@@ -3,11 +3,11 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
+import Image from "next/image";
 import { PREFECTURES } from "@/constants/prefectures";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
-import { Skeleton } from "@/components/ui/skeleton";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -146,14 +146,14 @@ export default function RegisterPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-      
+
       if (res.ok) {
         router.push("/login?registered=true");
       } else {
         const data = await res.json().catch(() => null);
         setError(data?.message || "登録に失敗しました");
       }
-    } catch (err) {
+    } catch {
       setError("予期しないエラーが発生しました。もう一度お試しください。");
     } finally {
       setSubmitting(false);
@@ -165,7 +165,7 @@ export default function RegisterPage() {
     setGoogleLoading(true);
     try {
       await signIn("google");
-    } catch (err) {
+    } catch {
       setError("Google登録に失敗しました。もう一度お試しください。");
       setGoogleLoading(false);
     }
@@ -174,21 +174,25 @@ export default function RegisterPage() {
   return (
     <main className="p-8 max-w-md mx-auto">
       <h1 className="text-2xl font-bold mb-6">新規登録</h1>
-      
+
       {error && (
         <div className="mb-4 p-3 bg-destructive/10 border border-destructive/20 rounded-md">
           <p className="text-sm text-destructive">{error}</p>
         </div>
       )}
-      
+
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium mb-1">プロフィール画像（任意）</label>
+          <label className="block text-sm font-medium mb-1">
+            プロフィール画像（任意）
+          </label>
           {avatarUrl && (
             <div className="mb-2">
-              <img
+              <Image
                 src={avatarUrl}
                 alt="Avatar preview"
+                width={96}
+                height={96}
                 className="w-24 h-24 rounded-full object-cover border-2 border-gray-200"
               />
             </div>
@@ -279,7 +283,9 @@ export default function RegisterPage() {
         </div>
         <div>
           <h2 className="text-lg font-semibold mt-6 mb-2">住所</h2>
-          <label className="block text-sm font-medium mb-1">郵便番号（半角数字）</label>
+          <label className="block text-sm font-medium mb-1">
+            郵便番号（半角数字）
+          </label>
           <Input
             name="postalCode"
             value={form.postalCode}
@@ -333,7 +339,9 @@ export default function RegisterPage() {
           />
 
           {/* 建物名／会社名（任意） */}
-          <label className="block text-sm font-medium mb-1">建物名／会社名（任意）</label>
+          <label className="block text-sm font-medium mb-1">
+            建物名／会社名（任意）
+          </label>
           <Input
             title="building"
             name="building"
@@ -344,7 +352,9 @@ export default function RegisterPage() {
           />
 
           {/* 部屋番号（任意） */}
-          <label className="block text-sm font-medium mb-1">部屋番号（任意）</label>
+          <label className="block text-sm font-medium mb-1">
+            部屋番号（任意）
+          </label>
           <Input
             title="room"
             name="room"
@@ -381,13 +391,13 @@ export default function RegisterPage() {
           )}
         </Button>
       </form>
-      
+
       <div className="my-6 flex items-center gap-4">
         <div className="flex-1 border-t"></div>
         <span className="text-sm text-muted-foreground">または</span>
         <div className="flex-1 border-t"></div>
       </div>
-      
+
       <Button
         onClick={handleGoogleSignIn}
         variant="outline"
@@ -403,7 +413,7 @@ export default function RegisterPage() {
           "Googleで登録"
         )}
       </Button>
-      
+
       <p className="mt-6 text-center text-sm">
         既にアカウントをお持ちの方は{" "}
         <a href="/login" className="text-primary underline hover:no-underline">

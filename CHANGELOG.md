@@ -4,7 +4,88 @@
 
 ---
 
-## [2025-11-17] - 評論 API 購買驗證可配置化
+## [2025-11-18] - 修復 Vercel 部署錯誤
+
+### 🎯 概述
+
+本次更新修復了多個 TypeScript 和 React Hook 的 linting 錯誤，確保代碼可以成功部署到 Vercel。
+
+### 🐛 修復項目
+
+#### TypeScript 錯誤修復
+
+**`src/app/api/register/route.ts`**
+
+- ✅ 移除未使用的 `newUser` 變數（第 71 行）
+- ✅ 直接調用 `prisma.user.create()` 而不賦值給變數
+
+**`src/app/login/page.tsx`**
+
+- ✅ 移除兩個 catch 區塊中未使用的 `err` 變數（第 70、82 行）
+- ✅ 使用空的 catch 區塊處理錯誤
+
+#### React Hook 警告修復
+
+**`src/app/mypage/page.tsx`**
+
+- ✅ 使用 `useCallback` 包裝 `fetchOrders` 函數以修復依賴項警告（第 121 行）
+- ✅ 將 `fetchOrders` 添加到 `useEffect` 的依賴項數組中
+- ✅ 將所有 fetch 函數（`fetchProfile`, `fetchOrders`, `fetchLikes`, `fetchComments`）移到 `useEffect` 之前，修復「變數在宣告前使用」的錯誤
+- ✅ 將 `<img>` 標籤替換為 Next.js `<Image>` 組件（第 453 行）
+- ✅ 添加 `width={96}` 和 `height={96}` 屬性
+
+### 💡 技術細節
+
+- **最小改動原則**：所有修復都採用最小改動方案，不影響現有功能
+- **代碼品質**：移除未使用的變數，遵循 TypeScript 和 React 最佳實踐
+- **效能優化**：使用 Next.js Image 組件提升圖片載入效能
+
+### 📝 注意事項
+
+- 所有修復已通過 linting 檢查
+- 功能保持不變，僅修復代碼品質問題
+- 符合 Vercel 部署要求
+
+---
+
+## [2025-11-18] - 圖片優化：使用 Next.js Image 組件
+
+### 🎯 概述
+
+本次更新將註冊頁面的頭像預覽從原生 `<img>` 標籤改為 Next.js `<Image>` 組件，以提升圖片載入效能和用戶體驗。
+
+### 🎨 前端變更
+
+#### 更新頁面
+
+**`/register`**
+
+- ✅ 將頭像預覽的 `<img>` 標籤替換為 Next.js `<Image>` 組件
+- ✅ 添加 `width={96}` 和 `height={96}` 屬性（對應 `w-24 h-24` 的 Tailwind 類別）
+- ✅ 導入 `next/image` 模組
+
+### ⚙️ 配置變更
+
+**`next.config.ts`**
+
+- ✅ 新增 Vercel Blob Storage 域名配置到 `remotePatterns`
+- ✅ 允許 `*.public.blob.vercel-storage.com` 作為圖片來源
+
+### 💡 技術細節
+
+- **圖片優化**：Next.js Image 組件提供自動圖片優化、懶加載和響應式圖片
+- **效能提升**：減少初始頁面載入時間，提升 LCP（Largest Contentful Paint）指標
+- **最小改動**：僅修改註冊頁面，不影響其他頁面（mypage 已使用 Avatar 組件）
+
+### 📝 注意事項
+
+- mypage 頁面已使用 `Avatar` 組件（基於 Radix UI），無需修改
+- Vercel Blob Storage 的圖片現在可以通過 Next.js Image 組件自動優化
+- 如需在其他頁面使用 Vercel Blob Storage 的圖片，可直接使用 `<Image>` 組件
+
+---
+
+## [2025-11-18] - 評論 API 購買驗證可配置化
 
 ### 🎯 概述
 

@@ -7,7 +7,6 @@ import OptionButtons from "./OptionButtons";
 import { useCart } from "@/contexts/CartContext";
 import { Product } from "@/lib/type";
 import content from "@/data/content.json";
-import Link from "next/link";
 
 interface AddToCartButtonProps {
   product: Product;
