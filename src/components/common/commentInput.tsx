@@ -10,7 +10,7 @@ import {
   TooltipContent,
 } from "@/components/ui/tooltip";
 import { Spinner } from "@/components/ui/spinner";
-import { MessageSquare } from "lucide-react";
+import { MessageSquare, Sparkles } from "lucide-react";
 import { Comment } from "@/lib/type";
 import { cn } from "@/lib/utils";
 
@@ -28,6 +28,7 @@ export default function CommentInput({
   const [comment, setComment] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [aiLoading, setAiLoading] = useState(false);
 
   const handleSubmit = async () => {
     if (!comment.trim()) {
@@ -63,6 +64,40 @@ export default function CommentInput({
       setError(e?.message || "投稿に失敗しました");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleAiPolish = async () => {
+    if (!comment.trim()) {
+      setError("AI リライトの前にコメントを入力してください。");
+      return;
+    }
+    setAiLoading(true);
+    setError("");
+    try {
+      const res = await fetch("/api/ai/comment", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          text: comment,
+          tone: "friendly",
+          locale: "ja-JP",
+        }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data?.message || "AI リライトに失敗しました。");
+      }
+
+      const data = await res.json();
+      if (data?.revision) {
+        setComment(data.revision);
+      }
+    } catch (e: any) {
+      setError(e?.message || "AI リライトに失敗しました。");
+    } finally {
+      setAiLoading(false);
     }
   };
 
@@ -147,17 +182,41 @@ export default function CommentInput({
         />
       </div>
       {error && <p className="text-sm text-destructive">{error}</p>}
-      <Button onClick={handleSubmit} disabled={loading} className="w-full">
-        {loading ? (
-          <>
-            <Spinner size="sm" variant="white" /> 投稿中...
-          </>
-        ) : (
-          <>
-            <MessageSquare className="size-4 mr-1" /> レビューを投稿
-          </>
-        )}
-      </Button>
+      <div className="flex gap-2">
+        <Tooltip delayDuration={200}>
+          <TooltipTrigger asChild>
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={handleAiPolish}
+              disabled={aiLoading || loading}
+              className="w-16 shrink-0"
+            >
+              {aiLoading ? (
+                <Spinner size="sm" />
+              ) : (
+                <>
+                  <Sparkles className="size-4" />
+                </>
+              )}
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>AI がコメントを自然な日本語に整えます</p>
+          </TooltipContent>
+        </Tooltip>
+        <Button onClick={handleSubmit} disabled={loading || aiLoading} className="flex-1">
+          {loading ? (
+            <>
+              <Spinner size="sm" variant="white" /> 投稿中...
+            </>
+          ) : (
+            <>
+              <MessageSquare className="size-4 mr-1" /> レビューを投稿
+            </>
+          )}
+        </Button>
+      </div>
     </div>
   );
 }
