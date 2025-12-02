@@ -72,7 +72,7 @@ export default function RootLayout({
             <SidebarProvider defaultOpen={false}>
               <AppSidebar />
               <Nav />
-              <main>{children}</main>
+              <main className="w-full max-w-4xl mx-auto min-h-screen">{children}</main>
               <Footer />
               <BackToTop />
               <AiAssistant />

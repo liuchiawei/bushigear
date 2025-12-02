@@ -172,7 +172,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <main className="p-8 max-w-md mx-auto">
+    <div className="w-full py-16">
       <h1 className="text-2xl font-bold mb-6">新規登録</h1>
 
       {error && (
@@ -400,7 +400,7 @@ export default function RegisterPage() {
 
       <Button
         onClick={handleGoogleSignIn}
-        variant="outline"
+        variant="default"
         className="w-full"
         disabled={submitting || googleLoading}
       >
@@ -420,6 +420,6 @@ export default function RegisterPage() {
           こちら
         </a>
       </p>
-    </main>
+    </div>
   );
 }

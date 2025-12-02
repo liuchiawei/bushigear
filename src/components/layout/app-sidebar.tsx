@@ -91,7 +91,7 @@ export default function AppSidebar() {
             </Collapsible>
             <SidebarMenuItem>
               <SidebarMenuButton tooltip="ブシギアについて" asChild>
-                <Link href="/">
+                <Link href="/about">
                   <Store />
                   <span className="font-bold hover:text-background">
                     ブシギアについて

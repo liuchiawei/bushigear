@@ -30,7 +30,7 @@ export default function Sales() {
         {/* <p className="w-full self-end mt-6 col-start-2 text-xs md:text-sm font-sans font-[300] text-neutral-400 text-justify leading-6 tracking-wide">
           {content.home.sales.description}
         </p> */}
-        <motion.div className="grid grid-cols-subgrid col-start-1 md:col-start-2 mx-auto col-span-2 md:col-span-4 gap-2">
+        <motion.div className="w-full grid grid-cols-subgrid col-start-1 md:col-start-2 mx-auto col-span-2 md:col-span-4 gap-2">
           {content.home.sales.items.map((item, index) => (
             <motion.div
               key={item.id}
@@ -46,7 +46,7 @@ export default function Sales() {
                 href={`/products/${item.id}`}
                 className="group w-full h-full p-2 flex flex-col justify-center items-center bg-card/[0.2] rounded-xl hover:bg-card/40 transition-colors duration-200"
               >
-                <div className="w-full h-full p-6 flex items-center justify-center">
+                <div className="w-full h-full p-0 md:p-6 flex items-center justify-center">
                   <Image
                     src={item.image}
                     alt={item.name}

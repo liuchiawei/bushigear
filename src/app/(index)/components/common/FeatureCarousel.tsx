@@ -61,7 +61,7 @@ export default function FeatureCarousel() {
   return (
     <div className="w-full h-[840px] flex justify-center items-center relative overflow-hidden">
       {/* Decorative Border Circle */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 border border-primary size-120 md:size-160 rounded-full z-0" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 border border-primary size-120 md:size-160 rounded-full z-0 pointer-events-none" />
 
       {/* Products Wheel */}
       <motion.div
@@ -155,7 +155,7 @@ export default function FeatureCarousel() {
       </motion.div>
 
       {/* Navigation Buttons */}
-      <div className="flex justify-between absolute w-full top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
+      <div className="flex justify-between absolute w-full top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50">
         <Button
           variant="outline"
           size="icon"
