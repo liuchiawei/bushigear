@@ -4,6 +4,38 @@
 
 ---
 
+## [2025-11-24] - 新增 AI 評論潤飾 API
+
+### 🎯 概述
+
+新增 `POST /api/ai/comment`，可依據使用者輸入的原始評論自動生成語意一致但更流暢的潤飾版本，支援多語系與語氣控制，方便在商品詳情頁或後台審稿流程中快速獲得高品質評論文字。
+
+### 🔧 API 變更
+
+- **`src/app/api/ai/comment/route.ts`**
+  - ✅ 定義 `text`、`tone`、`locale`、`extraInstructions` 驗證與限制（Zod）
+  - ✅ 依語氣與語系映射生成 System/Prompt，限制輸出長度並要求不可捏造事實
+  - ✅ 回傳原文與潤飾後文字，便於前端比對
+
+### 🎨 前端變更
+
+- **`src/components/common/commentInput.tsx`**
+  - ✅ 評論送出ボタンの横に AI リライトボタンを追加（Tooltip 付き）
+  - ✅ `/api/ai/comment` を呼び出し、生成結果でテキストエリアを自動更新
+  - ✅ 投稿ボタンと AI ボタンの同時操作を防ぐローディング制御を実装
+
+### 🔐 環境變數
+
+- `OPENAI_API_KEY` 必須設定（沿用既有環境變數，不需新增）
+
+### 🧪 測試建議
+
+- [ ] `tone` 不同值（friendly/formal/enthusiastic/objective）是否輸出符合預期
+- [ ] `locale` 切換 zh-TW/ja-JP/en-US 是否產生對應語言
+- [ ] 缺少 `text`、過短或過長的輸入是否正確回報 400
+
+---
+
 ## [2025-11-18] - 新增多語言 README 文件
 
 ### 🎯 概述
