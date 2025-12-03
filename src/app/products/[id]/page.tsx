@@ -44,7 +44,7 @@ export default async function ProductDetailPage({
       : comments.reduce((sum, c) => sum + (c.score ?? 0), 0) / commentCount;
 
   return (
-    <main className="w-full py-16 relative overflow-hidden">
+    <main className="w-full py-16 relative">
       <div className="absolute -top-10 -left-10 -z-10 text-white font-roboto font-black text-[160px] uppercase [writing-mode:vertical-rl] tracking-tight leading-none break-keep whitespace-nowrap">
         {product.name_en}
       </div>
