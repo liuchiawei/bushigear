@@ -52,7 +52,7 @@ export default function SearchBar() {
       } finally {
         setIsLoading(false);
       }
-    }, 300);
+    }, 200);
 
     // 清理函數
     return () => {
@@ -64,6 +64,10 @@ export default function SearchBar() {
 
   // 當點擊外部時關閉 popover
   const handleOpenChange = (open: boolean) => {
+    // 如果查詢為空，不允許打開 popover
+    if (open && !query.trim()) {
+      return;
+    }
     setIsOpen(open);
     if (!open) {
       setQuery("");
@@ -83,7 +87,8 @@ export default function SearchBar() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onFocus={() => {
-                if (query.trim() || products.length > 0) {
+                // 只有當有輸入內容時才打開 popover
+                if (query.trim()) {
                   setIsOpen(true);
                 }
               }}
@@ -107,4 +112,3 @@ export default function SearchBar() {
     </div>
   );
 }
-
