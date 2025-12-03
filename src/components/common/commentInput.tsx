@@ -29,6 +29,8 @@ export default function CommentInput({
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [aiLoading, setAiLoading] = useState(false);
+  const [selectedTone, setSelectedTone] = useState<"friendly" | "neutral" | "negative">("friendly");
+  const [hasUsedAi, setHasUsedAi] = useState(false);
 
   const handleSubmit = async () => {
     if (!comment.trim()) {
@@ -59,6 +61,7 @@ export default function CommentInput({
         onSubmitted(data.comment);
         setComment("");
         setScore(5);
+        setHasUsedAi(false);
       }
     } catch (e: any) {
       setError(e?.message || "投稿に失敗しました");
@@ -80,7 +83,7 @@ export default function CommentInput({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           text: comment,
-          tone: "friendly",
+          tone: selectedTone,
           locale: "ja-JP",
         }),
       });
@@ -93,6 +96,7 @@ export default function CommentInput({
       const data = await res.json();
       if (data?.revision) {
         setComment(data.revision);
+        setHasUsedAi(true);
       }
     } catch (e: any) {
       setError(e?.message || "AI リライトに失敗しました。");
@@ -183,28 +187,75 @@ export default function CommentInput({
       </div>
       {error && <p className="text-sm text-destructive">{error}</p>}
       <div className="flex gap-2">
-        <Tooltip delayDuration={200}>
-          <TooltipTrigger asChild>
-            <Button
+        <div className={cn(
+          "relative group",
+          (aiLoading || loading || hasUsedAi) && "cursor-not-allowed"
+        )}>
+          <Tooltip delayDuration={200}>
+            <TooltipTrigger asChild>
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={handleAiPolish}
+                disabled={aiLoading || loading || hasUsedAi}
+                className={cn(
+                  "w-16 shrink-0",
+                  (aiLoading || loading || hasUsedAi) && "!cursor-not-allowed"
+                )}
+              >
+                {aiLoading ? (
+                  <Spinner size="sm" />
+                ) : (
+                  <>
+                    <Sparkles className="size-4" />
+                  </>
+                )}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="bottom">
+              <p>AIがコメントをより詳しくリライトします</p>
+            </TooltipContent>
+          </Tooltip>
+          
+          {/* 语气选择器 - hover时显示（仅在按钮可用时） */}
+          {!hasUsedAi && !aiLoading && !loading && (
+            <div className="absolute right-full bottom-0 mr-2 w-40 bg-white border rounded-md shadow-lg py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+            <div className="px-3 py-1.5 text-xs font-medium text-muted-foreground border-b">
+              トーンを選択
+            </div>
+            <button
               type="button"
-              variant="secondary"
-              onClick={handleAiPolish}
-              disabled={aiLoading || loading}
-              className="w-16 shrink-0"
-            >
-              {aiLoading ? (
-                <Spinner size="sm" />
-              ) : (
-                <>
-                  <Sparkles className="size-4" />
-                </>
+              onClick={() => setSelectedTone("friendly")}
+              className={cn(
+                "w-full px-3 py-2 text-left text-sm hover:bg-accent transition-colors",
+                selectedTone === "friendly" && "bg-accent/50"
               )}
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>AI がコメントを自然な日本語に整えます</p>
-          </TooltipContent>
-        </Tooltip>
+            >
+              <div className="font-medium">友好</div>
+            </button>
+            <button
+              type="button"
+              onClick={() => setSelectedTone("neutral")}
+              className={cn(
+                "w-full px-3 py-2 text-left text-sm hover:bg-accent transition-colors",
+                selectedTone === "neutral" && "bg-accent/50"
+              )}
+            >
+              <div className="font-medium">中立</div>
+            </button>
+            <button
+              type="button"
+              onClick={() => setSelectedTone("negative")}
+              className={cn(
+                "w-full px-3 py-2 text-left text-sm hover:bg-accent transition-colors",
+                selectedTone === "negative" && "bg-accent/50"
+              )}
+            >
+              <div className="font-medium">不満</div>
+            </button>
+          </div>
+          )}
+        </div>
         <Button onClick={handleSubmit} disabled={loading || aiLoading} className="flex-1">
           {loading ? (
             <>

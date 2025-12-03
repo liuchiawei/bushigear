@@ -4,6 +4,210 @@
 
 ---
 
+## [2025-12-03] - AI 評論生成按鈕使用限制優化
+
+### 🎯 概述
+
+本次更新限制了 AI 評論生成按鈕的使用次數，用戶在輸入評論並使用 AI 生成一次後，按鈕會被禁用，防止重複生成。同時優化了禁用狀態下的用戶體驗，包括隱藏語氣選擇器和顯示禁止游標。
+
+### 🎨 前端變更
+
+#### 更新組件
+
+**`src/components/common/commentInput.tsx`**
+
+- ✅ 新增 `hasUsedAi` 狀態追蹤 AI 生成使用情況
+- ✅ 實作按鈕使用限制：
+  - 用戶使用 AI 生成一次後，按鈕自動禁用
+  - 評論提交成功後重置狀態，允許下次評論再次使用
+- ✅ 優化禁用狀態下的用戶體驗：
+  - 禁用時 hover 不顯示語氣選擇器（條件渲染）
+  - 禁用時顯示禁止游標（`cursor-not-allowed`）
+  - 在外層容器和按鈕上都應用游標樣式，確保正確顯示
+
+### 💡 技術細節
+
+- **狀態管理**：
+
+  - 使用 `hasUsedAi` 布林值追蹤是否已使用 AI 生成
+  - 在 `handleAiPolish` 成功後設置為 `true`
+  - 在 `handleSubmit` 成功後重置為 `false`
+
+- **禁用條件**：
+
+  - 按鈕 `disabled` 屬性：`aiLoading || loading || hasUsedAi`
+  - 語氣選擇器條件渲染：`!hasUsedAi && !aiLoading && !loading`
+
+- **游標樣式**：
+  - 在外層容器 `div` 上應用 `cursor-not-allowed`（當禁用時）
+  - 在按鈕上使用 `!cursor-not-allowed`（Tailwind 的 important 修飾符）確保樣式優先級
+
+### 🔄 向後相容性
+
+- ✅ 不影響現有功能，僅添加使用限制
+- ✅ API 調用邏輯保持不變
+- ✅ 用戶體驗提升，防止誤操作重複生成
+
+### ✅ 測試檢查清單
+
+- [ ] 用戶使用 AI 生成一次後，按鈕正確禁用
+- [ ] 禁用時 hover 不顯示語氣選擇器
+- [ ] 禁用時游標顯示為禁止符號
+- [ ] 評論提交成功後，狀態正確重置
+- [ ] 下次評論可以再次使用 AI 生成功能
+
+---
+
+## [2025-12-02] - AI 評論潤飾語氣選擇功能優化
+
+### 🎯 概述
+
+本次更新優化了 AI 評論潤飾功能的語氣選項，將原本的四種語氣（friendly/formal/enthusiastic/objective）簡化為三種更實用的語氣（friendly/neutral/negative），並在前端添加了 hover 展開的語氣選擇器，讓用戶可以方便地選擇不同的語氣來生成評論。
+
+### 🔧 API 變更
+
+#### 更新 API 路由
+
+**`src/app/api/ai/comment/route.ts`**
+
+- ✅ 將語氣選項從 `["friendly", "formal", "enthusiastic", "objective"]` 改為 `["friendly", "neutral", "negative"]`
+- ✅ 更新 `toneMap`，包含三種語氣的日文描述：
+  - **friendly**: 親しみやすく自然な語り口
+  - **neutral**: 事実に基づいた中立的なトーン
+  - **negative**: 不満や失望感を明確に表現し、やや批判的なトーン
+
+### 🎨 前端變更
+
+#### 更新組件
+
+**`src/components/common/commentInput.tsx`**
+
+- ✅ 新增 `selectedTone` 狀態管理，預設值為 `"friendly"`
+- ✅ 實作 hover 展開的語氣選擇器（slider）：
+  - 使用 CSS `group-hover` 實現，無需複雜狀態管理
+  - 菜單在 AI 按鈕左側向上展開（`right-full bottom-0`）
+  - 包含三個語氣選項：友好、中立、不満
+  - 選中的語氣會高亮顯示（`bg-accent/50`）
+  - 簡化選項顯示，只保留標籤，移除描述文字
+- ✅ 修改 Tooltip 位置，讓提示文字在按鈕下方顯示（`side="bottom"`）
+- ✅ 調用 API 時使用選中的語氣參數
+
+### 💡 技術細節
+
+- **語氣選擇器設計**：
+
+  - 使用純 CSS `group-hover` 實現，保持代碼簡潔
+  - 菜單定位：`absolute right-full bottom-0 mr-2`
+  - 過渡動畫：`transition-all duration-200`
+  - 顯示控制：`opacity-0 invisible group-hover:opacity-100 group-hover:visible`
+
+### 🔄 向後相容性
+
+- ⚠️ **破壞性變更**：語氣選項從四種改為三種，舊的 `formal` 和 `enthusiastic` 選項已移除
+- ✅ API 結構保持不變，僅修改了 `tone` 參數的允許值
+- ✅ 前端向後相容，如果使用舊的語氣值會回退到預設的 `friendly`
+## [2025-12-03] - 商品搜尋功能實作
+
+### 🎯 概述
+
+本次更新實作了完整的商品搜尋功能，包含搜尋 API 端點和前端搜尋欄組件，支援多語系商品名稱、品牌和分類的模糊搜尋，並提供即時搜尋結果顯示。
+
+### 🔧 API 變更
+
+#### 新增 API 路由
+
+**`GET /api/products/search`**
+
+- ✅ 查詢參數：
+  - `q` (必需): 搜尋關鍵字
+  - `limit` (可選): 限制結果數量，預設 10，最多 20
+- ✅ 搜尋範圍：支援多欄位模糊搜尋（case-insensitive）
+  - `name_en` (英文商品名稱)
+  - `name_jp` (日文商品名稱)
+  - `name_cn` (中文商品名稱)
+  - `brand` (品牌)
+  - `category` (分類)
+- ✅ 使用 Prisma OR 查詢，同時搜尋多個欄位
+- ✅ 結果按 `id` 降序排列（最新商品優先）
+- ✅ 空查詢字串時返回空陣列
+
+**檔案位置**: `src/app/api/products/search/route.ts`
+
+### 🎨 前端變更
+
+#### 新增組件
+
+**`src/components/common/SearchBar.tsx`**
+
+- ✅ 搜尋輸入欄組件，整合在導覽列中
+- ✅ 實作 300ms debounce 機制，減少 API 請求頻率
+- ✅ 使用 Popover 顯示即時搜尋結果
+- ✅ 自動處理空查詢和錯誤狀態
+- ✅ 點擊外部區域自動關閉搜尋結果
+- ✅ 響應式設計（寬度：`w-48 md:w-64`）
+
+**`src/components/common/SearchResults.tsx`**
+
+- ✅ 搜尋結果顯示組件
+- ✅ 顯示商品圖片、日文名稱、品牌和價格
+- ✅ 點擊結果項目導航到商品詳情頁
+- ✅ 載入中狀態顯示（「検索中...」）
+- ✅ 無結果時顯示提示訊息（「該当する商品が見つかりませんでした」）
+- ✅ 使用 shadcn Command 組件提供一致的 UI 體驗
+
+#### 整合位置
+
+**`src/components/layout/nav.tsx`**
+
+- ✅ 在導覽列中整合 `SearchBar` 組件
+- ✅ 位於導覽列左側，與登入、喜歡、購物車等功能並列
+
+### 💡 技術細節
+
+- **搜尋策略**: 使用 Prisma 的 `contains` 搭配 `mode: "insensitive"` 實現大小寫不敏感的模糊搜尋
+- **效能優化**:
+  - 前端使用 debounce 減少不必要的 API 請求
+  - 限制搜尋結果數量（最多 20 筆）
+- **使用者體驗**:
+  - 即時搜尋結果顯示（輸入後 300ms 自動搜尋）
+  - 清晰的載入和空狀態提示
+  - 點擊結果後自動關閉搜尋面板
+
+### 📝 使用方式
+
+**API 呼叫範例**:
+
+```http
+GET /api/products/search?q=グローブ&limit=10
+```
+
+**前端使用**:
+
+```tsx
+import SearchBar from "@/components/common/SearchBar";
+
+<SearchBar />;
+```
+
+### ✅ 測試檢查清單
+
+- [ ] 輸入關鍵字後 300ms 自動觸發搜尋
+- [ ] 搜尋結果正確顯示商品資訊（圖片、名稱、品牌、價格）
+- [ ] 點擊搜尋結果可正確導航到商品詳情頁
+- [ ] 空查詢時不顯示搜尋結果
+- [ ] 無結果時顯示適當的提示訊息
+- [ ] 多語系商品名稱搜尋功能正常（英文、日文、中文）
+- [ ] 品牌和分類搜尋功能正常
+- [ ] 搜尋結果數量限制功能正常（最多 20 筆）
+
+### 🔄 向後相容性
+
+- ✅ 不影響現有的產品 API (`/api/products`)
+- ✅ 不影響現有的產品列表和詳情頁面
+- ✅ 搜尋功能為新增功能，不改變現有行為
+
+---
+
 ## [2025-11-24] - 新增 AI 評論潤飾 API
 
 ### 🎯 概述
@@ -24,13 +228,9 @@
   - ✅ `/api/ai/comment` を呼び出し、生成結果でテキストエリアを自動更新
   - ✅ 投稿ボタンと AI ボタンの同時操作を防ぐローディング制御を実装
 
-### 🔐 環境變數
-
-- `OPENAI_API_KEY` 必須設定（沿用既有環境變數，不需新增）
-
 ### 🧪 測試建議
 
-- [ ] `tone` 不同值（friendly/formal/enthusiastic/objective）是否輸出符合預期
+- [ ] `tone` 不同值（friendly/neutral/negative）是否輸出符合預期
 - [ ] `locale` 切換 zh-TW/ja-JP/en-US 是否產生對應語言
 - [ ] 缺少 `text`、過短或過長的輸入是否正確回報 400
 
