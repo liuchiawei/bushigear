@@ -10,7 +10,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function LoginPage() {
   const router = useRouter();
-  const {data: session, status} = useSession();
+  const { data: session, status } = useSession();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -54,16 +54,18 @@ export default function LoginPage() {
     e.preventDefault();
     setError("");
     setLoading(true);
-    
+
     try {
       const res = await signIn("credentials", {
         redirect: false,
         email,
         password,
       });
-      
+
       if (res?.error) {
-        setError("ログインに失敗しました。メールアドレスとパスワードを確認してください。");
+        setError(
+          "ログインに失敗しました。メールアドレスとパスワードを確認してください。"
+        );
       } else {
         router.push("/");
       }
@@ -86,33 +88,38 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="p-8 max-w-md mx-auto">
+    <div className="w-full py-16 flex flex-col items-center justify-center">
       <h1 className="text-2xl font-bold mb-6">ログイン</h1>
-      
+
       {error && (
         <div className="mb-4 p-3 bg-destructive/10 border border-destructive/20 rounded-md">
           <p className="text-sm text-destructive">{error}</p>
         </div>
       )}
-      
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
+
+      <form
+        onSubmit={handleSubmit}
+        className="w-full space-y-4 border bg-card rounded-xl p-4"
+      >
+        <div className="flex flex-col md:flex-row md:items-center gap-2">
           <label className="block text-sm font-medium mb-1">Email</label>
           <Input
             title="email"
             type="email"
             value={email}
+            className="border-border rounded-md"
             onChange={(e) => setEmail(e.target.value)}
             disabled={loading || googleLoading}
             required
           />
         </div>
-        <div>
+        <div className="flex flex-col md:flex-row md:items-center gap-2">
           <label className="block text-sm font-medium mb-1">Password</label>
           <Input
             title="password"
             type="password"
             value={password}
+            className="border-border rounded-md"
             onChange={(e) => setPassword(e.target.value)}
             disabled={loading || googleLoading}
             required
@@ -133,16 +140,16 @@ export default function LoginPage() {
           )}
         </Button>
       </form>
-      
+
       <div className="my-6 flex items-center gap-4">
         <div className="flex-1 border-t"></div>
         <span className="text-sm text-muted-foreground">または</span>
         <div className="flex-1 border-t"></div>
       </div>
-      
+
       <Button
         onClick={handleGoogleSignIn}
-        variant="outline"
+        variant="default"
         className="w-full"
         disabled={loading || googleLoading}
       >
@@ -155,13 +162,16 @@ export default function LoginPage() {
           "Googleでログイン"
         )}
       </Button>
-      
+
       <p className="mt-6 text-center text-sm">
         新規登録は{" "}
-        <a href="/register" className="text-primary underline hover:no-underline">
+        <a
+          href="/register"
+          className="text-primary underline hover:no-underline"
+        >
           こちら
         </a>
       </p>
-    </main>
+    </div>
   );
 }

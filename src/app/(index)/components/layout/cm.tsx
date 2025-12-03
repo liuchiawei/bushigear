@@ -40,7 +40,7 @@ export default function Cm() {
   }, [api, isAutoPlaying]);
 
   return (
-    <div className="relative w-full h-screen overflow-hidden flex items-center justify-center">
+    <div className="relative w-full h-full overflow-hidden flex items-center justify-center px-4 md:px-0">
       {/* Title Overlay */}
       <motion.h1
         initial={{ opacity: 0, y: 50 }}
@@ -61,9 +61,9 @@ export default function Cm() {
           slidesToScroll: 1,
         }}
       >
-        <CarouselContent className="h-[28rem]">
+        <CarouselContent className="h-120">
           {items.map((item) => (
-            <CarouselItem key={item.id} className="basis-1/3 pl-4">
+            <CarouselItem key={item.id} className="basis-full md:basis-1/3 pl-4">
               <div className="w-full h-full relative rounded-xl overflow-hidden">
                 <Image
                   src={item.image}
@@ -82,7 +82,7 @@ export default function Cm() {
       <Button
         variant="outline"
         size="icon"
-        className="absolute left-4 top-1/2 -translate-y-1/2 z-50 size-12 rounded-full hover:bg-primary hover:text-background cursor-pointer"
+        className="absolute left-4 top-1/2 -translate-y-1/2 z-50 size-12 rounded-full hover:bg-primary/50 hover:text-background cursor-pointer"
         onClick={() => {
           api?.scrollPrev();
           setIsAutoPlaying(false);
@@ -94,7 +94,7 @@ export default function Cm() {
       <Button
         variant="outline"
         size="icon"
-        className="absolute right-4 top-1/2 -translate-y-1/2 z-50 size-12 rounded-full hover:bg-primary hover:text-background cursor-pointer"
+        className="absolute right-4 top-1/2 -translate-y-1/2 z-50 size-12 rounded-full hover:bg-primary/50 hover:text-background cursor-pointer"
         onClick={() => {
           api?.scrollNext();
           setIsAutoPlaying(false);

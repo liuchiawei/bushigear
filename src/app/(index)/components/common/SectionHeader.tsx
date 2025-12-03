@@ -22,7 +22,7 @@ export default function SectionHeader({
           className={`w-full font-roboto font-[900] text-foreground uppercase leading-none tracking-tight mb-18 ${reverse ? "md:text-right" : ""
             }
           ${title_en.length > 6
-              ? "text-[84px] md:text-[14vw]"
+              ? "text-[84px] md:text-[132pt]"
               : "text-[120px] md:text-[15vw]"
             }`}
         >
