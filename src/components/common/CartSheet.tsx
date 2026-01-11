@@ -18,10 +18,22 @@ import CartVolumeIndicator from "@/components/common/CartVolumeIndicator";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/contexts/CartContext";
 import { useRouter } from "next/navigation";
+import { useLocale } from "next-intl";
+import { getLocalizedText, type Locale } from "@/lib/i18n";
+import content from "@/data/content.json";
 
 export default function CartSheet() {
   const router = useRouter();
   const { cart, removeFromCart, updateQuantity, clearCart } = useCart();
+  const locale = useLocale() as Locale;
+  const tCart = content.cart;
+  const t = <K extends keyof typeof tCart>(key: K) =>
+    locale === "jp" ? tCart[key].jp : getLocalizedText(tCart[key], locale);
+  const qtyLabel = locale === "jp" ? tCart.quantity.jp : getLocalizedText(tCart.quantity, locale);
+  const deleteLabel = locale === "jp" ? tCart.delete.jp : getLocalizedText(tCart.delete, locale);
+  const totalLabel = locale === "jp" ? tCart.total.jp : getLocalizedText(tCart.total, locale);
+  const continueLabel = locale === "jp" ? tCart.continue.jp : getLocalizedText(tCart.continue, locale);
+  const checkoutLabel = locale === "jp" ? tCart.checkout.jp : getLocalizedText(tCart.checkout, locale);
   const handleQuantityChange = (productId: number, newQuantity: number) => {
     if (newQuantity === 0) {
       removeFromCart(productId);
@@ -44,23 +56,27 @@ export default function CartSheet() {
             </SheetTrigger>
           </TooltipTrigger>
           <TooltipContent>
-            <p>カート</p>
+            <p>{t("title")}</p>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
       <SheetContent side="right" className="w-4/5 max-w-4xl flex flex-col">
         <SheetHeader>
           <SheetTitle>
-            <Link href="/cart">ショッピングカート</Link>
+            <Link href="/cart">{t("title")}</Link>
           </SheetTitle>
         </SheetHeader>
 
         {cart.items.length === 0 ? (
           // カートが空の場合
           <div className="flex-1 flex flex-col items-center justify-center">
-            <p className="text-lg text-gray-500 mb-6">カートは空です</p>
+            <p className="text-lg text-gray-500 mb-6">
+              {tCart.empty.message[locale === "jp" ? "jp" : locale]}
+            </p>
             <Link href="/products">
-              <Button size="lg">商品を見る</Button>
+              <Button size="lg">
+                {tCart.empty.cta[locale === "jp" ? "jp" : locale]}
+              </Button>
             </Link>
           </div>
         ) : (
@@ -84,7 +100,9 @@ export default function CartSheet() {
 
                   <div className="flex-1 min-w-0">
                     <h3 className="text-sm font-semibold truncate">
-                      {item.product.name_jp}
+                      {locale === "jp"
+                        ? item.product.name_jp
+                        : item.product.name_en || item.product.name_jp}
                     </h3>
                     <p className="text-xs text-gray-500">
                       {item.product.brand}
@@ -96,7 +114,7 @@ export default function CartSheet() {
 
                   <div className="flex flex-col items-end space-y-1">
                     <select
-                      title="数量"
+                      title={qtyLabel}
                       value={item.quantity}
                       onChange={(e) =>
                         handleQuantityChange(
@@ -106,7 +124,7 @@ export default function CartSheet() {
                       }
                       className="border rounded-md px-1 py-1 text-xs w-16"
                     >
-                      <option value={0}>削除</option>
+                      <option value={0}>{deleteLabel}</option>
                       {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
                         <option key={num} value={num}>
                           {num}
@@ -124,13 +142,13 @@ export default function CartSheet() {
                 onClick={clearCart}
                 className="w-full bg-foreground text-background"
               >
-                カートを空にする
+                {t("clear")}
               </Button>
             </div>
 
             <div className="mt-4 p-4 bg-gray-50 rounded-lg">
               <div className="flex justify-between items-center mb-4">
-                <span className="text-lg font-semibold">合計:</span>
+                <span className="text-lg font-semibold">{totalLabel}:</span>
                 <span className="text-2xl font-bold text-foreground">
                   ¥{cart.total.toLocaleString()}
                 </span>
@@ -139,12 +157,12 @@ export default function CartSheet() {
               <div className="flex flex-col space-y-2">
                 <Link href="/products">
                   <Button variant="outline" className="w-full hover:bg-foreground/50 hover:text-background" size="sm">
-                    買い物を続ける
+                    {continueLabel}
                   </Button>
                 </Link>
 
                 <Button onClick={handleCheckout} className="w-full bg-foreground text-background" size="sm">
-                  レジに進む
+                  {checkoutLabel}
                 </Button>
               </div>
             </div>

@@ -1,17 +1,37 @@
+ "use client";
+
 import Link from "next/link";
 import Image from "next/image";
 import { Product } from "@/lib/type";
 import AddToCart from "@/components/common/AddToCart";
+import { useLocale } from "next-intl";
+import { getLocalizedText, toSimplified, type Locale } from "@/lib/i18n";
+import content from "@/data/content.json";
 
 export default function Grid({ product }: { product: Product }) {
-  const category =
-    product.category == "glove"
-      ? "グローブ"
-      : product.category == "mitt"
-      ? "ミット"
-      : product.category == "protector"
-      ? "プロテクター"
-      : "シャツ";
+  const locale = useLocale() as Locale;
+
+  const categoryLabel = () => {
+    const normalizedCategory =
+      product.category === "cloth" ? "clothes" : product.category;
+    const match = content.nav.categories.find((c) => c.slug === normalizedCategory);
+    if (match) {
+      return locale === "jp"
+        ? match.name.jp
+        : getLocalizedText(match.name as any, locale);
+    }
+    return product.category;
+  };
+
+  const displayName =
+    locale === "jp"
+      ? product.name_jp
+      : locale === "zh_tw" || locale === "zh_cn"
+        ? (locale === "zh_cn" ? toSimplified(product.name_cn) : product.name_cn) ||
+          product.name_en ||
+          product.name_jp
+        : product.name_en || product.name_jp;
+
   return (
     <div className="p-4 border-r border-b overflow-hidden flex flex-col justify-between gap-2">
       {/* 商品カテゴリー */}
@@ -39,8 +59,8 @@ export default function Grid({ product }: { product: Product }) {
       {/* 商品情報 */}
       <div className="flex-1 flex flex-col justify-between">
         <div>
-          <h2 className="text-xs">{category}</h2>
-          <h1 className="text-lg font-bold">{product.name_jp}</h1>
+          <h2 className="text-xs">{categoryLabel()}</h2>
+          <h1 className="text-lg font-bold">{displayName}</h1>
         </div>
         {/* <p className="text-xs text-justify text-gray-500">
           {product.description_jp}

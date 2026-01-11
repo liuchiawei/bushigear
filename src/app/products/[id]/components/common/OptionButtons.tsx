@@ -13,6 +13,8 @@ import content from "@/data/content.json";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useLocale } from "next-intl";
+import { getLocalizedText, type Locale } from "@/lib/i18n";
 
 interface OptionButtonsProps {
   handleAddToCart: () => void;
@@ -22,9 +24,21 @@ interface OptionButtonsProps {
 export default function OptionButtons({ handleAddToCart, productId }: OptionButtonsProps) {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const locale = useLocale() as Locale;
   const [liked, setLiked] = useState(false);
   const [isLiking, setIsLiking] = useState(false);
   const [isLoadingLikes, setIsLoadingLikes] = useState(true);
+  const optionCopy = content.products_detail.options;
+  const optionText = (key: keyof typeof optionCopy.jp) =>
+    getLocalizedText(
+      {
+        jp: optionCopy.jp[key],
+        en: optionCopy.en[key],
+        zh_tw: optionCopy.zh_tw[key],
+        zh_cn: optionCopy.zh_cn[key],
+      } as any,
+      locale
+    );
 
   useEffect(() => {
     if (status === "authenticated") {
@@ -117,7 +131,7 @@ export default function OptionButtons({ handleAddToCart, productId }: OptionButt
             </Button>
           </TooltipTrigger>
           <TooltipContent>
-            <p>{content.products_detail.options.jp.favorite}</p>
+            <p>{optionText("favorite")}</p>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
@@ -134,7 +148,7 @@ export default function OptionButtons({ handleAddToCart, productId }: OptionButt
             </Button>
           </TooltipTrigger>
           <TooltipContent>
-            <p>{content.products_detail.options.jp.add_to_cart}</p>
+            <p>{optionText("add_to_cart")}</p>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
@@ -150,7 +164,7 @@ export default function OptionButtons({ handleAddToCart, productId }: OptionButt
             </Button>
           </TooltipTrigger>
           <TooltipContent>
-            <p>{content.products_detail.options.jp.share}</p>
+            <p>{optionText("share")}</p>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
@@ -173,7 +187,7 @@ export default function OptionButtons({ handleAddToCart, productId }: OptionButt
             </Button>
           </TooltipTrigger>
           <TooltipContent>
-            <p>{content.products_detail.options.jp.comment}</p>
+            <p>{optionText("comment")}</p>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>

@@ -10,6 +10,9 @@ import {
 } from "@/components/ui/command";
 import Image from "next/image";
 import Link from "next/link";
+import { useLocale } from "next-intl";
+import { getLocalizedText, toSimplified, type Locale } from "@/lib/i18n";
+import content from "@/data/content.json";
 
 type SearchResultsProps = {
   products: Product[];
@@ -22,11 +25,24 @@ export default function SearchResults({
   isLoading = false,
   onSelect,
 }: SearchResultsProps) {
+  const locale = useLocale() as Locale;
+
+  const heading = getLocalizedText(content.search.results as any, locale);
+  const loadingText = getLocalizedText(content.search.searching as any, locale);
+  const emptyText = getLocalizedText(content.search.empty as any, locale);
+
+  const getName = (product: Product) => {
+    if (locale === "zh_tw") return product.name_cn;
+    if (locale === "zh_cn") return toSimplified(product.name_cn);
+    if (locale === "en") return product.name_en;
+    return product.name_jp;
+  };
+
   if (isLoading) {
     return (
       <Command>
         <CommandList>
-          <CommandEmpty>検索中...</CommandEmpty>
+          <CommandEmpty>{loadingText}</CommandEmpty>
         </CommandList>
       </Command>
     );
@@ -36,7 +52,7 @@ export default function SearchResults({
     return (
       <Command>
         <CommandList>
-          <CommandEmpty>該当する商品が見つかりませんでした</CommandEmpty>
+          <CommandEmpty>{emptyText}</CommandEmpty>
         </CommandList>
       </Command>
     );
@@ -45,7 +61,7 @@ export default function SearchResults({
   return (
     <Command>
       <CommandList>
-        <CommandGroup heading="検索結果">
+        <CommandGroup heading={heading}>
           {products.map((product) => (
             <CommandItem key={product.id} asChild>
               <Link
@@ -63,7 +79,7 @@ export default function SearchResults({
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="text-sm font-medium truncate">
-                    {product.name_jp}
+                    {getName(product)}
                   </div>
                   <div className="text-xs text-muted-foreground truncate">
                     {product.brand}
