@@ -3,43 +3,24 @@
 import { useState } from "react";
 import SectionHeaderNews from "../common/SectionHeaderNews";
 import content from "@/data/content.json";
+import { useLocale } from "next-intl";
+import { getLocalizedText, type Locale } from "@/lib/i18n";
 
 export default function News() {
+  const locale = useLocale() as Locale;
   const [expandedItems, setExpandedItems] = useState<number[]>([]);
 
-  const newsItems = [
-    {
-      id: 1,
-      date: "2025/09/10",
-      title: "2025年9月臨時休業",
-      details: [
-        "当店は下記の日程で臨時休業とさせて頂きます。",
-        "2025年9月20日~2025年9月23日",
-        "2025年9月24日から通常営業となります。",
-        "発送等は通常営業明けからとなりますが、メール対応等は行います。"
-      ]
-    },
-    {
-      id: 2,
-      date: "2025/08/10",
-      title: "送料体系の改定について",
-      details: [
-        "送料体系を改定いたします。",
-        "詳細は後日お知らせいたします。",
-        "ご不便をおかけして申し訳ございません。"
-      ]
-    },
-    {
-      id: 3,
-      date: "2025/08/10",
-      title: "新商品を入荷しました",
-      details: [
-        "新しい商品が入荷いたしました。",
-        "詳細は商品ページをご確認ください。",
-        "お得な価格でご提供しております。"
-      ]
-    }
-  ];
+  const newsItems = content.home.news.items.map((item) => ({
+    ...item,
+    title:
+      locale === "jp"
+        ? item.title.jp
+        : getLocalizedText(item.title, locale),
+    details:
+      locale === "jp"
+        ? item.details.jp
+        : item.details[locale] ?? item.details.jp,
+  }));
 
   const toggleExpanded = (id: number) => {
     setExpandedItems(prev =>
@@ -49,12 +30,20 @@ export default function News() {
     );
   };
 
+  const moreLabel = getLocalizedText(content.home.news.actions.more, locale);
+  const closeLabel = getLocalizedText(content.home.news.actions.close, locale);
+
+  const sectionTitle = content.home.news.section_info.title;
+  const headerTitleJp =
+    locale === "jp" ? sectionTitle.jp : getLocalizedText(sectionTitle, locale);
+  const headerTitleEn = sectionTitle.en;
+
   return (
     <section className="w-full max-w-5xl mx-auto px-4 md:px-0 py-4 mb-50">
       <div className="flex flex-col items-end">
         <SectionHeaderNews
-          title_en={content.home.news.section_info.title.en}
-          title_jp={content.home.news.section_info.title.jp}
+          title_en={headerTitleEn}
+          title_jp={headerTitleJp}
           reverse={true}
         />
         <div className="mt-8 w-full max-w-2xl">
@@ -68,7 +57,7 @@ export default function News() {
                     onClick={() => toggleExpanded(item.id)}
                     className="text-xs font-sans text-foreground border border-foreground px-3 py-1 hover:bg-foreground hover:text-background transition-colors cursor-pointer"
                   >
-                    {expandedItems.includes(item.id) ? "CLOSE" : "MORE"}
+                    {expandedItems.includes(item.id) ? closeLabel : moreLabel}
                   </button>
                 </div>
                 {expandedItems.includes(item.id) && (

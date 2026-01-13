@@ -3,8 +3,12 @@ import Image from "next/image";
 import { motion } from "motion/react";
 import content from "@/data/content.json";
 import { CardContainer, CardBody, CardItem } from "@/components/ui/3d-card";
+import { useLocale } from "next-intl";
+import { getLocalizedText, type Locale } from "@/lib/i18n";
 
 export default function Hero() {
+  const locale = useLocale() as Locale;
+
   return (
     <header className="w-full h-full relative select-none">
       <div className="w-full max-w-5xl mx-auto h-full min-h-screen flex flex-col items-center justify-between px-4 md:px-0 py-4">
@@ -60,7 +64,7 @@ export default function Hero() {
             Tokyo Fighting Gear Shop
           </h3>
           <h4 className="text-sm md:text-lg font-sans">
-            {content.home.catchcopy.jp}
+            {getLocalizedText(content.home.catchcopy, locale)}
           </h4>
         </div>
         <h6 className="hidden md:block absolute top-1/2 right-4 -translate-y-1/2 text-2xl text-neutral-400 font-roboto font-[200] tracking-[0.1em] [writing-mode:vertical-lr] uppercase">

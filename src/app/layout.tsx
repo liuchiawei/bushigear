@@ -18,6 +18,7 @@ import AppSidebar from "@/components/layout/app-sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 // Session Checkout
 import Providers from "./providers";
+import IntlProvider from "@/components/providers/intl-provider";
 // TODO: Stripe integration
 // import { CheckoutProvider } from "@stripe/react-stripe-js/checkout";
 // import { loadStripe } from "@stripe/stripe-js";
@@ -66,20 +67,22 @@ export default function RootLayout({
       <body
         className={`${notoSansJP.variable} ${roboto.variable} ${robotoCondensed.variable} ${yujiSyuku.variable} bg-background bg-dot-32-s-2-neutral-400 antialiased`}
       >
-        <Providers>
-          {/* <CheckoutProvider stripe={stripePromise} options={{ clientSecret }}> */}
-          <CartProvider>
-            <SidebarProvider defaultOpen={false}>
-              <AppSidebar />
-              <Nav />
-              <main className="w-full max-w-5xl mx-auto min-h-screen">{children}</main>
-              <Footer />
-              <BackToTop />
-              <AiAssistant />
-            </SidebarProvider>
-          </CartProvider>
-          {/* </CheckoutProvider> */}
-        </Providers>
+        <IntlProvider>
+          <Providers>
+            {/* <CheckoutProvider stripe={stripePromise} options={{ clientSecret }}> */}
+            <CartProvider>
+              <SidebarProvider defaultOpen={false}>
+                <AppSidebar />
+                <Nav />
+                <main className="w-full max-w-5xl mx-auto min-h-screen">{children}</main>
+                <Footer />
+                <BackToTop />
+                <AiAssistant />
+              </SidebarProvider>
+            </CartProvider>
+            {/* </CheckoutProvider> */}
+          </Providers>
+        </IntlProvider>
       </body>
     </html>
   );

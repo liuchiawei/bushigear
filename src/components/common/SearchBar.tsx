@@ -10,8 +10,12 @@ import {
 import SearchResults from "./SearchResults";
 import { Product } from "@/lib/type";
 import { Search } from "lucide-react";
+import { useLocale } from "next-intl";
+import { getLocalizedText, type Locale } from "@/lib/i18n";
+import content from "@/data/content.json";
 
 export default function SearchBar() {
+  const locale = useLocale() as Locale;
   const [query, setQuery] = useState("");
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -83,7 +87,11 @@ export default function SearchBar() {
             <Search className="absolute left-2 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none z-10" />
             <Input
               type="text"
-              placeholder="商品を検索..."
+              placeholder={
+                locale === "jp"
+                  ? content.search.placeholder.jp
+                  : getLocalizedText(content.search.placeholder as any, locale)
+              }
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onFocus={() => {

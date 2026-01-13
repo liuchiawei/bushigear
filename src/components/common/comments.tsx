@@ -5,6 +5,9 @@ import { Separator } from "@/components/ui/separator";
 import Image from "next/image";
 import Link from "next/link";
 import { Circle } from "lucide-react";
+import { useLocale } from "next-intl";
+import { getLocalizedText, type Locale } from "@/lib/i18n";
+import content from "@/data/content.json";
 
 // スコアを0~5の範囲で小数点第一位までに正規化する
 const renderStars = (score: number): number => {
@@ -47,10 +50,16 @@ export default function Comments({
   currentUserId,
   onDelete,
 }: CommentsProps) {
+  const locale = useLocale() as Locale;
+  const emptyText =
+    locale === "jp"
+      ? content.products_detail.comments.empty.jp
+      : getLocalizedText(content.products_detail.comments.empty as any, locale);
+
   if (!comments.length) {
     return (
       <p className="text-sm text-muted-foreground">
-        まだレビューがありません。
+        {emptyText}
       </p>
     );
   }

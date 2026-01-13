@@ -3,7 +3,8 @@
     "catchcopy": {
       "en": "Fight with Honor. Train with BushiGear.",
       "jp": "世界の闘志に、日本の誇りを。",
-      "cn": "武魂上身，榮耀出征"
+      "zh_tw": "武魂上身，榮耀出征",
+      "zh_cn": "武魂上身，荣耀出征"
     },
     "cm": {
       "title": "情報CMエリア",
@@ -39,18 +40,21 @@
         "title": {
           "en": "Sales",
           "jp": "セール情報",
-          "cn": "销售信息"
+          "zh_tw": "銷售信息",
+          "zh_cn": "销售信息"
         },
         "description": {
           "en": "Check out our latest sales and promotions!",
           "jp": "最新のセール情報をチェック！",
-          "cn": "查看我们的最新销售和促销信息！"
+          "zh_tw": "查看我们的最新銷售和促銷信息！",
+          "zh_cn": "查看我们的最新销售和促销信息！"
         }
       },
       "campaign_name": {
         "en": "Summer Sale",
         "jp": "夏祭りセール",
-        "cn": "夏季特卖"
+        "zh_tw": "夏季特賣",
+        "zh_cn": "夏季特卖"
       },
       "description": "燃える夏、熱い戦い！フシギア夏祭りセール開催中。プレミアム格闘技用品が最大30%OFF。武者の魂を燃やす本格装備で、この夏の勝負を決めろ！限定商品も多数登場。",
       "items": [
@@ -91,12 +95,14 @@
         "title": {
           "en": "Features",
           "jp": "おすすめ商品",
-          "cn": "推荐商品"
+          "zh_tw": "推薦商品",
+          "zh_cn": "推荐商品"
         },
         "description": {
           "en": "Our Feature Fighting Goods",
           "jp": "店長のおすすめ商品",
-          "cn": "店长推荐商品"
+          "zh_tw": "店長推薦商品",
+          "zh_cn": "店长推荐商品"
         }
       }
     },
@@ -105,32 +111,74 @@
         "title": {
           "en": "Ranking",
           "jp": "カテゴリーランキング",
-          "cn": "排行榜"
+          "zh_tw": "排行榜",
+          "zh_cn": "排行榜"
         },
         "description": {
           "en": "Category Ranking Products",
           "jp": "各カテゴリーの人気商品",
-          "cn": "各分类的人气商品"
+          "zh_tw": "各分類的人氣商品",
+          "zh_cn": "各分类的人气商品"
         }
       },
-      "title": "Category Ranking",
-      "description": "各カテゴリーのピックアップ商品",
+      "title": {
+        "jp": "Category Ranking",
+        "en": "Category Ranking",
+        "zh_tw": "分類排行榜",
+        "zh_cn": "分类排行榜"
+      },
+      "description": {
+        "jp": "各カテゴリーのピックアップ商品",
+        "en": "Featured picks by category",
+        "zh_tw": "各分類的精選商品",
+        "zh_cn": "各分类的精选商品"
+      },
+      "loading": {
+        "jp": "読み込み中...",
+        "en": "Loading...",
+        "zh_tw": "載入中...",
+        "zh_cn": "加载中..."
+      },
       "categories": [
         {
           "id": 1,
-          "name": "グローブ"
+          "slug": "glove",
+          "name": {
+            "jp": "グローブ",
+            "en": "Glove",
+            "zh_tw": "手套",
+            "zh_cn": "手套"
+          }
         },
         {
           "id": 2,
-          "name": "ミット"
+          "slug": "mitt",
+          "name": {
+            "jp": "ミット",
+            "en": "Mitt",
+            "zh_tw": "手靶",
+            "zh_cn": "手靶"
+          }
         },
         {
           "id": 3,
-          "name": "プロテクター"
+          "slug": "protector",
+          "name": {
+            "jp": "プロテクター",
+            "en": "Protector",
+            "zh_tw": "護具",
+            "zh_cn": "护具"
+          }
         },
         {
           "id": 4,
-          "name": "服"
+          "slug": "clothes",
+          "name": {
+            "jp": "服",
+            "en": "Clothing",
+            "zh_tw": "服飾",
+            "zh_cn": "服饰"
+          }
         }
       ]
     },
@@ -139,30 +187,575 @@
         "title": {
           "en": "About",
           "jp": "ブシギアについて",
-          "cn": "关于我们"
+          "zh_tw": "關於我們",
+          "zh_cn": "关于我们"
         },
         "description": {
           "en": "BushiGear Shop is a online shop that deals in Japanese martial arts equipment.",
           "jp": "格闘技用品店「ブシギア」は、格闘技用品を扱う店舗です。",
-          "cn": "BushiGear格斗技用品店是一家專門經營格鬥技用品的商店。"
+          "zh_tw": "BushiGear格鬥技用品店是一家專門經營格鬥技用品的商店。",
+          "zh_cn": "BushiGear格斗技用品店是一家专門经营格斗技用品的商店。"
         }
       },
-      "title": "格闘技用品店ブシギアの「BUSHI GEAR」",
-      "description": "格闘技用品店ブシギアのオリジナルブランドであるBUSHI GEARの成り立ちを下記ページにて紹介しております。ぜひご覧ください。",
-      "button": "詳細を見る"
+      "title": {
+        "jp": "格闘技用品店ブシギアの「BUSHI GEAR」",
+        "en": "BushiGear Martial Arts Shop “BUSHI GEAR”",
+        "zh_tw": "武士Gear格鬥用品店「BUSHI GEAR」",
+        "zh_cn": "武士Gear格斗用品店「BUSHI GEAR」"
+      },
+      "description": {
+        "jp": "格闘技用品店ブシギアのオリジナルブランドであるBUSHI GEARの成り立ちを下記ページにて紹介しております。ぜひご覧ください。",
+        "en": "Discover the story behind BUSHI GEAR, the original brand of BushiGear martial arts shop.",
+        "zh_tw": "了解武士Gear格鬥用品店原創品牌 BUSHI GEAR 的故事。",
+        "zh_cn": "了解武士Gear格斗用品店原创品牌 BUSHI GEAR 的故事。"
+      },
+      "button": {
+        "jp": "詳細を見る",
+        "en": "See details",
+        "zh_tw": "查看詳情",
+        "zh_cn": "查看详情"
+      }
     },
     "news": {
       "section_info": {
         "title": {
           "en": "News",
           "jp": "ニュース",
-          "cn": "新闻"
+          "zh_tw": "新聞",
+          "zh_cn": "新闻"
         },
         "description": {
           "en": "Latest News About Bushigear",
           "jp": "ブシギアの最新情報",
-          "cn": "BushiGear的最新消息"
+          "zh_tw": "BushiGear的最新消息",
+          "zh_cn": "BushiGear的最新消息"
         }
+      },
+      "actions": {
+        "more": {
+          "jp": "MORE",
+          "en": "MORE",
+          "zh_tw": "更多",
+          "zh_cn": "更多"
+        },
+        "close": {
+          "jp": "CLOSE",
+          "en": "CLOSE",
+          "zh_tw": "收起",
+          "zh_cn": "收起"
+        }
+      },
+      "items": [
+        {
+          "id": 1,
+          "date": "2025/09/10",
+          "title": {
+            "jp": "2025年9月臨時休業",
+            "en": "Temporary Closure in September 2025",
+            "zh_tw": "2025年9月臨時停業",
+            "zh_cn": "2025年9月临时停业"
+          },
+          "details": {
+            "jp": [
+              "当店は下記の日程で臨時休業とさせて頂きます。",
+              "2025年9月20日~2025年9月23日",
+              "2025年9月24日から通常営業となります。",
+              "発送等は通常営業明けからとなりますが、メール対応等は行います。"
+            ],
+            "en": [
+              "We will be temporarily closed on the following dates.",
+              "September 20–23, 2025",
+              "Regular operations resume from September 24.",
+              "Shipping resumes after reopening; email support remains available."
+            ],
+            "zh_tw": [
+              "本店將於以下日期臨時停業。",
+              "2025年9月20日至2025年9月23日",
+              "9月24日起恢復正常營業。",
+              "發貨將於恢復營業後進行，電子郵件客服仍然提供。"
+            ],
+            "zh_cn": [
+              "本店将于以下日期临时停业。",
+              "2025年9月20日至2025年9月23日",
+              "9月24日起恢复正常营业。",
+              "发货将于恢复营业后进行，电子邮件客服仍然提供。"
+            ]
+          }
+        },
+        {
+          "id": 2,
+          "date": "2025/08/10",
+          "title": {
+            "jp": "送料体系の改定について",
+            "en": "Shipping Fee Update",
+            "zh_tw": "運費調整通知",
+            "zh_cn": "运费调整通知"
+          },
+          "details": {
+            "jp": [
+              "送料体系を改定いたします。",
+              "詳細は後日お知らせいたします。",
+              "ご不便をおかけして申し訳ございません。"
+            ],
+            "en": [
+              "We will revise our shipping fee structure.",
+              "Details will be announced later.",
+              "We apologize for any inconvenience."
+            ],
+            "zh_tw": [
+              "我們將調整運費方案。",
+              "詳細內容將於日後公布。",
+              "造成不便敬請見諒。"
+            ],
+            "zh_cn": [
+              "我们将调整运费方案。",
+              "详细内容将于日后公布。",
+              "造成不便敬请见谅。"
+            ]
+          }
+        },
+        {
+          "id": 3,
+          "date": "2025/08/10",
+          "title": {
+            "jp": "新商品を入荷しました",
+            "en": "New Items Arrived",
+            "zh_tw": "新品已到貨",
+            "zh_cn": "新品已到货"
+          },
+          "details": {
+            "jp": [
+              "新しい商品が入荷いたしました。",
+              "詳細は商品ページをご確認ください。",
+              "お得な価格でご提供しております。"
+            ],
+            "en": [
+              "New items have arrived.",
+              "See product pages for details.",
+              "Offered at great prices."
+            ],
+            "zh_tw": [
+              "新品已到貨。",
+              "詳細資訊請見商品頁。",
+              "提供優惠價格。"
+            ],
+            "zh_cn": [
+              "新品已到货。",
+              "详细资讯请见商品页。",
+              "提供优惠价格。"
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "mypage": {
+    "title": {
+      "jp": "マイページ",
+      "en": "My Page",
+      "zh_tw": "我的頁面",
+      "zh_cn": "我的页面"
+    },
+    "welcome": {
+      "jp": "ようこそ、{name}",
+      "en": "Welcome, {name}",
+      "zh_tw": "歡迎，{name}",
+      "zh_cn": "欢迎，{name}"
+    },
+    "tabs": {
+      "profile": {
+        "jp": "プロフィール",
+        "en": "Profile",
+        "zh_tw": "個人資料",
+        "zh_cn": "个人资料"
+      },
+      "cart": {
+        "jp": "カート",
+        "en": "Cart",
+        "zh_tw": "購物車",
+        "zh_cn": "购物车"
+      },
+      "orders": {
+        "jp": "購入履歴",
+        "en": "Orders",
+        "zh_tw": "購買紀錄",
+        "zh_cn": "购买记录"
+      },
+      "likes": {
+        "jp": "お気に入り",
+        "en": "Favorites",
+        "zh_tw": "收藏",
+        "zh_cn": "收藏"
+      },
+      "comments": {
+        "jp": "レビュー",
+        "en": "Reviews",
+        "zh_tw": "評論",
+        "zh_cn": "评论"
+      }
+    },
+    "loading": {
+      "jp": "読み込み中...",
+      "en": "Loading...",
+      "zh_tw": "載入中...",
+      "zh_cn": "载入中..."
+    },
+    "profile": {
+      "infoTitle": {
+        "jp": "プロフィール情報",
+        "en": "Profile Information",
+        "zh_tw": "個人資訊",
+        "zh_cn": "个人信息"
+      },
+      "edit": {
+        "jp": "編集",
+        "en": "Edit",
+        "zh_tw": "編輯",
+        "zh_cn": "编辑"
+      },
+      "imageLabel": {
+        "jp": "プロフィール画像",
+        "en": "Profile image",
+        "zh_tw": "個人頭像",
+        "zh_cn": "个人头像"
+      },
+      "uploading": {
+        "jp": "アップロード中...",
+        "en": "Uploading...",
+        "zh_tw": "上傳中...",
+        "zh_cn": "上传中..."
+      },
+      "fields": {
+        "lastName": {
+          "jp": "姓",
+          "en": "Last name",
+          "zh_tw": "姓",
+          "zh_cn": "姓"
+        },
+        "firstName": {
+          "jp": "名",
+          "en": "First name",
+          "zh_tw": "名",
+          "zh_cn": "名"
+        },
+        "gender": {
+          "jp": "性別",
+          "en": "Gender",
+          "zh_tw": "性別",
+          "zh_cn": "性别"
+        },
+        "genderOptions": {
+          "male": {
+            "jp": "男性",
+            "en": "Male",
+            "zh_tw": "男性",
+            "zh_cn": "男性"
+          },
+          "female": {
+            "jp": "女性",
+            "en": "Female",
+            "zh_tw": "女性",
+            "zh_cn": "女性"
+          },
+          "other": {
+            "jp": "その他",
+            "en": "Other",
+            "zh_tw": "其他",
+            "zh_cn": "其他"
+          }
+        },
+        "birthday": {
+          "jp": "誕生日",
+          "en": "Birthday",
+          "zh_tw": "生日",
+          "zh_cn": "生日"
+        },
+        "addressSection": {
+          "jp": "住所情報",
+          "en": "Address",
+          "zh_tw": "地址資訊",
+          "zh_cn": "地址信息"
+        },
+        "postalCode": {
+          "jp": "郵便番号（半角）",
+          "en": "Postal code (half-width)",
+          "zh_tw": "郵遞區號（半形）",
+          "zh_cn": "邮政编码（半角）"
+        },
+        "prefecture": {
+          "jp": "都道府県",
+          "en": "Prefecture",
+          "zh_tw": "都道府縣",
+          "zh_cn": "都道府县"
+        },
+        "city": {
+          "jp": "市区町村",
+          "en": "City / Ward",
+          "zh_tw": "市區町村",
+          "zh_cn": "市区町村"
+        },
+        "street": {
+          "jp": "丁目・番地・号（半角）",
+          "en": "Street / block / number (half-width)",
+          "zh_tw": "丁目・番地・號（半形）",
+          "zh_cn": "丁目・番地・号（半角）"
+        },
+        "building": {
+          "jp": "建物名・会社名（任意）",
+          "en": "Building / company (optional)",
+          "zh_tw": "建物／公司（選填）",
+          "zh_cn": "建筑物／公司（选填）"
+        },
+        "room": {
+          "jp": "部屋番号（任意）",
+          "en": "Room number (optional)",
+          "zh_tw": "房號（選填）",
+          "zh_cn": "房号（选填）"
+        }
+      },
+      "save": {
+        "jp": "保存",
+        "en": "Save",
+        "zh_tw": "儲存",
+        "zh_cn": "保存"
+      },
+      "cancel": {
+        "jp": "キャンセル",
+        "en": "Cancel",
+        "zh_tw": "取消",
+        "zh_cn": "取消"
+      },
+      "unset": {
+        "jp": "未設定",
+        "en": "Not set",
+        "zh_tw": "未設定",
+        "zh_cn": "未设置"
+      },
+      "address": {
+        "jp": "住所",
+        "en": "Address",
+        "zh_tw": "地址",
+        "zh_cn": "地址"
+      },
+      "email": {
+        "jp": "メールアドレス",
+        "en": "Email",
+        "zh_tw": "電子郵件",
+        "zh_cn": "电子邮件"
+      },
+      "name": {
+        "jp": "氏名",
+        "en": "Name",
+        "zh_tw": "姓名",
+        "zh_cn": "姓名"
+      },
+      "errors": {
+        "fetchProfile": {
+          "jp": "プロフィールの取得に失敗しました",
+          "en": "Failed to fetch profile",
+          "zh_tw": "取得個人資料失敗",
+          "zh_cn": "获取个人资料失败"
+        },
+        "fetchOrders": {
+          "jp": "注文履歴の取得に失敗しました",
+          "en": "Failed to fetch orders",
+          "zh_tw": "取得訂單紀錄失敗",
+          "zh_cn": "获取订单记录失败"
+        },
+        "fetchLikes": {
+          "jp": "お気に入りの取得に失敗しました",
+          "en": "Failed to fetch favorites",
+          "zh_tw": "取得收藏失敗",
+          "zh_cn": "获取收藏失败"
+        },
+        "fetchComments": {
+          "jp": "レビューの取得に失敗しました",
+          "en": "Failed to fetch reviews",
+          "zh_tw": "取得評論失敗",
+          "zh_cn": "获取评论失败"
+        },
+        "uploadFailed": {
+          "jp": "アップロードに失敗しました",
+          "en": "Upload failed",
+          "zh_tw": "上傳失敗",
+          "zh_cn": "上传失败"
+        },
+        "uploadSuccess": {
+          "jp": "画像をアップロードしました",
+          "en": "Image uploaded",
+          "zh_tw": "已上傳圖片",
+          "zh_cn": "已上传图片"
+        },
+        "postalFormat": {
+          "jp": "郵便番号は 123-4567 の形式（半角）で入力してください。",
+          "en": "Enter postal code in 123-4567 format (half-width).",
+          "zh_tw": "請以 123-4567 格式（半形）輸入郵遞區號。",
+          "zh_cn": "请按 123-4567 格式（半角）输入邮政编码。"
+        },
+        "streetNumber": {
+          "jp": "丁目・番地・号の数字は半角で入力してください。",
+          "en": "Use half-width digits for street numbers.",
+          "zh_tw": "丁目、番地、號的數字請用半形。",
+          "zh_cn": "丁目、番地、号的数字请用半角。"
+        },
+        "updateFailed": {
+          "jp": "更新に失敗しました",
+          "en": "Update failed",
+          "zh_tw": "更新失敗",
+          "zh_cn": "更新失败"
+        },
+        "updateSuccess": {
+          "jp": "プロフィールを更新しました",
+          "en": "Profile updated",
+          "zh_tw": "已更新個人資料",
+          "zh_cn": "已更新个人资料"
+        },
+        "confirmDeleteReview": {
+          "jp": "このレビューを削除しますか？",
+          "en": "Delete this review?",
+          "zh_tw": "確定刪除這則評論？",
+          "zh_cn": "确定删除这条评论？"
+        }
+      }
+    },
+    "cartTab": {
+      "title": {
+        "jp": "ショッピングカート",
+        "en": "Shopping Cart",
+        "zh_tw": "購物車",
+        "zh_cn": "购物车"
+      },
+      "empty": {
+        "jp": "カートは空です",
+        "en": "Your cart is empty",
+        "zh_tw": "購物車是空的",
+        "zh_cn": "购物车为空"
+      },
+      "viewProduct": {
+        "jp": "商品を見る",
+        "en": "View products",
+        "zh_tw": "去逛逛商品",
+        "zh_cn": "去逛逛商品"
+      },
+      "details": {
+        "jp": "商品詳細",
+        "en": "View details",
+        "zh_tw": "查看詳情",
+        "zh_cn": "查看详情"
+      },
+      "remove": {
+        "jp": "カートから削除",
+        "en": "Remove from cart",
+        "zh_tw": "從購物車刪除",
+        "zh_cn": "从购物车删除"
+      },
+      "total": {
+        "jp": "合計",
+        "en": "Total",
+        "zh_tw": "合計",
+        "zh_cn": "合计"
+      },
+      "clear": {
+        "jp": "カートを空にする",
+        "en": "Clear cart",
+        "zh_tw": "清空購物車",
+        "zh_cn": "清空购物车"
+      },
+      "checkout": {
+        "jp": "購入手続きへ",
+        "en": "Checkout",
+        "zh_tw": "前往結帳",
+        "zh_cn": "前往结账"
+      },
+      "quantity": {
+        "jp": "数量",
+        "en": "Quantity",
+        "zh_tw": "數量",
+        "zh_cn": "数量"
+      }
+    },
+    "orders": {
+      "title": {
+        "jp": "購入履歴",
+        "en": "Order History",
+        "zh_tw": "購買紀錄",
+        "zh_cn": "购买记录"
+      },
+      "empty": {
+        "jp": "購入履歴がありません",
+        "en": "No orders yet",
+        "zh_tw": "尚無購買紀錄",
+        "zh_cn": "暂无购买记录"
+      },
+      "orderId": {
+        "jp": "注文番号",
+        "en": "Order ID",
+        "zh_tw": "訂單編號",
+        "zh_cn": "订单编号"
+      },
+      "purchaseDate": {
+        "jp": "購入日",
+        "en": "Purchase date",
+        "zh_tw": "購買日期",
+        "zh_cn": "购买日期"
+      },
+      "quantity": {
+        "jp": "数量",
+        "en": "Qty",
+        "zh_tw": "數量",
+        "zh_cn": "数量"
+      }
+    },
+    "likes": {
+      "title": {
+        "jp": "お気に入り",
+        "en": "Favorites",
+        "zh_tw": "收藏",
+        "zh_cn": "收藏"
+      },
+      "empty": {
+        "jp": "お気に入りがありません",
+        "en": "No favorites yet",
+        "zh_tw": "還沒有收藏",
+        "zh_cn": "还没有收藏"
+      },
+      "view": {
+        "jp": "詳細を見る",
+        "en": "View details",
+        "zh_tw": "查看詳情",
+        "zh_cn": "查看详情"
+      }
+    },
+    "comments": {
+      "title": {
+        "jp": "あなたのレビュー",
+        "en": "Your reviews",
+        "zh_tw": "你的評論",
+        "zh_cn": "你的评论"
+      },
+      "empty": {
+        "jp": "まだレビューはありません",
+        "en": "No reviews yet",
+        "zh_tw": "還沒有評論",
+        "zh_cn": "还没有评论"
+      },
+      "delete": {
+        "jp": "削除",
+        "en": "Delete",
+        "zh_tw": "刪除",
+        "zh_cn": "删除"
+      },
+      "product": {
+        "jp": "商品",
+        "en": "Product",
+        "zh_tw": "商品",
+        "zh_cn": "商品"
+      },
+      "productLink": {
+        "jp": "商品ページへ",
+        "en": "Go to product page",
+        "zh_tw": "前往商品頁",
+        "zh_cn": "前往商品页"
       }
     }
   },
@@ -174,7 +767,8 @@
         "name": {
           "en": "Glove",
           "jp": "グローブ",
-          "cn": "手套"
+          "zh_tw": "手套",
+          "zh_cn": "手套"
         }
       },
       {
@@ -183,7 +777,8 @@
         "name": {
           "en": "Mitt",
           "jp": "ミット",
-          "cn": "手靶"
+          "zh_tw": "手靶",
+          "zh_cn": "手靶"
         }
       },
       {
@@ -192,7 +787,8 @@
         "name": {
           "en": "Protector",
           "jp": "プロテクター",
-          "cn": "护具"
+          "zh_tw": "護具",
+          "zh_cn": "护具"
         }
       },
       {
@@ -201,30 +797,634 @@
         "name": {
           "en": "Clothes",
           "jp": "服",
-          "cn": "服飾"
+          "zh_tw": "服飾",
+          "zh_cn": "服饰"
         }
       }
-    ]
+    ],
+    "tooltips": {
+      "login": {
+        "jp": "会員登録 | ログイン",
+        "en": "Register | Login",
+        "zh_tw": "註冊 | 登入",
+        "zh_cn": "注册 | 登入"
+      },
+      "favorites": {
+        "jp": "お気に入り",
+        "en": "Favorites",
+        "zh_tw": "收藏",
+        "zh_cn": "收藏"
+      },
+      "language": {
+        "jp": "言語切り替え",
+        "en": "Switch Language",
+        "zh_tw": "切換語言",
+        "zh_cn": "切换语言"
+      }
+    }
+  },
+  "search": {
+    "placeholder": {
+      "jp": "商品を検索...",
+      "en": "Search products...",
+      "zh_tw": "搜尋商品...",
+      "zh_cn": "搜索商品..."
+    },
+    "searching": {
+      "jp": "商品を検索中...",
+      "en": "Searching products...",
+      "zh_tw": "搜尋商品中...",
+      "zh_cn": "搜索商品中..."
+    },
+    "empty": {
+      "jp": "該当する商品が見つかりませんでした",
+      "en": "No matching products found",
+      "zh_tw": "找不到符合條件的商品",
+      "zh_cn": "找不到符合条件的商品"
+    },
+    "results": {
+      "jp": "検索結果",
+      "en": "Search results",
+      "zh_tw": "搜尋結果",
+      "zh_cn": "搜索结果"
+    }
+  },
+  "auth": {
+    "login": {
+      "loading": {
+        "jp": "読み込み中...",
+        "en": "Loading...",
+        "zh_tw": "載入中...",
+        "zh_cn": "加载中..."
+      },
+      "loggedInTitle": {
+        "jp": "ログイン済み",
+        "en": "Logged in",
+        "zh_tw": "已登入",
+        "zh_cn": "已登入"
+      },
+      "welcome": {
+        "jp": "ようこそ、{email}",
+        "en": "Welcome, {email}",
+        "zh_tw": "歡迎，{email}",
+        "zh_cn": "欢迎，{email}"
+      },
+      "logout": {
+        "jp": "ログアウト",
+        "en": "Log out",
+        "zh_tw": "登出",
+        "zh_cn": "登出"
+      },
+      "loginFailed": {
+        "jp": "ログインに失敗しました。メールアドレスとパスワードを確認してください。",
+        "en": "Login failed. Please check your email and password.",
+        "zh_tw": "登入失敗，請確認電子郵件與密碼。",
+        "zh_cn": "登入失败，请确认电子邮件与密码。"
+      },
+      "unexpectedError": {
+        "jp": "予期しないエラーが発生しました。もう一度お試しください。",
+        "en": "An unexpected error occurred. Please try again.",
+        "zh_tw": "發生未預期錯誤，請再試一次。",
+        "zh_cn": "发生未预期错误，请再试一次。"
+      },
+      "googleLoginFailed": {
+        "jp": "Googleログインに失敗しました。もう一度お試しください。",
+        "en": "Google login failed. Please try again.",
+        "zh_tw": "Google 登入失敗，請再試一次。",
+        "zh_cn": "Google 登入失败，请再试一次。"
+      },
+      "pageTitle": {
+        "jp": "ログイン",
+        "en": "Login",
+        "zh_tw": "登入",
+        "zh_cn": "登入"
+      },
+      "emailLabel": {
+        "jp": "メール",
+        "en": "Email",
+        "zh_tw": "電郵地址",
+        "zh_cn": "电邮地址"
+      },
+      "passwordLabel": {
+        "jp": "パスワード",
+        "en": "Password",
+        "zh_tw": "密碼",
+        "zh_cn": "密码"
+      },
+      "loggingIn": {
+        "jp": "ログイン中...",
+        "en": "Logging in...",
+        "zh_tw": "登入中...",
+        "zh_cn": "登入中..."
+      },
+      "loginButton": {
+        "jp": "ログイン",
+        "en": "Login",
+        "zh_tw": "登入",
+        "zh_cn": "登入"
+      },
+      "or": {
+        "jp": "または",
+        "en": "or",
+        "zh_tw": "或",
+        "zh_cn": "或"
+      },
+      "googleLoggingIn": {
+        "jp": "Googleでログイン中...",
+        "en": "Signing in with Google...",
+        "zh_tw": "透過 Google 登入中...",
+        "zh_cn": "透过 Google 登入中..."
+      },
+      "googleLogin": {
+        "jp": "Googleでログイン",
+        "en": "Sign in with Google",
+        "zh_tw": "使用 Google 登入",
+        "zh_cn": "使用 Google 登入"
+      },
+      "newHerePrefix": {
+        "jp": "新規登録は",
+        "en": "New here?",
+        "zh_tw": "還沒有帳號？",
+        "zh_cn": "还没有帐号？"
+      },
+      "registerHere": {
+        "jp": "こちら",
+        "en": "Register here",
+        "zh_tw": "點此註冊",
+        "zh_cn": "点此注册"
+      }
+    },
+    "register": {
+      "imageFileError": {
+        "jp": "画像ファイルを選択してください",
+        "en": "Please select an image file",
+        "zh_tw": "請選擇圖片檔案",
+        "zh_cn": "请选择图片档案"
+      },
+      "fileSelect": {
+        "jp": "ファイルを選択",
+        "en": "Choose file",
+        "zh_tw": "選擇檔案",
+        "zh_cn": "选择文件"
+      },
+      "noFile": {
+        "jp": "選択されていません",
+        "en": "No file chosen",
+        "zh_tw": "未選擇檔案",
+        "zh_cn": "未选择文件"
+      },
+      "fileSizeError": {
+        "jp": "ファイルサイズは5MB以下にしてください",
+        "en": "File size must be 5MB or less",
+        "zh_tw": "檔案大小需在 5MB 以下",
+        "zh_cn": "档案大小需在 5MB 以下"
+      },
+      "uploadFailed": {
+        "jp": "アップロードに失敗しました",
+        "en": "Upload failed",
+        "zh_tw": "上傳失敗",
+        "zh_cn": "上传失败"
+      },
+      "lastNameRequired": {
+        "jp": "姓を入力してください。",
+        "en": "Please enter your last name.",
+        "zh_tw": "請輸入姓氏。",
+        "zh_cn": "请输入姓氏。"
+      },
+      "firstNameRequired": {
+        "jp": "名を入力してください。",
+        "en": "Please enter your first name.",
+        "zh_tw": "請輸入名字。",
+        "zh_cn": "请输入名字。"
+      },
+      "postalCodeFormat": {
+        "jp": "郵便番号は 123-4567 の形式（半角）で入力してください。",
+        "en": "Please enter the postal code in the format 123-4567 (half-width).",
+        "zh_tw": "請以 123-4567 的格式（半形）輸入郵遞區號。",
+        "zh_cn": "请以 123-4567 的格式（半形）输入邮递区号。"
+      },
+      "prefectureRequired": {
+        "jp": "都道府県を選択してください。",
+        "en": "Please select a prefecture.",
+        "zh_tw": "請選擇都道府縣。",
+        "zh_cn": "请选择都道府县。"
+      },
+      "cityRequired": {
+        "jp": "市区町村を入力してください。",
+        "en": "Please enter your city or ward.",
+        "zh_tw": "請輸入市區町村。",
+        "zh_cn": "请输入市区町村。"
+      },
+      "streetRequired": {
+        "jp": "丁目・番地・号を入力してください。",
+        "en": "Please enter street, block, and number.",
+        "zh_tw": "請輸入丁目、番地、號。",
+        "zh_cn": "请输入丁目、番地、号。"
+      },
+      "streetNumberFormat": {
+        "jp": "丁目・番地・号の数字は半角で入力してください。",
+        "en": "Please use half-width digits for street numbers.",
+        "zh_tw": "丁目、番地、號的數字請用半形。",
+        "zh_cn": "丁目、番地、号的数字请用半形。"
+      },
+      "registrationFailed": {
+        "jp": "登録に失敗しました",
+        "en": "Registration failed",
+        "zh_tw": "註冊失敗",
+        "zh_cn": "注册失败"
+      },
+      "googleRegisterFailed": {
+        "jp": "Google登録に失敗しました。もう一度お試しください。",
+        "en": "Google registration failed. Please try again.",
+        "zh_tw": "Google 註冊失敗，請再試一次。",
+        "zh_cn": "Google 注册失败，请再试一次。"
+      },
+      "pageTitle": {
+        "jp": "新規登録",
+        "en": "Register",
+        "zh_tw": "註冊",
+        "zh_cn": "注册"
+      },
+      "profileImageLabel": {
+        "jp": "プロフィール画像（任意）",
+        "en": "Profile image (optional)",
+        "zh_tw": "個人頭像（選填）",
+        "zh_cn": "个人头像（选填）"
+      },
+      "uploading": {
+        "jp": "アップロード中...",
+        "en": "Uploading...",
+        "zh_tw": "上傳中...",
+        "zh_cn": "上传中..."
+      },
+      "lastNameLabel": {
+        "jp": "氏",
+        "en": "Last name",
+        "zh_tw": "姓",
+        "zh_cn": "姓"
+      },
+      "firstNameLabel": {
+        "jp": "名",
+        "en": "First name",
+        "zh_tw": "名",
+        "zh_cn": "名"
+      },
+      "genderLabel": {
+        "jp": "性別",
+        "en": "Gender",
+        "zh_tw": "性別",
+        "zh_cn": "性別"
+      },
+      "selectPlaceholder": {
+        "jp": "選択してください",
+        "en": "Please select",
+        "zh_tw": "請選擇",
+        "zh_cn": "请选择"
+      },
+      "genderOptions": {
+        "male": {
+          "jp": "男性",
+          "en": "Male",
+          "zh_tw": "男性",
+          "zh_cn": "男性"
+        },
+        "female": {
+          "jp": "女性",
+          "en": "Female",
+          "zh_tw": "女性",
+          "zh_cn": "女性"
+        },
+        "other": {
+          "jp": "その他",
+          "en": "Other",
+          "zh_tw": "其他",
+          "zh_cn": "其他"
+        }
+      },
+      "addressSection": {
+        "jp": "住所",
+        "en": "Address",
+        "zh_tw": "地址",
+        "zh_cn": "地址"
+      },
+      "postalCodeLabel": {
+        "jp": "郵便番号（半角数字）",
+        "en": "Postal code (half-width digits)",
+        "zh_tw": "郵遞區號（半形數字）",
+        "zh_cn": "邮递区号（半形数字）"
+      },
+      "prefectureLabel": {
+        "jp": "都道府県",
+        "en": "Prefecture",
+        "zh_tw": "都道府縣",
+        "zh_cn": "都道府县"
+      },
+      "cityLabel": {
+        "jp": "市区町村",
+        "en": "City / Ward",
+        "zh_tw": "市區町村",
+        "zh_cn": "市区町村"
+      },
+      "streetLabel": {
+        "jp": "丁目・番地・号（数字は半角）",
+        "en": "Street / block / number (half-width digits)",
+        "zh_tw": "丁目・番地・號（數字請用半形）",
+        "zh_cn": "丁目・番地・号（数字请用半形）"
+      },
+      "buildingLabel": {
+        "jp": "建物名／会社名（任意）",
+        "en": "Building / company (optional)",
+        "zh_tw": "建築物／公司（選填）",
+        "zh_cn": "建筑物／公司（选填）"
+      },
+      "roomLabel": {
+        "jp": "部屋番号（任意）",
+        "en": "Room number (optional)",
+        "zh_tw": "房號（選填）",
+        "zh_cn": "房号（选填）"
+      },
+      "birthdayLabel": {
+        "jp": "誕生日",
+        "en": "Birthday",
+        "zh_tw": "生日",
+        "zh_cn": "生日"
+      },
+      "registering": {
+        "jp": "登録中...",
+        "en": "Registering...",
+        "zh_tw": "註冊中...",
+        "zh_cn": "注冊中..."
+      },
+      "registerButton": {
+        "jp": "登録",
+        "en": "Register",
+        "zh_tw": "註冊",
+        "zh_cn": "注冊"
+      },
+      "googleRegistering": {
+        "jp": "Googleで登録中...",
+        "en": "Registering with Google...",
+        "zh_tw": "透過 Google 註冊中...",
+        "zh_cn": "透过 Google 注冊中..."
+      },
+      "googleRegister": {
+        "jp": "Googleで登録",
+        "en": "Register with Google",
+        "zh_tw": "使用 Google 註冊",
+        "zh_cn": "使用 Google 注冊"
+      },
+      "alreadyHaveAccount": {
+        "jp": "既にアカウントをお持ちの方は",
+        "en": "Already have an account?",
+        "zh_tw": "已經有帳號了？",
+        "zh_cn": "已经有帐号了？"
+      }
+    }
   },
   "products": {
     "title": "商品一覧",
     "description": "商品一覧の情報をお知らせします。"
   },
-  "products_detail": {
-    "price": {
-      "jp": "円（税込）",
-      "en": "Yen (Tax included)",
-      "cn": "日元 (含税)"
+  "cart": {
+    "title": {
+      "jp": "ショッピングカート",
+      "en": "Shopping Cart",
+      "zh_tw": "購物車",
+      "zh_cn": "购物车"
+    },
+    "empty": {
+      "message": {
+        "jp": "カートは空です",
+        "en": "Your cart is empty",
+        "zh_tw": "購物車是空的",
+        "zh_cn": "购物车为空"
+      },
+      "cta": {
+        "jp": "商品を見る",
+        "en": "View products",
+        "zh_tw": "去逛逛商品",
+        "zh_cn": "去逛逛商品"
+      }
+    },
+    "clear": {
+      "jp": "カートを空にする",
+      "en": "Clear cart",
+      "zh_tw": "清空購物車",
+      "zh_cn": "清空购物车"
     },
     "quantity": {
       "jp": "数量",
       "en": "Quantity",
-      "cn": "数量"
+      "zh_tw": "數量",
+      "zh_cn": "数量"
+    },
+    "delete": {
+      "jp": "削除",
+      "en": "Remove",
+      "zh_tw": "刪除",
+      "zh_cn": "删除"
+    },
+    "total": {
+      "jp": "合計",
+      "en": "Total",
+      "zh_tw": "合計",
+      "zh_cn": "合计"
+    },
+    "continue": {
+      "jp": "買い物を続ける",
+      "en": "Continue shopping",
+      "zh_tw": "繼續購物",
+      "zh_cn": "继续购物"
+    },
+    "checkout": {
+      "jp": "レジに進む",
+      "en": "Proceed to checkout",
+      "zh_tw": "前往結帳",
+      "zh_cn": "前往结账"
+    }
+  },
+  "checkout": {
+    "title": {
+      "jp": "チェックアウト",
+      "en": "Checkout",
+      "zh_tw": "結帳",
+      "zh_cn": "结账"
+    },
+    "empty": {
+      "message": {
+        "jp": "カートは空です",
+        "en": "Your cart is empty",
+        "zh_tw": "購物車是空的",
+        "zh_cn": "购物车为空"
+      },
+      "cta": {
+        "jp": "商品を見る",
+        "en": "View products",
+        "zh_tw": "去逛逛商品",
+        "zh_cn": "去逛逛商品"
+      }
+    },
+    "orderSummary": {
+      "jp": "注文内容",
+      "en": "Order Summary",
+      "zh_tw": "訂單內容",
+      "zh_cn": "订单内容"
+    },
+    "quantity": {
+      "jp": "数量",
+      "en": "Qty",
+      "zh_tw": "數量",
+      "zh_cn": "数量"
+    },
+    "total": {
+      "jp": "合計",
+      "en": "Total",
+      "zh_tw": "合計",
+      "zh_cn": "合计"
+    },
+    "customerInfo": {
+      "jp": "お客様情報",
+      "en": "Customer Information",
+      "zh_tw": "顧客資訊",
+      "zh_cn": "客户信息"
+    },
+    "securePayment": {
+      "title": {
+        "jp": "安全な決済について",
+        "en": "About Secure Payments",
+        "zh_tw": "關於安全付款",
+        "zh_cn": "关于安全付款"
+      },
+      "lines": [
+        {
+          "jp": "お支払いは Stripe の安全な決済システムを使用しています。",
+          "en": "Payments are processed via Stripe’s secure system.",
+          "zh_tw": "付款採用 Stripe 的安全系統處理。",
+          "zh_cn": "付款采用 Stripe 的安全系统处理。"
+        },
+        {
+          "jp": "クレジットカード情報は当社では保存されません。",
+          "en": "We do not store your card information.",
+          "zh_tw": "我們不會儲存您的信用卡資訊。",
+          "zh_cn": "我们不会存储您的信用卡信息。"
+        },
+        {
+          "jp": "特定商取引法に基づく表記をご確認ください。",
+          "en": "Please review the legal notice.",
+          "zh_tw": "請查閱特定商取引法相關標示。",
+          "zh_cn": "请查阅特定商取引法相关标示。"
+        }
+      ]
+    },
+    "fields": {
+      "lastName": {
+        "jp": "氏",
+        "en": "Last name",
+        "zh_tw": "姓",
+        "zh_cn": "姓"
+      },
+      "firstName": {
+        "jp": "名",
+        "en": "First name",
+        "zh_tw": "名",
+        "zh_cn": "名"
+      },
+      "email": {
+        "jp": "メールアドレス",
+        "en": "Email",
+        "zh_tw": "電子郵件",
+        "zh_cn": "电子邮件"
+      },
+      "address": {
+        "jp": "配送先住所",
+        "en": "Shipping address",
+        "zh_tw": "收件地址",
+        "zh_cn": "收件地址"
+      },
+      "paymentMethod": {
+        "jp": "支払い方法",
+        "en": "Payment method",
+        "zh_tw": "付款方式",
+        "zh_cn": "付款方式"
+      },
+      "paymentOptions": {
+        "credit_card": {
+          "jp": "クレジットカード",
+          "en": "Credit card",
+          "zh_tw": "信用卡",
+          "zh_cn": "信用卡"
+        }
+      }
+    },
+    "backToCart": {
+      "jp": "カートに戻る",
+      "en": "Back to cart",
+      "zh_tw": "返回購物車",
+      "zh_cn": "返回购物车"
+    },
+    "placeOrder": {
+      "jp": "注文を確定する",
+      "en": "Place order",
+      "zh_tw": "確認下單",
+      "zh_cn": "确认下单"
+    },
+    "processing": {
+      "jp": "処理中...",
+      "en": "Processing...",
+      "zh_tw": "處理中...",
+      "zh_cn": "处理中..."
+    },
+    "errors": {
+      "cartEmpty": {
+        "jp": "カートが空です",
+        "en": "Your cart is empty",
+        "zh_tw": "購物車是空的",
+        "zh_cn": "购物车为空"
+      },
+      "required": {
+        "jp": "必須項目を入力してください",
+        "en": "Please fill in required fields",
+        "zh_tw": "請填寫必填欄位",
+        "zh_cn": "请填写必填字段"
+      },
+      "session": {
+        "jp": "チェックアウトセッションの作成に失敗しました",
+        "en": "Failed to create checkout session",
+        "zh_tw": "建立結帳流程失敗",
+        "zh_cn": "创建结账会话失败"
+      },
+      "noUrl": {
+        "jp": "チェックアウト URL が取得できませんでした",
+        "en": "Failed to get checkout URL",
+        "zh_tw": "無法取得結帳網址",
+        "zh_cn": "无法获取结账链接"
+      },
+      "orderFailed": {
+        "jp": "注文に失敗しました",
+        "en": "Order failed",
+        "zh_tw": "下單失敗",
+        "zh_cn": "下单失败"
+      }
+    }
+  },
+  "products_detail": {
+    "price": {
+      "jp": "円（税込）",
+      "en": "Yen (Tax included)",
+      "zh_tw": "日元 (含税)",
+      "zh_cn": "日元 (含税)"
+    },
+    "quantity": {
+      "jp": "数量",
+      "en": "Quantity",
+      "zh_tw": "數量",
+      "zh_cn": "数量"
     },
     "directly_buy": {
       "jp": "直接購入",
       "en": "Directly Buy",
-      "cn": "直接购买"
+      "zh_tw": "直接購買",
+      "zh_cn": "直接购买"
     },
     "options": {
       "jp": {
@@ -239,11 +1439,155 @@
         "comment": "Comment",
         "add_to_cart": "Add to Cart"
       },
-      "cn": {
+      "zh_tw": {
+        "favorite": "收藏",
+        "share": "分享",
+        "comment": "評論",
+        "add_to_cart": "加入購物車"
+      },
+      "zh_cn": {
         "favorite": "收藏",
         "share": "分享",
         "comment": "评论",
         "add_to_cart": "添加到购物车"
+      }
+    },
+    "cart": {
+      "addSuccess": {
+        "jp": "追加しました！",
+        "en": "Added!",
+        "zh_tw": "已加入！",
+        "zh_cn": "已加入！"
+      },
+      "adding": {
+        "jp": "カートに追加中...",
+        "en": "Adding to cart...",
+        "zh_tw": "加入購物車中...",
+        "zh_cn": "加入购物车中..."
+      }
+    },
+    "comments": {
+      "title": {
+        "jp": "レビュー",
+        "en": "Reviews",
+        "zh_tw": "評論",
+        "zh_cn": "评论"
+      },
+      "average": {
+        "jp": "平均 {score} / 5 （{count} 件）",
+        "en": "Average {score} / 5 ({count} reviews)",
+        "zh_tw": "平均 {score} / 5（{count} 則）",
+        "zh_cn": "平均 {score} / 5（{count} 条）"
+      },
+      "loginPrompt": {
+        "jp": "レビューを投稿するにはログインしてください。",
+        "en": "Please log in to post a review.",
+        "zh_tw": "登入後才能發表評論。",
+        "zh_cn": "登录后才能发表评论。"
+      },
+      "loginButton": {
+        "jp": "ログイン",
+        "en": "Log in",
+        "zh_tw": "登入",
+        "zh_cn": "登录"
+      },
+      "ratingLabel": {
+        "jp": "評価",
+        "en": "Rating",
+        "zh_tw": "評分",
+        "zh_cn": "评分"
+      },
+      "commentLabel": {
+        "jp": "コメント",
+        "en": "Comment",
+        "zh_tw": "評論內容",
+        "zh_cn": "评论内容"
+      },
+      "placeholder": {
+        "jp": "商品の感想やおすすめポイントを書いてください",
+        "en": "Share your thoughts or recommendations about this product",
+        "zh_tw": "分享你對此商品的心得或推薦理由",
+        "zh_cn": "分享你对该商品的感想或推荐理由"
+      },
+      "submit": {
+        "jp": "レビューを投稿",
+        "en": "Post review",
+        "zh_tw": "送出評論",
+        "zh_cn": "提交评论"
+      },
+      "submitting": {
+        "jp": "投稿中...",
+        "en": "Posting...",
+        "zh_tw": "送出中...",
+        "zh_cn": "提交中..."
+      },
+      "aiTooltip": {
+        "jp": "AIがコメントをより詳しくリライトします",
+        "en": "AI will polish your comment",
+        "zh_tw": "AI 會潤飾你的評論",
+        "zh_cn": "AI 会润色你的评论"
+      },
+      "toneTitle": {
+        "jp": "トーンを選択",
+        "en": "Choose tone",
+        "zh_tw": "選擇語氣",
+        "zh_cn": "选择语气"
+      },
+      "tones": {
+        "friendly": {
+          "jp": "友好",
+          "en": "Friendly",
+          "zh_tw": "友好",
+          "zh_cn": "友好"
+        },
+        "neutral": {
+          "jp": "中立",
+          "en": "Neutral",
+          "zh_tw": "中立",
+          "zh_cn": "中立"
+        },
+        "negative": {
+          "jp": "不満",
+          "en": "Critical",
+          "zh_tw": "不滿",
+          "zh_cn": "不满"
+        }
+      },
+      "aiNeedText": {
+        "jp": "AI リライトの前にコメントを入力してください。",
+        "en": "Enter a comment before using AI polish.",
+        "zh_tw": "使用 AI 潤飾前請先輸入評論。",
+        "zh_cn": "使用 AI 润色前请先输入评论。"
+      },
+      "aiFailed": {
+        "jp": "AI リライトに失敗しました。",
+        "en": "AI polish failed.",
+        "zh_tw": "AI 潤飾失敗。",
+        "zh_cn": "AI 润色失败。"
+      },
+      "postFailed": {
+        "jp": "投稿に失敗しました",
+        "en": "Failed to post review",
+        "zh_tw": "提交評論失敗",
+        "zh_cn": "提交评论失败"
+      },
+      "noPurchase": {
+        "jp": "購入履歴がありません",
+        "en": "No purchase history",
+        "zh_tw": "尚無購買紀錄",
+        "zh_cn": "暂无购买记录"
+      },
+      "empty": {
+        "jp": "まだレビューがありません。",
+        "en": "No reviews yet.",
+        "zh_tw": "還沒有評論。",
+        "zh_cn": "还没有评论。"
+      },
+      "scoreHint": {
+        "jp": "{score} 点",
+        "en": "{score} star",
+        "zh_tw": "{score} 分",
+        "zh_cn": "{score} 分"
       }
     }
   },
@@ -256,5 +1600,179 @@
     "brand_story_jp": "創業以来、プロフェッショナルな格闘家からアマチュア愛好家まで、幅広い層のお客様にご支持いただいております。私たちの商品は、日本の伝統的な職人技術と最新の素材技術を融合させ、最高のパフォーマンスを発揮できるよう設計されています。",
     "logo_concept": "ブシギアは、高品質な日本製の格闘用品を中心に取り扱う専門ECサイトです。国内外の格闘技愛好者に向けて、信頼性の高い製品を提供します。また、AIチャットボットを導入し、ユーザーのニーズに応じた製品提案や在庫確認など、リアルタイムなサポートを実現するサービスです。",
     "button": "詳細を見る"
+  },
+  "footer": {
+    "headings": {
+      "category": {
+        "jp": "CATEGORY",
+        "en": "CATEGORY",
+        "zh_tw": "分類",
+        "zh_cn": "分类"
+      },
+      "menu": {
+        "jp": "MENU",
+        "en": "MENU",
+        "zh_tw": "選單",
+        "zh_cn": "选单"
+      },
+      "contact": {
+        "jp": "CONTACT US",
+        "en": "CONTACT US",
+        "zh_tw": "聯絡我們",
+        "zh_cn": "联络我们"
+      }
+    },
+    "categories": [
+      {
+        "id": 1,
+        "name": {
+          "jp": "グローブ",
+          "en": "Gloves",
+          "zh_tw": "手套",
+          "zh_cn": "手套"
+        }
+      },
+      {
+        "id": 2,
+        "name": {
+          "jp": "ミット",
+          "en": "Mitts",
+          "zh_tw": "手靶",
+          "zh_cn": "手靶"
+        }
+      },
+      {
+        "id": 3,
+        "name": {
+          "jp": "プロテクター",
+          "en": "Protectors",
+          "zh_tw": "護具",
+          "zh_cn": "护具"
+        }
+      },
+      {
+        "id": 4,
+        "name": {
+          "jp": "サポーター",
+          "en": "Supporters",
+          "zh_tw": "護具配件",
+          "zh_cn": "护具配件"
+        }
+      }
+    ],
+    "menu": [
+      {
+        "id": 1,
+        "label": {
+          "jp": "商品を探す",
+          "en": "Find Products",
+          "zh_tw": "找商品",
+          "zh_cn": "找商品"
+        },
+        "href": "#"
+      },
+      {
+        "id": 2,
+        "label": {
+          "jp": "ご利用ガイド",
+          "en": "User Guide",
+          "zh_tw": "使用指南",
+          "zh_cn": "使用指南"
+        },
+        "href": "#"
+      },
+      {
+        "id": 3,
+        "label": {
+          "jp": "送料ガイド",
+          "en": "Shipping Guide",
+          "zh_tw": "運費指南",
+          "zh_cn": "运费指南"
+        },
+        "href": "#"
+      },
+      {
+        "id": 4,
+        "label": {
+          "jp": "ABOUT",
+          "en": "ABOUT",
+          "zh_tw": "關於我們",
+          "zh_cn": "关于我们"
+        },
+        "href": "#"
+      },
+      {
+        "id": 5,
+        "label": {
+          "jp": "お問い合わせ",
+          "en": "Contact",
+          "zh_tw": "聯絡我們",
+          "zh_cn": "联络我们"
+        },
+        "href": "#"
+      }
+    ],
+    "contact": {
+      "addressLabel": {
+        "jp": "住所",
+        "en": "Address",
+        "zh_tw": "地址",
+        "zh_cn": "地址"
+      },
+      "address": {
+        "jp": "〒160-0023　東京都新宿区西新宿1-7-3",
+        "en": "1-7-3 Nishi-Shinjuku, Shinjuku-ku, Tokyo 160-0023",
+        "zh_tw": "〒160-0023 東京都新宿區西新宿1-7-3",
+        "zh_cn": "〒160-0023 東京都新宿区西新宿1-7-3"
+      },
+      "phoneLabel": {
+        "jp": "Phone",
+        "en": "Phone",
+        "zh_tw": "電話",
+        "zh_cn": "电话"
+      },
+      "phone": "070-777-8888",
+      "emailLabel": {
+        "jp": "Email",
+        "en": "Email",
+        "zh_tw": "電子信箱",
+        "zh_cn": "电子信箱"
+      },
+      "email": "info@bushi-gear.com",
+      "businessHoursLabel": {
+        "jp": "Business Hours",
+        "en": "Business Hours",
+        "zh_tw": "營業時間",
+        "zh_cn": "营业时间"
+      },
+      "businessHours": {
+        "jp": [
+          "9:00 - 18:00 (月〜金)",
+          "土日祝休み"
+        ],
+        "en": [
+          "9:00 - 18:00 (Mon–Fri)",
+          "Closed on weekends & holidays"
+        ],
+        "zh_tw": [
+          "9:00 - 18:00（週一至週五）",
+          "週末與節假日休息"
+        ],
+        "zh_cn": [
+          "9:00 - 18:00（周一至周五）",
+          "周末与节假日休息"
+        ]
+      }
+    },
+    "legal": {
+      "tokusho": {
+        "jp": "特定商取引法に基づく表記",
+        "en": "Legal Notice",
+        "zh_tw": "特定商取引法相關標示",
+        "zh_cn": "特定商取引法相关标示"
+      }
+    },
+    "brand": "BUSHIGEAR",
+    "copyright": "COPYRIGHT © 2025"
   }
 }
