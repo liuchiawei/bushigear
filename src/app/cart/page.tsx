@@ -7,7 +7,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
 import {
-  getLocalizedText,
   type Locale,
   createTranslationGetter,
   getTranslation,

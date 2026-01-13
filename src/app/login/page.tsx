@@ -9,7 +9,6 @@ import { Spinner } from "@/components/ui/spinner";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useLocale } from "next-intl";
 import {
-  getLocalizedText,
   type Locale,
   createTranslationGetter,
   getTranslation,

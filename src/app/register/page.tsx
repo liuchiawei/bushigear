@@ -10,7 +10,6 @@ import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { useLocale } from "next-intl";
 import {
-  getLocalizedText,
   type Locale,
   createTranslationGetter,
   getTranslation,
@@ -193,10 +192,10 @@ export default function RegisterPage() {
     locale === "jp"
       ? "ja-JP"
       : locale === "zh_tw"
-        ? "zh-TW"
-        : locale === "zh_cn"
-          ? "zh-CN"
-          : "en-US";
+      ? "zh-TW"
+      : locale === "zh_cn"
+      ? "zh-CN"
+      : "en-US";
 
   return (
     <main className="w-full max-w-md mx-auto p-8">
@@ -254,7 +253,9 @@ export default function RegisterPage() {
           </div>
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">{t("lastNameLabel")}</label>
+          <label className="block text-sm font-medium mb-1">
+            {t("lastNameLabel")}
+          </label>
           <Input
             title="lastName"
             name="lastName"
@@ -266,7 +267,9 @@ export default function RegisterPage() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">{t("firstNameLabel")}</label>
+          <label className="block text-sm font-medium mb-1">
+            {t("firstNameLabel")}
+          </label>
           <Input
             title="firstName"
             name="firstName"
@@ -306,7 +309,9 @@ export default function RegisterPage() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">{t("genderLabel")}</label>
+          <label className="block text-sm font-medium mb-1">
+            {t("genderLabel")}
+          </label>
           <select
             title="gender"
             name="gender"
@@ -323,7 +328,9 @@ export default function RegisterPage() {
           </select>
         </div>
         <div>
-          <h2 className="text-lg font-semibold mt-6 mb-2">{t("addressSection")}</h2>
+          <h2 className="text-lg font-semibold mt-6 mb-2">
+            {t("addressSection")}
+          </h2>
           <label className="block text-sm font-medium mb-1">
             {t("postalCodeLabel")}
           </label>
@@ -338,7 +345,9 @@ export default function RegisterPage() {
           />
 
           {/* 都道府県（選單） */}
-          <label className="block text-sm font-medium mb-1">{t("prefectureLabel")}</label>
+          <label className="block text-sm font-medium mb-1">
+            {t("prefectureLabel")}
+          </label>
           <select
             title="prefecture"
             name="prefecture"
@@ -356,7 +365,9 @@ export default function RegisterPage() {
           </select>
 
           {/* 市区町村 */}
-          <label className="block text-sm font-medium mb-1">{t("cityLabel")}</label>
+          <label className="block text-sm font-medium mb-1">
+            {t("cityLabel")}
+          </label>
           <Input
             title="city"
             name="city"
@@ -406,7 +417,9 @@ export default function RegisterPage() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">{t("birthdayLabel")}</label>
+          <label className="block text-sm font-medium mb-1">
+            {t("birthdayLabel")}
+          </label>
           <Input
             title="birthday"
             name="birthday"
