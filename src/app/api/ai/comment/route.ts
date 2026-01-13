@@ -9,7 +9,7 @@ const requestSchema = z.object({
     .min(8, "元のテキストは8文字以上で入力してください。")
     .max(1200, "テキストが長すぎます。短くしてから再度お試しください。"),
   tone: z
-    .enum(["friendly", "formal", "enthusiastic", "objective"])
+    .enum(["friendly", "neutral", "negative"])
     .optional()
     .default("friendly"),
   locale: z
@@ -24,9 +24,8 @@ const requestSchema = z.object({
 
 const toneMap: Record<string, string> = {
   friendly: "親しみやすく自然な語り口で、友人に共有するように表現してください。",
-  formal: "公的なレビューに適した丁寧かつフォーマルな文体で記述してください。",
-  enthusiastic: "熱量と強い推奨が伝わる、ポジティブなトーンで記述してください。",
-  objective: "事実に基づいた中立的なトーンで、主観を抑えて記述してください。",
+  neutral: "事実に基づいた中立的なトーンで、主観を抑えて客観的に記述してください。",
+  negative: "不満や失望感を明確に表現し、商品の問題点や改善が必要な点を率直に、やや批判的なトーンで記述してください。礼儀は保ちつつも、不満の度合いを強めに表現してください。",
 };
 
 const localeMap: Record<string, string> = {

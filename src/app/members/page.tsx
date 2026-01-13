@@ -92,94 +92,96 @@ export default function MembersDashboardPage() {
 
       {error && <p className="text-red-600 mb-3">{error}</p>}
 
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <table className="w-full min-w-[1100px]">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                ID
-              </th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                メール
-              </th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                氏名
-              </th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                性別
-              </th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                誕生日
-              </th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                住所
-              </th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                更新日時
-              </th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                リンク
-              </th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                操作
-              </th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200">
-            {users.map((u) => {
-              const address = u.address ?? buildFullAddress(u);
-              const fullName = ((u.lastName ?? "") + (u.firstName ?? "")).trim();
-              return (
-                <tr key={u.id}>
-                  <td className="px-4 py-3">{u.id}</td>
-                  <td className="px-4 py-3">{u.email}</td>
-                  <td className="px-4 py-3">{fullName || "-"}</td>
-                  <td className="px-4 py-3">{labelGender(u.gender)}</td>
-                  <td className="px-4 py-3">
-                    {u.birthday
-                      ? new Date(u.birthday).toLocaleDateString("ja-JP")
-                      : "-"}
-                  </td>
-                  <td className="px-4 py-3">{address || "-"}</td>
-                  <td className="px-4 py-3">
-                    {u.updatedAt
-                      ? new Date(u.updatedAt).toLocaleString("ja-JP")
-                      : "-"}
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="flex flex-col gap-1 text-sm">
-                      <Link href={`/members/${u.id}/likes`} className="text-blue-600 hover:underline">
-                        お気に入り ({u._count?.likes ?? 0})
-                      </Link>
-                      <Link href={`/members/${u.id}/orders`} className="text-blue-600 hover:underline">
-                        注文 ({u._count?.orders ?? 0})
-                      </Link>
-                      <Link href={`/members/${u.id}/comments`} className="text-blue-600 hover:underline">
-                        レビュー ({u._count?.comments ?? 0})
-                      </Link>
-                    </div>
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="flex gap-3">
-                      <button
-                        className="text-blue-600 hover:underline"
-                        onClick={() => setEditing(u)}
-                      >
-                        編集
-                      </button>
-                      <button
-                        className="text-red-600 hover:underline"
-                        onClick={() => onDelete(u.id)}
-                      >
-                        削除
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+      <div className="bg-white rounded-lg shadow">
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[1100px] text-sm">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                  ID
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                  メール
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                  氏名
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                  性別
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                  誕生日
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                  住所
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                  更新日時
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                  リンク
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                  操作
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200">
+              {users.map((u) => {
+                const address = u.address ?? buildFullAddress(u);
+                const fullName = ((u.lastName ?? "") + (u.firstName ?? "")).trim();
+                return (
+                  <tr key={u.id}>
+                    <td className="px-4 py-3 whitespace-nowrap">{u.id}</td>
+                    <td className="px-4 py-3 whitespace-nowrap">{u.email}</td>
+                    <td className="px-4 py-3 whitespace-nowrap">{fullName || "-"}</td>
+                    <td className="px-4 py-3 whitespace-nowrap">{labelGender(u.gender)}</td>
+                    <td className="px-4 py-3 whitespace-nowrap">
+                      {u.birthday
+                        ? new Date(u.birthday).toLocaleDateString("ja-JP")
+                        : "-"}
+                    </td>
+                    <td className="px-4 py-3">{address || "-"}</td>
+                    <td className="px-4 py-3 whitespace-nowrap">
+                      {u.updatedAt
+                        ? new Date(u.updatedAt).toLocaleString("ja-JP")
+                        : "-"}
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex flex-col gap-1 text-sm">
+                        <Link href={`/members/${u.id}/likes`} className="text-blue-600 hover:underline">
+                          お気に入り ({u._count?.likes ?? 0})
+                        </Link>
+                        <Link href={`/members/${u.id}/orders`} className="text-blue-600 hover:underline">
+                          注文 ({u._count?.orders ?? 0})
+                        </Link>
+                        <Link href={`/members/${u.id}/comments`} className="text-blue-600 hover:underline">
+                          レビュー ({u._count?.comments ?? 0})
+                        </Link>
+                      </div>
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex gap-3">
+                        <button
+                          className="text-blue-600 hover:underline"
+                          onClick={() => setEditing(u)}
+                        >
+                          編集
+                        </button>
+                        <button
+                          className="text-red-600 hover:underline"
+                          onClick={() => onDelete(u.id)}
+                        >
+                          削除
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
 
         {users.length === 0 && (
           <div className="text-center py-8 text-gray-500">

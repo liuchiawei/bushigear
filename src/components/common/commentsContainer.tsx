@@ -6,6 +6,9 @@ import CommentInput from "./commentInput";
 import { Comment } from "@/lib/type";
 import { Separator } from "@/components/ui/separator";
 import { useSession } from "next-auth/react";
+import { useLocale } from "next-intl";
+import { getLocalizedText, type Locale } from "@/lib/i18n";
+import content from "@/data/content.json";
 
 type CommentsContainerProps = {
   initialComments: Comment[];
@@ -20,6 +23,17 @@ export default function CommentsContainer({
 }: CommentsContainerProps) {
   const [comments, setComments] = useState<Comment[]>(initialComments);
   const { data: session } = useSession();
+  const locale = useLocale() as Locale;
+  const copy = content.products_detail.comments;
+  const l = <K extends keyof typeof copy>(key: K, vars?: Record<string, string | number>) => {
+    const text =
+      locale === "jp" ? copy[key].jp : getLocalizedText(copy[key] as any, locale);
+    if (!vars) return text;
+    return Object.keys(vars).reduce(
+      (acc, k) => acc.replace(`{${k}}`, String(vars[k])),
+      text
+    );
+  };
   const currentUserId = session?.user?.id ? Number(session.user.id) : null;
 
   const { average, count } = useMemo(() => {
@@ -34,9 +48,9 @@ export default function CommentsContainer({
     <section id="reviews" className="mt-10 space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-semibold">レビュー</h3>
+          <h3 className="text-lg font-semibold">{l("title")}</h3>
           <p className="text-sm text-muted-foreground">
-            平均 {average.toFixed(1)} / 5 （{count} 件）
+            {l("average", { score: average.toFixed(1), count })}
           </p>
         </div>
       </div>

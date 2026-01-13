@@ -5,9 +5,13 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useLocale } from "next-intl";
+import { getLocalizedText, type Locale } from "@/lib/i18n";
+import content from "@/data/content.json";
 
 export default function CheckoutPage() {
   const { cart } = useCart();
+  const locale = useLocale() as Locale;
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
 
@@ -18,6 +22,24 @@ export default function CheckoutPage() {
     address: "",
     paymentMethod: "credit_card",
   });
+
+  const copy = content.checkout;
+  const t = <K extends keyof typeof copy>(key: K) =>
+    locale === "jp" ? copy[key].jp : getLocalizedText(copy[key], locale);
+  const field = copy.fields;
+  const fieldLabel = (k: keyof typeof field) =>
+    locale === "jp" ? field[k].jp : getLocalizedText(field[k], locale);
+  const paymentOption = (k: keyof typeof field.paymentOptions) =>
+    locale === "jp"
+      ? field.paymentOptions[k].jp
+      : getLocalizedText(field.paymentOptions[k], locale);
+  const securePaymentTitle =
+    locale === "jp"
+      ? copy.securePayment.title.jp
+      : getLocalizedText(copy.securePayment.title, locale);
+  const securePaymentLines = copy.securePayment.lines.map((line) =>
+    locale === "jp" ? line.jp : getLocalizedText(line, locale)
+  );
 
   useEffect(() => {
     (async () => {
@@ -62,7 +84,7 @@ export default function CheckoutPage() {
 
   const handlePlaceOrder = async () => {
     if (!cart || cart.items.length === 0) {
-      alert("カートが空です");
+      alert(copy.errors.cartEmpty[locale === "jp" ? "jp" : locale]);
       return;
     }
     setIsProcessing(true);
@@ -73,7 +95,7 @@ export default function CheckoutPage() {
         !customer.email ||
         !customer.address
       ) {
-        alert("必須項目を入力してください");
+        alert(copy.errors.required[locale === "jp" ? "jp" : locale]);
         setIsProcessing(false);
         return;
       }
@@ -98,7 +120,10 @@ export default function CheckoutPage() {
 
       if (!res.ok) {
         const errorData = await res.json();
-        throw new Error(errorData.error || "チェックアウトセッションの作成に失敗しました");
+        throw new Error(
+          errorData.error ||
+            copy.errors.session[locale === "jp" ? "jp" : locale]
+        );
       }
 
       const data = await res.json();
@@ -107,10 +132,10 @@ export default function CheckoutPage() {
       if (data.url) {
         window.location.href = data.url;
       } else {
-        throw new Error("チェックアウト URL が取得できませんでした");
+        throw new Error(copy.errors.noUrl[locale === "jp" ? "jp" : locale]);
       }
     } catch (e: any) {
-      alert(e?.message ?? "注文に失敗しました");
+      alert(e?.message ?? copy.errors.orderFailed[locale === "jp" ? "jp" : locale]);
       setIsProcessing(false);
     }
   };
@@ -119,11 +144,15 @@ export default function CheckoutPage() {
     return (
       <main className="w-full min-h-screen py-16">
         <div className="w-full max-w-4xl mx-auto px-4">
-          <h1 className="text-3xl font-bold mb-8">チェックアウト</h1>
+          <h1 className="text-3xl font-bold mb-8">{t("title")}</h1>
           <div className="text-center py-16">
-            <p className="text-lg text-gray-500 mb-6">カートは空です</p>
+            <p className="text-lg text-gray-500 mb-6">
+              {copy.empty.message[locale === "jp" ? "jp" : locale]}
+            </p>
             <Link href="/products">
-              <Button size="lg">商品を見る</Button>
+              <Button size="lg">
+                {copy.empty.cta[locale === "jp" ? "jp" : locale]}
+              </Button>
             </Link>
           </div>
         </div>
@@ -134,11 +163,11 @@ export default function CheckoutPage() {
   return (
     <main className="w-full min-h-screen py-16">
       <div className="w-full max-w-6xl mx-auto px-4">
-        <h1 className="text-3xl font-bold mb-8">チェックアウト</h1>
+        <h1 className="text-3xl font-bold mb-8">{t("title")}</h1>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Order Summary */}
           <div>
-            <h2 className="text-2xl font-semibold mb-6">注文内容</h2>
+            <h2 className="text-2xl font-semibold mb-6">{t("orderSummary")}</h2>
             <div className="space-y-4">
               {cart.items.map((item) => (
                 <div
@@ -153,11 +182,17 @@ export default function CheckoutPage() {
                     className="rounded-md"
                   />
                   <div className="flex-1">
-                    <h3 className="font-semibold">{item.product.name_jp}</h3>
+                    <h3 className="font-semibold">
+                      {locale === "jp"
+                        ? item.product.name_jp
+                        : item.product.name_en || item.product.name_jp}
+                    </h3>
                     <p className="text-sm text-gray-500">
                       {item.product.brand}
                     </p>
-                    <p className="text-sm">数量: {item.quantity}</p>
+                    <p className="text-sm">
+                      {copy.quantity[locale === "jp" ? "jp" : locale]}: {item.quantity}
+                    </p>
                   </div>
                   <div className="text-right">
                     <p className="font-semibold">
@@ -169,7 +204,7 @@ export default function CheckoutPage() {
             </div>
             <div className="mt-6 p-4 bg-gray-50 rounded-lg">
               <div className="flex justify-between items-center">
-                <span className="text-xl font-semibold">合計:</span>
+                <span className="text-xl font-semibold">{t("total")}:</span>
                 <span className="text-2xl font-bold text-green-600">
                   ¥{cart.total.toLocaleString()}
                 </span>
@@ -178,16 +213,16 @@ export default function CheckoutPage() {
           </div>
           {/* Checkout Form */}
           <div>
-            <h2 className="text-2xl font-semibold mb-6">お客様情報</h2>
+            <h2 className="text-2xl font-semibold mb-6">{t("customerInfo")}</h2>
             <div className="space-y-6">
               <div className="p-6 border rounded-lg bg-blue-50 border-blue-200">
                 <h3 className="font-semibold text-blue-800 mb-2">
-                  💳 安全な決済について
+                  💳 {securePaymentTitle}
                 </h3>
                 <p className="text-sm text-blue-700">
-                  お支払いは Stripe の安全な決済システムを使用しています。
+                  {securePaymentLines[0]}
                   <br />
-                  クレジットカード情報は当社では保存されません。
+                  {securePaymentLines[1]}
                 </p>
                 <p className="text-sm text-blue-700 mt-2">
                   <a
@@ -196,9 +231,10 @@ export default function CheckoutPage() {
                     rel="noopener noreferrer"
                     className="underline"
                   >
-                    特定商取引法に基づく表記
+                    {getLocalizedText(content.footer.legal.tokusho, locale)}
                   </a>
-                  をご確認ください。
+                  <br />
+                  {securePaymentLines[2]}
                 </p>
               </div>
               {/* editable form fields */}
@@ -206,7 +242,7 @@ export default function CheckoutPage() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium mb-2">
-                      氏 *
+                      {fieldLabel("lastName")} *
                     </label>
                     <input
                       type="text"
@@ -221,7 +257,7 @@ export default function CheckoutPage() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium mb-2">
-                      名 *
+                      {fieldLabel("firstName")} *
                     </label>
                     <input
                       type="text"
@@ -237,7 +273,7 @@ export default function CheckoutPage() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-2">
-                    メールアドレス *
+                    {fieldLabel("email")} *
                   </label>
                   <input
                     type="email"
@@ -252,7 +288,7 @@ export default function CheckoutPage() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-2">
-                    配送先住所 *
+                    {fieldLabel("address")} *
                   </label>
                   <textarea
                     name="address"
@@ -266,7 +302,7 @@ export default function CheckoutPage() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-2">
-                    支払い方法 *
+                    {fieldLabel("paymentMethod")} *
                   </label>
                   <select
                     title="paymentMethod"
@@ -275,14 +311,16 @@ export default function CheckoutPage() {
                     value={customer.paymentMethod}
                     onChange={handleCustomerChange}
                   >
-                    <option value="credit_card">クレジットカード</option>
+                    <option value="credit_card">
+                      {paymentOption("credit_card")}
+                    </option>
                   </select>
                 </div>
               </div>
               <div className="flex space-x-4 pt-6">
                 <Link href="/cart" className="flex-1">
                   <Button variant="outline" className="w-full" size="lg">
-                    カートに戻る
+                    {t("backToCart")}
                   </Button>
                 </Link>
                 <Button
@@ -291,7 +329,7 @@ export default function CheckoutPage() {
                   className="flex-1"
                   size="lg"
                 >
-                  {isProcessing ? "処理中..." : "注文を確定する"}
+                  {isProcessing ? t("processing") : t("placeOrder")}
                 </Button>
               </div>
             </div>

@@ -11,16 +11,78 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Search, Languages, LogIn, Heart } from "lucide-react";
+import { Languages, LogIn, Heart } from "lucide-react";
 import CartSheet from "@/components/common/CartSheet";
+import SearchBar from "@/components/common/SearchBar";
 import Image from "next/image";
+import { useLocale, useTranslations } from "next-intl";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+import { useLocaleContext } from "@/components/providers/intl-provider";
+import type { Locale } from "@/lib/i18n";
+
+const LANGUAGES: { code: Locale; label: string; short: string }[] = [
+  { code: "jp", label: "日本語", short: "JP" },
+  { code: "en", label: "English", short: "EN" },
+  { code: "zh_tw", label: "繁體中文", short: "TW" },
+  { code: "zh_cn", label: "简体中文", short: "CN" },
+];
+
+function LanguageSwitcher() {
+  const [open, setOpen] = useState(false);
+  const locale = useLocale() as Locale;
+  const { setLocale } = useLocaleContext();
+  const t = useTranslations("nav.tooltips");
+
+  const handleSelect = (nextLocale: Locale) => {
+    setLocale(nextLocale);
+    setOpen(false);
+  };
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <PopoverTrigger asChild>
+            <button
+              type="button"
+              aria-label={t("language")}
+              className="flex items-center gap-2 rounded-full border border-border px-3 py-1.5 text-xs font-medium uppercase hover:bg-muted transition-colors"
+            >
+              <Languages className="size-4" />
+              <span>{locale}</span>
+            </button>
+          </PopoverTrigger>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>{t("language")}</p>
+        </TooltipContent>
+      </Tooltip>
+      <PopoverContent align="end" className="w-48 p-2">
+        <div className="flex flex-col gap-1">
+          {LANGUAGES.map((language) => (
+            <Button
+              key={language.code}
+              variant={language.code === locale ? "default" : "ghost"}
+              className="w-full justify-between"
+              onClick={() => handleSelect(language.code)}
+            >
+              <span className="text-sm">{language.label}</span>
+              <span className="text-xs text-muted-foreground">{language.short}</span>
+            </Button>
+          ))}
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
+}
 
 export default function Nav() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMouseNearTop, setIsMouseNearTop] = useState(false);
+  const t = useTranslations("nav.tooltips");
 
   useEffect(() => {
     const handleScroll = () => {
@@ -68,63 +130,37 @@ export default function Nav() {
       </Link>
       <NavigationMenuList className="gap-4">
         <NavigationMenuItem>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <a title="検索" href="#">
-                  <Search className="size-4" />
-                </a>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>検索</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <SearchBar />
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Link href="/login">
-                  <LogIn className="size-4" />
-                </Link>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>会員登録 | ログイン</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Link href="/login">
+                <LogIn className="size-4" />
+              </Link>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{t("login")}</p>
+            </TooltipContent>
+          </Tooltip>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Link href="/mypage?tab=likes">
-                  <Heart className="size-4" />
-                </Link>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>お気に入り</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Link href="/mypage?tab=likes">
+                <Heart className="size-4" />
+              </Link>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{t("favorites")}</p>
+            </TooltipContent>
+          </Tooltip>
         </NavigationMenuItem>
         <NavigationMenuItem>
           <CartSheet />
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <a href="#">
-                  <Languages className="size-4" />
-                </a>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>言語切り替え</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <LanguageSwitcher />
         </NavigationMenuItem>
       </NavigationMenuList>
     </NavigationMenu>

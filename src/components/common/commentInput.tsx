@@ -13,6 +13,9 @@ import { Spinner } from "@/components/ui/spinner";
 import { MessageSquare, Sparkles } from "lucide-react";
 import { Comment } from "@/lib/type";
 import { cn } from "@/lib/utils";
+import { useLocale } from "next-intl";
+import { getLocalizedText, type Locale } from "@/lib/i18n";
+import content from "@/data/content.json";
 
 type CommentInputProps = {
   productId: number;
@@ -24,15 +27,28 @@ export default function CommentInput({
   onSubmitted,
 }: CommentInputProps) {
   const { data: session, status } = useSession();
+  const locale = useLocale() as Locale;
+  const copy = content.products_detail.comments;
+  const t = <K extends keyof typeof copy>(key: K, vars?: Record<string, string | number>) => {
+    const text =
+      locale === "jp" ? copy[key].jp : getLocalizedText(copy[key] as any, locale);
+    if (!vars) return text;
+    return Object.keys(vars).reduce(
+      (acc, k) => acc.replace(`{${k}}`, String(vars[k])),
+      text
+    );
+  };
   const [score, setScore] = useState(5);
   const [comment, setComment] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [aiLoading, setAiLoading] = useState(false);
+  const [selectedTone, setSelectedTone] = useState<"friendly" | "neutral" | "negative">("friendly");
+  const [hasUsedAi, setHasUsedAi] = useState(false);
 
   const handleSubmit = async () => {
     if (!comment.trim()) {
-      setError("コメントを入力してください");
+      setError(copy.placeholder[locale === "jp" ? "jp" : locale]);
       return;
     }
     setLoading(true);
@@ -46,12 +62,12 @@ export default function CommentInput({
 
       if (res.status === 403) {
         const data = await res.json().catch(() => ({}));
-        setError(data?.message || "購入履歴がありません");
+        setError(data?.message || copy.noPurchase[locale === "jp" ? "jp" : locale]);
         return;
       }
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        throw new Error(data?.message || "投稿に失敗しました");
+        throw new Error(data?.message || copy.postFailed[locale === "jp" ? "jp" : locale]);
       }
 
       const data = await res.json();
@@ -59,9 +75,10 @@ export default function CommentInput({
         onSubmitted(data.comment);
         setComment("");
         setScore(5);
+        setHasUsedAi(false);
       }
     } catch (e: any) {
-      setError(e?.message || "投稿に失敗しました");
+      setError(e?.message || copy.postFailed[locale === "jp" ? "jp" : locale]);
     } finally {
       setLoading(false);
     }
@@ -69,7 +86,7 @@ export default function CommentInput({
 
   const handleAiPolish = async () => {
     if (!comment.trim()) {
-      setError("AI リライトの前にコメントを入力してください。");
+      setError(copy.aiNeedText[locale === "jp" ? "jp" : locale]);
       return;
     }
     setAiLoading(true);
@@ -80,22 +97,30 @@ export default function CommentInput({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           text: comment,
-          tone: "friendly",
-          locale: "ja-JP",
+          tone: selectedTone,
+          locale:
+            locale === "jp"
+              ? "ja-JP"
+              : locale === "zh_tw"
+                ? "zh-TW"
+                : locale === "zh_cn"
+                  ? "zh-CN"
+                  : "en-US",
         }),
       });
 
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        throw new Error(data?.message || "AI リライトに失敗しました。");
+        throw new Error(data?.message || copy.aiFailed[locale === "jp" ? "jp" : locale]);
       }
 
       const data = await res.json();
       if (data?.revision) {
         setComment(data.revision);
+        setHasUsedAi(true);
       }
     } catch (e: any) {
-      setError(e?.message || "AI リライトに失敗しました。");
+      setError(e?.message || copy.aiFailed[locale === "jp" ? "jp" : locale]);
     } finally {
       setAiLoading(false);
     }
@@ -105,10 +130,12 @@ export default function CommentInput({
     return (
       <div className="rounded-lg border bg-white/50 backdrop-blur-sm p-4">
         <p className="text-sm text-muted-foreground mb-3">
-          レビューを投稿するにはログインしてください。
+          {copy.loginPrompt[locale === "jp" ? "jp" : locale]}
         </p>
         <Button asChild>
-          <Link href={`/login?redirect=/products/${productId}`}>ログイン</Link>
+          <Link href={`/login?redirect=/products/${productId}`}>
+            {copy.loginButton[locale === "jp" ? "jp" : locale]}
+          </Link>
         </Button>
       </div>
     );
@@ -131,7 +158,7 @@ export default function CommentInput({
       )}
       <div className="flex flex-col gap-2">
         <label htmlFor="score" className="text-sm">
-          評価
+          {t("ratingLabel")}
         </label>
         <div className="flex items-center">
           {[1, 2, 3, 4, 5].map((n) => (
@@ -162,7 +189,7 @@ export default function CommentInput({
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
-                <p>{n}</p>
+                <p>{t("scoreHint", { score: n })}</p>
               </TooltipContent>
             </Tooltip>
           ))}
@@ -170,49 +197,96 @@ export default function CommentInput({
       </div>
       <div className="space-y-1">
         <label htmlFor="comment" className="text-sm">
-          コメント
+          {t("commentLabel")}
         </label>
         <textarea
           id="comment"
           value={comment}
           onChange={(e) => setComment(e.target.value)}
-          placeholder="商品の感想やおすすめポイントを書いてください"
+          placeholder={t("placeholder")}
           rows={3}
           className="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
         />
       </div>
       {error && <p className="text-sm text-destructive">{error}</p>}
       <div className="flex gap-2">
-        <Tooltip delayDuration={200}>
-          <TooltipTrigger asChild>
-            <Button
+        <div className={cn(
+          "relative group",
+          (aiLoading || loading || hasUsedAi) && "cursor-not-allowed"
+        )}>
+          <Tooltip delayDuration={200}>
+            <TooltipTrigger asChild>
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={handleAiPolish}
+                disabled={aiLoading || loading || hasUsedAi}
+                className={cn(
+                  "w-16 shrink-0",
+                  (aiLoading || loading || hasUsedAi) && "!cursor-not-allowed"
+                )}
+              >
+                {aiLoading ? (
+                  <Spinner size="sm" />
+                ) : (
+                  <>
+                    <Sparkles className="size-4" />
+                  </>
+                )}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="bottom">
+              <p>{t("aiTooltip")}</p>
+            </TooltipContent>
+          </Tooltip>
+          
+          {/* 语气选择器 - hover时显示（仅在按钮可用时） */}
+          {!hasUsedAi && !aiLoading && !loading && (
+            <div className="absolute right-full bottom-0 mr-2 w-40 bg-white border rounded-md shadow-lg py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+            <div className="px-3 py-1.5 text-xs font-medium text-muted-foreground border-b">
+              {t("toneTitle")}
+            </div>
+            <button
               type="button"
-              variant="secondary"
-              onClick={handleAiPolish}
-              disabled={aiLoading || loading}
-              className="w-16 shrink-0"
-            >
-              {aiLoading ? (
-                <Spinner size="sm" />
-              ) : (
-                <>
-                  <Sparkles className="size-4" />
-                </>
+              onClick={() => setSelectedTone("friendly")}
+              className={cn(
+                "w-full px-3 py-2 text-left text-sm hover:bg-accent transition-colors",
+                selectedTone === "friendly" && "bg-accent/50"
               )}
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>AI がコメントを自然な日本語に整えます</p>
-          </TooltipContent>
-        </Tooltip>
+            >
+              <div className="font-medium">{copy.tones.friendly[locale === "jp" ? "jp" : locale]}</div>
+            </button>
+            <button
+              type="button"
+              onClick={() => setSelectedTone("neutral")}
+              className={cn(
+                "w-full px-3 py-2 text-left text-sm hover:bg-accent transition-colors",
+                selectedTone === "neutral" && "bg-accent/50"
+              )}
+            >
+              <div className="font-medium">{copy.tones.neutral[locale === "jp" ? "jp" : locale]}</div>
+            </button>
+            <button
+              type="button"
+              onClick={() => setSelectedTone("negative")}
+              className={cn(
+                "w-full px-3 py-2 text-left text-sm hover:bg-accent transition-colors",
+                selectedTone === "negative" && "bg-accent/50"
+              )}
+            >
+              <div className="font-medium">{copy.tones.negative[locale === "jp" ? "jp" : locale]}</div>
+            </button>
+          </div>
+          )}
+        </div>
         <Button onClick={handleSubmit} disabled={loading || aiLoading} className="flex-1">
           {loading ? (
             <>
-              <Spinner size="sm" variant="white" /> 投稿中...
+              <Spinner size="sm" variant="white" /> {t("submitting")}
             </>
           ) : (
             <>
-              <MessageSquare className="size-4 mr-1" /> レビューを投稿
+              <MessageSquare className="size-4 mr-1" /> {t("submit")}
             </>
           )}
         </Button>

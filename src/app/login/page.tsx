@@ -7,19 +7,27 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useLocale } from "next-intl";
+import { getLocalizedText, type Locale } from "@/lib/i18n";
+import content from "@/data/content.json";
 
 export default function LoginPage() {
   const router = useRouter();
-  const {data: session, status} = useSession();
+  const { data: session, status } = useSession();
+  const locale = useLocale() as Locale;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
 
+  const copy = content.auth.login;
+  const t = <K extends keyof typeof copy>(key: K) =>
+    locale === "jp" ? copy[key].jp : getLocalizedText(copy[key], locale);
+
   if (status === "loading") {
     return (
-      <main className="p-8 max-w-md mx-auto">
+      <main className="w-full max-w-md mx-auto p-8">
         <Skeleton className="h-8 w-32 mb-4" />
         <div className="space-y-4">
           <Skeleton className="h-10 w-full" />
@@ -28,23 +36,28 @@ export default function LoginPage() {
         </div>
         <div className="mt-6 flex items-center justify-center gap-2">
           <Spinner size="sm" />
-          <span className="text-sm text-muted-foreground">読み込み中...</span>
+          <span className="text-sm text-muted-foreground">{t("loading")}</span>
         </div>
       </main>
     );
   }
 
   if (session) {
+    const welcomeText = (locale === "jp"
+      ? copy.welcome.jp
+      : getLocalizedText(copy.welcome, locale)
+    ).replace("{email}", session.user?.email ?? "");
+
     return (
-      <main className="p-8 max-w-md mx-auto text-center">
-        <h1 className="text-2xl font-bold mb-4">ログイン済み</h1>
-        <p className="mb-4">ようこそ、{session.user?.email}</p>
+      <main className="w-full max-w-md mx-auto p-8 text-center">
+        <h1 className="text-2xl font-bold mb-4">{t("loggedInTitle")}</h1>
+        <p className="mb-4">{welcomeText}</p>
         <Button
           onClick={() => signOut()}
           variant="destructive"
           className="w-full"
         >
-          ログアウト
+          {t("logout")}
         </Button>
       </main>
     );
@@ -54,21 +67,21 @@ export default function LoginPage() {
     e.preventDefault();
     setError("");
     setLoading(true);
-    
+
     try {
       const res = await signIn("credentials", {
         redirect: false,
         email,
         password,
       });
-      
+
       if (res?.error) {
-        setError("ログインに失敗しました。メールアドレスとパスワードを確認してください。");
+        setError(t("loginFailed"));
       } else {
         router.push("/");
       }
     } catch {
-      setError("予期しないエラーが発生しました。もう一度お試しください。");
+      setError(t("unexpectedError"));
     } finally {
       setLoading(false);
     }
@@ -80,39 +93,43 @@ export default function LoginPage() {
     try {
       await signIn("google");
     } catch {
-      setError("Googleログインに失敗しました。もう一度お試しください。");
+      setError(t("googleLoginFailed"));
       setGoogleLoading(false);
     }
   };
 
   return (
-    <main className="p-8 max-w-md mx-auto">
-      <h1 className="text-2xl font-bold mb-6">ログイン</h1>
-      
+    <main className="w-full max-w-md mx-auto p-8">
+      <h1 className="text-2xl font-bold mb-6">{t("pageTitle")}</h1>
+
       {error && (
         <div className="mb-4 p-3 bg-destructive/10 border border-destructive/20 rounded-md">
           <p className="text-sm text-destructive">{error}</p>
         </div>
       )}
-      
+
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium mb-1">Email</label>
+        <div className="space-y-1">
+          <label className="block text-sm font-medium">{t("emailLabel")}</label>
           <Input
             title="email"
             type="email"
             value={email}
+            className="border-border rounded-md"
             onChange={(e) => setEmail(e.target.value)}
             disabled={loading || googleLoading}
             required
           />
         </div>
-        <div>
-          <label className="block text-sm font-medium mb-1">Password</label>
+        <div className="space-y-1">
+          <label className="block text-sm font-medium">
+            {t("passwordLabel")}
+          </label>
           <Input
             title="password"
             type="password"
             value={password}
+            className="border-border rounded-md"
             onChange={(e) => setPassword(e.target.value)}
             disabled={loading || googleLoading}
             required
@@ -126,40 +143,39 @@ export default function LoginPage() {
           {loading ? (
             <>
               <Spinner size="sm" variant="white" />
-              ログイン中...
+              {t("loggingIn")}
             </>
           ) : (
-            "ログイン"
+            t("loginButton")
           )}
         </Button>
       </form>
-      
-      <div className="my-6 flex items-center gap-4">
-        <div className="flex-1 border-t"></div>
-        <span className="text-sm text-muted-foreground">または</span>
-        <div className="flex-1 border-t"></div>
-      </div>
-      
+
+      <hr className="my-6" />
+
       <Button
         onClick={handleGoogleSignIn}
-        variant="outline"
+        variant="destructive"
         className="w-full"
         disabled={loading || googleLoading}
       >
         {googleLoading ? (
           <>
             <Spinner size="sm" />
-            Googleでログイン中...
+            {t("googleLoggingIn")}
           </>
         ) : (
-          "Googleでログイン"
+          t("googleLogin")
         )}
       </Button>
-      
-      <p className="mt-6 text-center text-sm">
-        新規登録は{" "}
-        <a href="/register" className="text-primary underline hover:no-underline">
-          こちら
+
+      <p className="mt-4 text-center text-sm">
+        {t("newHerePrefix")}{" "}
+        <a
+          href="/register"
+          className="text-primary underline hover:no-underline"
+        >
+          {t("registerHere")}
         </a>
       </p>
     </main>
