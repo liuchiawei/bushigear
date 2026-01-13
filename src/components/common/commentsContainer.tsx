@@ -8,7 +8,6 @@ import { Separator } from "@/components/ui/separator";
 import { useSession } from "next-auth/react";
 import { useLocale } from "next-intl";
 import {
-  getLocalizedText,
   type Locale,
   createTranslationGetter,
 } from "@/lib/i18n";

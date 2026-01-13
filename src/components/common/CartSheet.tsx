@@ -20,7 +20,6 @@ import { useCart } from "@/contexts/CartContext";
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
 import {
-  getLocalizedText,
   type Locale,
   createTranslationGetter,
   getTranslation,

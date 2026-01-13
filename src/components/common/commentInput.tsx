@@ -15,7 +15,6 @@ import { Comment } from "@/lib/type";
 import { cn } from "@/lib/utils";
 import { useLocale } from "next-intl";
 import {
-  getLocalizedText,
   type Locale,
   createTranslationGetter,
   getTranslation,
