@@ -14,7 +14,12 @@ import { MessageSquare, Sparkles } from "lucide-react";
 import { Comment } from "@/lib/type";
 import { cn } from "@/lib/utils";
 import { useLocale } from "next-intl";
-import { getLocalizedText, type Locale } from "@/lib/i18n";
+import {
+  getLocalizedText,
+  type Locale,
+  createTranslationGetter,
+  getTranslation,
+} from "@/lib/i18n";
 import content from "@/data/content.json";
 
 type CommentInputProps = {
@@ -29,9 +34,12 @@ export default function CommentInput({
   const { data: session, status } = useSession();
   const locale = useLocale() as Locale;
   const copy = content.products_detail.comments;
-  const t = <K extends keyof typeof copy>(key: K, vars?: Record<string, string | number>) => {
-    const text =
-      locale === "jp" ? copy[key].jp : getLocalizedText(copy[key] as any, locale);
+  const baseT = createTranslationGetter(copy, locale);
+  const t = <K extends keyof typeof copy>(
+    key: K,
+    vars?: Record<string, string | number>
+  ) => {
+    const text = baseT(key);
     if (!vars) return text;
     return Object.keys(vars).reduce(
       (acc, k) => acc.replace(`{${k}}`, String(vars[k])),
@@ -43,12 +51,14 @@ export default function CommentInput({
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [aiLoading, setAiLoading] = useState(false);
-  const [selectedTone, setSelectedTone] = useState<"friendly" | "neutral" | "negative">("friendly");
+  const [selectedTone, setSelectedTone] = useState<
+    "friendly" | "neutral" | "negative"
+  >("friendly");
   const [hasUsedAi, setHasUsedAi] = useState(false);
 
   const handleSubmit = async () => {
     if (!comment.trim()) {
-      setError(copy.placeholder[locale === "jp" ? "jp" : locale]);
+      setError(getTranslation(copy.placeholder, locale));
       return;
     }
     setLoading(true);
@@ -62,12 +72,14 @@ export default function CommentInput({
 
       if (res.status === 403) {
         const data = await res.json().catch(() => ({}));
-        setError(data?.message || copy.noPurchase[locale === "jp" ? "jp" : locale]);
+        setError(data?.message || getTranslation(copy.noPurchase, locale));
         return;
       }
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        throw new Error(data?.message || copy.postFailed[locale === "jp" ? "jp" : locale]);
+        throw new Error(
+          data?.message || getTranslation(copy.postFailed, locale)
+        );
       }
 
       const data = await res.json();
@@ -78,7 +90,7 @@ export default function CommentInput({
         setHasUsedAi(false);
       }
     } catch (e: any) {
-      setError(e?.message || copy.postFailed[locale === "jp" ? "jp" : locale]);
+      setError(e?.message || getTranslation(copy.postFailed, locale));
     } finally {
       setLoading(false);
     }
@@ -86,7 +98,7 @@ export default function CommentInput({
 
   const handleAiPolish = async () => {
     if (!comment.trim()) {
-      setError(copy.aiNeedText[locale === "jp" ? "jp" : locale]);
+      setError(getTranslation(copy.aiNeedText, locale));
       return;
     }
     setAiLoading(true);
@@ -102,16 +114,16 @@ export default function CommentInput({
             locale === "jp"
               ? "ja-JP"
               : locale === "zh_tw"
-                ? "zh-TW"
-                : locale === "zh_cn"
-                  ? "zh-CN"
-                  : "en-US",
+              ? "zh-TW"
+              : locale === "zh_cn"
+              ? "zh-CN"
+              : "en-US",
         }),
       });
 
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        throw new Error(data?.message || copy.aiFailed[locale === "jp" ? "jp" : locale]);
+        throw new Error(data?.message || getTranslation(copy.aiFailed, locale));
       }
 
       const data = await res.json();
@@ -120,7 +132,7 @@ export default function CommentInput({
         setHasUsedAi(true);
       }
     } catch (e: any) {
-      setError(e?.message || copy.aiFailed[locale === "jp" ? "jp" : locale]);
+      setError(e?.message || getTranslation(copy.aiFailed, locale));
     } finally {
       setAiLoading(false);
     }
@@ -130,11 +142,11 @@ export default function CommentInput({
     return (
       <div className="rounded-lg border bg-white/50 backdrop-blur-sm p-4">
         <p className="text-sm text-muted-foreground mb-3">
-          {copy.loginPrompt[locale === "jp" ? "jp" : locale]}
+          {getTranslation(copy.loginPrompt, locale)}
         </p>
         <Button asChild>
           <Link href={`/login?redirect=/products/${productId}`}>
-            {copy.loginButton[locale === "jp" ? "jp" : locale]}
+            {getTranslation(copy.loginButton, locale)}
           </Link>
         </Button>
       </div>
@@ -210,10 +222,12 @@ export default function CommentInput({
       </div>
       {error && <p className="text-sm text-destructive">{error}</p>}
       <div className="flex gap-2">
-        <div className={cn(
-          "relative group",
-          (aiLoading || loading || hasUsedAi) && "cursor-not-allowed"
-        )}>
+        <div
+          className={cn(
+            "relative group",
+            (aiLoading || loading || hasUsedAi) && "cursor-not-allowed"
+          )}
+        >
           <Tooltip delayDuration={200}>
             <TooltipTrigger asChild>
               <Button
@@ -239,47 +253,57 @@ export default function CommentInput({
               <p>{t("aiTooltip")}</p>
             </TooltipContent>
           </Tooltip>
-          
+
           {/* 语气选择器 - hover时显示（仅在按钮可用时） */}
           {!hasUsedAi && !aiLoading && !loading && (
             <div className="absolute right-full bottom-0 mr-2 w-40 bg-white border rounded-md shadow-lg py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-            <div className="px-3 py-1.5 text-xs font-medium text-muted-foreground border-b">
-              {t("toneTitle")}
+              <div className="px-3 py-1.5 text-xs font-medium text-muted-foreground border-b">
+                {t("toneTitle")}
+              </div>
+              <button
+                type="button"
+                onClick={() => setSelectedTone("friendly")}
+                className={cn(
+                  "w-full px-3 py-2 text-left text-sm hover:bg-accent transition-colors",
+                  selectedTone === "friendly" && "bg-accent/50"
+                )}
+              >
+                <div className="font-medium">
+                  {getTranslation(copy.tones.friendly, locale)}
+                </div>
+              </button>
+              <button
+                type="button"
+                onClick={() => setSelectedTone("neutral")}
+                className={cn(
+                  "w-full px-3 py-2 text-left text-sm hover:bg-accent transition-colors",
+                  selectedTone === "neutral" && "bg-accent/50"
+                )}
+              >
+                <div className="font-medium">
+                  {getTranslation(copy.tones.neutral, locale)}
+                </div>
+              </button>
+              <button
+                type="button"
+                onClick={() => setSelectedTone("negative")}
+                className={cn(
+                  "w-full px-3 py-2 text-left text-sm hover:bg-accent transition-colors",
+                  selectedTone === "negative" && "bg-accent/50"
+                )}
+              >
+                <div className="font-medium">
+                  {getTranslation(copy.tones.negative, locale)}
+                </div>
+              </button>
             </div>
-            <button
-              type="button"
-              onClick={() => setSelectedTone("friendly")}
-              className={cn(
-                "w-full px-3 py-2 text-left text-sm hover:bg-accent transition-colors",
-                selectedTone === "friendly" && "bg-accent/50"
-              )}
-            >
-              <div className="font-medium">{copy.tones.friendly[locale === "jp" ? "jp" : locale]}</div>
-            </button>
-            <button
-              type="button"
-              onClick={() => setSelectedTone("neutral")}
-              className={cn(
-                "w-full px-3 py-2 text-left text-sm hover:bg-accent transition-colors",
-                selectedTone === "neutral" && "bg-accent/50"
-              )}
-            >
-              <div className="font-medium">{copy.tones.neutral[locale === "jp" ? "jp" : locale]}</div>
-            </button>
-            <button
-              type="button"
-              onClick={() => setSelectedTone("negative")}
-              className={cn(
-                "w-full px-3 py-2 text-left text-sm hover:bg-accent transition-colors",
-                selectedTone === "negative" && "bg-accent/50"
-              )}
-            >
-              <div className="font-medium">{copy.tones.negative[locale === "jp" ? "jp" : locale]}</div>
-            </button>
-          </div>
           )}
         </div>
-        <Button onClick={handleSubmit} disabled={loading || aiLoading} className="flex-1">
+        <Button
+          onClick={handleSubmit}
+          disabled={loading || aiLoading}
+          className="flex-1"
+        >
           {loading ? (
             <>
               <Spinner size="sm" variant="white" /> {t("submitting")}

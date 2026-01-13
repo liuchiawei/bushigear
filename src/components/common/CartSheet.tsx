@@ -19,7 +19,12 @@ import { Button } from "@/components/ui/button";
 import { useCart } from "@/contexts/CartContext";
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
-import { getLocalizedText, type Locale } from "@/lib/i18n";
+import {
+  getLocalizedText,
+  type Locale,
+  createTranslationGetter,
+  getTranslation,
+} from "@/lib/i18n";
 import content from "@/data/content.json";
 
 export default function CartSheet() {
@@ -27,13 +32,12 @@ export default function CartSheet() {
   const { cart, removeFromCart, updateQuantity, clearCart } = useCart();
   const locale = useLocale() as Locale;
   const tCart = content.cart;
-  const t = <K extends keyof typeof tCart>(key: K) =>
-    locale === "jp" ? tCart[key].jp : getLocalizedText(tCart[key], locale);
-  const qtyLabel = locale === "jp" ? tCart.quantity.jp : getLocalizedText(tCart.quantity, locale);
-  const deleteLabel = locale === "jp" ? tCart.delete.jp : getLocalizedText(tCart.delete, locale);
-  const totalLabel = locale === "jp" ? tCart.total.jp : getLocalizedText(tCart.total, locale);
-  const continueLabel = locale === "jp" ? tCart.continue.jp : getLocalizedText(tCart.continue, locale);
-  const checkoutLabel = locale === "jp" ? tCart.checkout.jp : getLocalizedText(tCart.checkout, locale);
+  const t = createTranslationGetter(tCart, locale);
+  const qtyLabel = getTranslation(tCart.quantity, locale);
+  const deleteLabel = getTranslation(tCart.delete, locale);
+  const totalLabel = getTranslation(tCart.total, locale);
+  const continueLabel = getTranslation(tCart.continue, locale);
+  const checkoutLabel = getTranslation(tCart.checkout, locale);
   const handleQuantityChange = (productId: number, newQuantity: number) => {
     if (newQuantity === 0) {
       removeFromCart(productId);
@@ -156,12 +160,20 @@ export default function CartSheet() {
 
               <div className="flex flex-col space-y-2">
                 <Link href="/products">
-                  <Button variant="outline" className="w-full hover:bg-foreground/50 hover:text-background" size="sm">
+                  <Button
+                    variant="outline"
+                    className="w-full hover:bg-foreground/50 hover:text-background"
+                    size="sm"
+                  >
                     {continueLabel}
                   </Button>
                 </Link>
 
-                <Button onClick={handleCheckout} className="w-full bg-foreground text-background" size="sm">
+                <Button
+                  onClick={handleCheckout}
+                  className="w-full bg-foreground text-background"
+                  size="sm"
+                >
                   {checkoutLabel}
                 </Button>
               </div>

@@ -7,7 +7,11 @@ import { Comment } from "@/lib/type";
 import { Separator } from "@/components/ui/separator";
 import { useSession } from "next-auth/react";
 import { useLocale } from "next-intl";
-import { getLocalizedText, type Locale } from "@/lib/i18n";
+import {
+  getLocalizedText,
+  type Locale,
+  createTranslationGetter,
+} from "@/lib/i18n";
 import content from "@/data/content.json";
 
 type CommentsContainerProps = {
@@ -25,9 +29,12 @@ export default function CommentsContainer({
   const { data: session } = useSession();
   const locale = useLocale() as Locale;
   const copy = content.products_detail.comments;
-  const l = <K extends keyof typeof copy>(key: K, vars?: Record<string, string | number>) => {
-    const text =
-      locale === "jp" ? copy[key].jp : getLocalizedText(copy[key] as any, locale);
+  const baseL = createTranslationGetter(copy, locale);
+  const l = <K extends keyof typeof copy>(
+    key: K,
+    vars?: Record<string, string | number>
+  ) => {
+    const text = baseL(key);
     if (!vars) return text;
     return Object.keys(vars).reduce(
       (acc, k) => acc.replace(`{${k}}`, String(vars[k])),
@@ -57,7 +64,9 @@ export default function CommentsContainer({
 
       <CommentInput
         productId={productId}
-        onSubmitted={(newComment) => setComments((prev) => [newComment, ...prev])}
+        onSubmitted={(newComment) =>
+          setComments((prev) => [newComment, ...prev])
+        }
       />
 
       <Separator />
