@@ -112,3 +112,46 @@ export const languageFromNavigator = (): Locale => {
   if (navLang.startsWith("cn")) return "zh_cn";
   return defaultLocale;
 };
+
+// 簡單な翻訳オブジェクトの型定義
+export type SimpleTranslation = Partial<Record<Locale, string>>;
+
+// ネストされた翻訳オブジェクトかどうかをチェックする型ガード
+export function isSimpleTranslation(
+  value: any
+): value is SimpleTranslation {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    !("message" in value) &&
+    !("cta" in value) &&
+    !("title" in value && "lines" in value) &&
+    !Array.isArray(value)
+  );
+}
+
+// 安全に翻訳を取得するヘルパー関数
+export function getTranslation(
+  translation: SimpleTranslation,
+  locale: Locale
+): string {
+  return locale === "jp" && translation.jp
+    ? translation.jp
+    : getLocalizedText(translation, locale);
+}
+
+// 翻訳オブジェクトから特定のキーの翻訳を取得するヘルパー関数
+// ネストされた構造（empty, securePayment など）を除外する
+export function createTranslationGetter<T extends Record<string, any>>(
+  translations: T,
+  locale: Locale
+) {
+  return <K extends keyof T>(key: K): string => {
+    const value = translations[key];
+    if (isSimpleTranslation(value)) {
+      return getTranslation(value, locale);
+    }
+    // ネストされた構造の場合は空文字列を返す（直接アクセスが必要）
+    return "";
+  };
+}

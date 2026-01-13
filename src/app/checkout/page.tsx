@@ -6,7 +6,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useLocale } from "next-intl";
-import { getLocalizedText, type Locale } from "@/lib/i18n";
+import {
+  getLocalizedText,
+  type Locale,
+  createTranslationGetter,
+  isSimpleTranslation,
+  getTranslation,
+} from "@/lib/i18n";
 import content from "@/data/content.json";
 
 export default function CheckoutPage() {
@@ -24,21 +30,21 @@ export default function CheckoutPage() {
   });
 
   const copy = content.checkout;
-  const t = <K extends keyof typeof copy>(key: K) =>
-    locale === "jp" ? copy[key].jp : getLocalizedText(copy[key], locale);
+  const t = createTranslationGetter(copy, locale);
   const field = copy.fields;
-  const fieldLabel = (k: keyof typeof field) =>
-    locale === "jp" ? field[k].jp : getLocalizedText(field[k], locale);
-  const paymentOption = (k: keyof typeof field.paymentOptions) =>
-    locale === "jp"
-      ? field.paymentOptions[k].jp
-      : getLocalizedText(field.paymentOptions[k], locale);
-  const securePaymentTitle =
-    locale === "jp"
-      ? copy.securePayment.title.jp
-      : getLocalizedText(copy.securePayment.title, locale);
+  const fieldLabel = (k: keyof typeof field) => {
+    const value = field[k];
+    return isSimpleTranslation(value) ? getTranslation(value, locale) : "";
+  };
+  const paymentOption = (k: keyof typeof field.paymentOptions) => {
+    const value = field.paymentOptions[k];
+    return isSimpleTranslation(value) ? getTranslation(value, locale) : "";
+  };
+  const securePaymentTitle = isSimpleTranslation(copy.securePayment.title)
+    ? getTranslation(copy.securePayment.title, locale)
+    : "";
   const securePaymentLines = copy.securePayment.lines.map((line) =>
-    locale === "jp" ? line.jp : getLocalizedText(line, locale)
+    isSimpleTranslation(line) ? getTranslation(line, locale) : ""
   );
 
   useEffect(() => {
@@ -127,7 +133,7 @@ export default function CheckoutPage() {
       }
 
       const data = await res.json();
-      
+
       // Stripe Checkout ページにリダイレクト
       if (data.url) {
         window.location.href = data.url;
@@ -135,7 +141,9 @@ export default function CheckoutPage() {
         throw new Error(copy.errors.noUrl[locale === "jp" ? "jp" : locale]);
       }
     } catch (e: any) {
-      alert(e?.message ?? copy.errors.orderFailed[locale === "jp" ? "jp" : locale]);
+      alert(
+        e?.message ?? copy.errors.orderFailed[locale === "jp" ? "jp" : locale]
+      );
       setIsProcessing(false);
     }
   };
@@ -191,7 +199,8 @@ export default function CheckoutPage() {
                       {item.product.brand}
                     </p>
                     <p className="text-sm">
-                      {copy.quantity[locale === "jp" ? "jp" : locale]}: {item.quantity}
+                      {copy.quantity[locale === "jp" ? "jp" : locale]}:{" "}
+                      {item.quantity}
                     </p>
                   </div>
                   <div className="text-right">

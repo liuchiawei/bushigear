@@ -6,7 +6,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
-import { getLocalizedText, type Locale } from "@/lib/i18n";
+import {
+  getLocalizedText,
+  type Locale,
+  createTranslationGetter,
+  getTranslation,
+} from "@/lib/i18n";
 import content from "@/data/content.json";
 
 export default function CartPage() {
@@ -15,13 +20,12 @@ export default function CartPage() {
   const locale = useLocale() as Locale;
 
   const tCart = content.cart;
-  const t = <K extends keyof typeof tCart>(key: K) =>
-    locale === "jp" ? tCart[key].jp : getLocalizedText(tCart[key], locale);
-  const qtyLabel = locale === "jp" ? tCart.quantity.jp : getLocalizedText(tCart.quantity, locale);
-  const deleteLabel = locale === "jp" ? tCart.delete.jp : getLocalizedText(tCart.delete, locale);
-  const totalLabel = locale === "jp" ? tCart.total.jp : getLocalizedText(tCart.total, locale);
-  const continueLabel = locale === "jp" ? tCart.continue.jp : getLocalizedText(tCart.continue, locale);
-  const checkoutLabel = locale === "jp" ? tCart.checkout.jp : getLocalizedText(tCart.checkout, locale);
+  const t = createTranslationGetter(tCart, locale);
+  const qtyLabel = getTranslation(tCart.quantity, locale);
+  const deleteLabel = getTranslation(tCart.delete, locale);
+  const totalLabel = getTranslation(tCart.total, locale);
+  const continueLabel = getTranslation(tCart.continue, locale);
+  const checkoutLabel = getTranslation(tCart.checkout, locale);
 
   // TODO: When implementing database integration:
   // - Replace useCart hook with server-side cart data fetching
@@ -105,14 +109,20 @@ export default function CartPage() {
               </div>
 
               <div className="flex items-center space-x-2">
-                <label htmlFor={`quantity-${item.product.id}`} className="text-sm">
+                <label
+                  htmlFor={`quantity-${item.product.id}`}
+                  className="text-sm"
+                >
                   {qtyLabel}:
                 </label>
                 <select
                   id={`quantity-${item.product.id}`}
                   value={item.quantity}
                   onChange={(e) =>
-                    handleQuantityChange(item.product.id, Number(e.target.value))
+                    handleQuantityChange(
+                      item.product.id,
+                      Number(e.target.value)
+                    )
                   }
                   className="border rounded-md px-2 py-1 text-sm"
                 >
@@ -157,11 +167,7 @@ export default function CartPage() {
               </Button>
             </Link>
 
-            <Button
-              onClick={handleCheckout}
-              className="flex-1"
-              size="lg"
-            >
+            <Button onClick={handleCheckout} className="flex-1" size="lg">
               {checkoutLabel}
             </Button>
           </div>

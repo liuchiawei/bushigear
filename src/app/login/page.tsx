@@ -8,7 +8,12 @@ import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useLocale } from "next-intl";
-import { getLocalizedText, type Locale } from "@/lib/i18n";
+import {
+  getLocalizedText,
+  type Locale,
+  createTranslationGetter,
+  getTranslation,
+} from "@/lib/i18n";
 import content from "@/data/content.json";
 
 export default function LoginPage() {
@@ -22,8 +27,7 @@ export default function LoginPage() {
   const [googleLoading, setGoogleLoading] = useState(false);
 
   const copy = content.auth.login;
-  const t = <K extends keyof typeof copy>(key: K) =>
-    locale === "jp" ? copy[key].jp : getLocalizedText(copy[key], locale);
+  const t = createTranslationGetter(copy, locale);
 
   if (status === "loading") {
     return (
@@ -43,10 +47,10 @@ export default function LoginPage() {
   }
 
   if (session) {
-    const welcomeText = (locale === "jp"
-      ? copy.welcome.jp
-      : getLocalizedText(copy.welcome, locale)
-    ).replace("{email}", session.user?.email ?? "");
+    const welcomeText = getTranslation(copy.welcome, locale).replace(
+      "{email}",
+      session.user?.email ?? ""
+    );
 
     return (
       <main className="w-full max-w-md mx-auto p-8 text-center">

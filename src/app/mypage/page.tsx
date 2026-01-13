@@ -19,7 +19,11 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { Trash2, Eye, Loader2 } from "lucide-react";
 import { useLocale } from "next-intl";
-import { getLocalizedText, type Locale } from "@/lib/i18n";
+import {
+  getLocalizedText,
+  type Locale,
+  getTranslation,
+} from "@/lib/i18n";
 import content from "@/data/content.json";
 
 type UserProfile = {
@@ -75,7 +79,7 @@ function MyPageContent() {
   const m = content.mypage;
   const l = useCallback(
     (node: { jp: string } & Record<string, string>) =>
-      locale === "jp" ? node.jp : getLocalizedText(node as any, locale),
+      getTranslation(node, locale),
     [locale]
   );
   const { cart, removeFromCart, updateQuantity, clearCart } = useCart();

@@ -9,7 +9,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { useLocale } from "next-intl";
-import { getLocalizedText, type Locale } from "@/lib/i18n";
+import {
+  getLocalizedText,
+  type Locale,
+  createTranslationGetter,
+  getTranslation,
+  isSimpleTranslation,
+} from "@/lib/i18n";
 import content from "@/data/content.json";
 
 export default function RegisterPage() {
@@ -36,13 +42,12 @@ export default function RegisterPage() {
   const [googleLoading, setGoogleLoading] = useState(false);
 
   const copy = content.auth.register;
-  const t = <K extends keyof typeof copy>(key: K) =>
-    locale === "jp" ? (copy[key] as any).jp : getLocalizedText(copy[key] as any, locale);
+  const t = createTranslationGetter(copy, locale);
   const genderOptions = copy.genderOptions;
-  const genderLabel = (key: keyof typeof genderOptions) =>
-    locale === "jp"
-      ? genderOptions[key].jp
-      : getLocalizedText(genderOptions[key], locale);
+  const genderLabel = (key: keyof typeof genderOptions) => {
+    const value = genderOptions[key];
+    return isSimpleTranslation(value) ? getTranslation(value, locale) : "";
+  };
 
   const onChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -167,7 +172,7 @@ export default function RegisterPage() {
         setError(data?.message || t("registrationFailed"));
       }
     } catch {
-      setError(content.auth.login.unexpectedError[locale === "jp" ? "jp" : locale]);
+      setError(getTranslation(content.auth.login.unexpectedError, locale));
     } finally {
       setSubmitting(false);
     }
@@ -222,12 +227,12 @@ export default function RegisterPage() {
           <div className="relative">
             <label className="flex items-center gap-2 cursor-pointer w-full p-2 border rounded">
               <div className="px-3 py-1 bg-primary text-primary-foreground rounded text-sm">
-                {content.auth.register.fileSelect[locale === "jp" ? "jp" : locale]}
+                {getTranslation(content.auth.register.fileSelect, locale)}
               </div>
               <span className="text-sm text-muted-foreground truncate">
                 {avatarUrl
                   ? avatarUrl.split("/").pop()
-                  : content.auth.register.noFile[locale === "jp" ? "jp" : locale]}
+                  : getTranslation(content.auth.register.noFile, locale)}
               </span>
               <input
                 title="avatar"
@@ -274,7 +279,7 @@ export default function RegisterPage() {
         </div>
         <div>
           <label className="block text-sm font-medium mb-1">
-            {content.auth.login.emailLabel[locale === "jp" ? "jp" : locale]}
+            {getTranslation(content.auth.login.emailLabel, locale)}
           </label>
           <Input
             title="email"
@@ -288,7 +293,7 @@ export default function RegisterPage() {
         </div>
         <div>
           <label className="block text-sm font-medium mb-1">
-            {content.auth.login.passwordLabel[locale === "jp" ? "jp" : locale]}
+            {getTranslation(content.auth.login.passwordLabel, locale)}
           </label>
           <Input
             title="password"
@@ -450,7 +455,7 @@ export default function RegisterPage() {
       <p className="mt-6 text-center text-sm">
         {t("alreadyHaveAccount")}{" "}
         <a href="/login" className="text-primary underline hover:no-underline">
-          {content.auth.login.pageTitle[locale === "jp" ? "jp" : locale]}
+          {getTranslation(content.auth.login.pageTitle, locale)}
         </a>
       </p>
     </main>
