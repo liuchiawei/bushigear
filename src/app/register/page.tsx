@@ -37,7 +37,7 @@ export default function RegisterPage() {
 
   const copy = content.auth.register;
   const t = <K extends keyof typeof copy>(key: K) =>
-    locale === "jp" ? copy[key].jp : getLocalizedText(copy[key], locale);
+    locale === "jp" ? (copy[key] as any).jp : getLocalizedText(copy[key] as any, locale);
   const genderOptions = copy.genderOptions;
   const genderLabel = (key: keyof typeof genderOptions) =>
     locale === "jp"

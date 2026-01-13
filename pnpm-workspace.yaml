@@ -3,7 +3,9 @@ ignoredBuiltDependencies:
   - prisma
 
 onlyBuiltDependencies:
+  - '@parcel/watcher'
   - '@prisma/client'
+  - '@swc/core'
   - '@tailwindcss/oxide'
   - esbuild
   - sharp

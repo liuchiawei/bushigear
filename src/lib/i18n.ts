@@ -58,8 +58,6 @@ const zhMap: Record<string, string> = {
   "腳": "脚",
   "襪": "袜",
   "褲": "裤",
-  "襪": "袜",
-  "襪": "袜",
   "訓": "训",
   "練": "练",
   "優": "优",
@@ -86,7 +84,6 @@ const zhMap: Record<string, string> = {
   "續": "续",
   "動": "动",
   "態": "态",
-  "續": "续",
 };
 
 export function toSimplified(text?: string): string {
