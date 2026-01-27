@@ -5,10 +5,26 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useLocale } from "next-intl";
+import {
+  type Locale,
+  createTranslationGetter,
+  getTranslation,
+} from "@/lib/i18n";
+import content from "@/data/content.json";
 
 export default function CartPage() {
   const { cart, removeFromCart, updateQuantity, clearCart } = useCart();
   const router = useRouter();
+  const locale = useLocale() as Locale;
+
+  const tCart = content.cart;
+  const t = createTranslationGetter(tCart, locale);
+  const qtyLabel = getTranslation(tCart.quantity, locale);
+  const deleteLabel = getTranslation(tCart.delete, locale);
+  const totalLabel = getTranslation(tCart.total, locale);
+  const continueLabel = getTranslation(tCart.continue, locale);
+  const checkoutLabel = getTranslation(tCart.checkout, locale);
 
   // TODO: When implementing database integration:
   // - Replace useCart hook with server-side cart data fetching
@@ -33,14 +49,14 @@ export default function CartPage() {
     return (
       <main className="w-full min-h-screen py-16">
         <div className="w-full max-w-4xl mx-auto px-4">
-          <h1 className="text-3xl font-bold mb-8">ショッピングカート</h1>
+          <h1 className="text-3xl font-bold mb-8">{t("title")}</h1>
           <div className="text-center py-16">
             <p className="text-lg text-gray-500 mb-6">
-              カートは空です
+              {tCart.empty.message[locale === "jp" ? "jp" : locale]}
             </p>
             <Link href="/products">
               <Button size="lg">
-                商品を見る
+                {tCart.empty.cta[locale === "jp" ? "jp" : locale]}
               </Button>
             </Link>
           </div>
@@ -53,13 +69,13 @@ export default function CartPage() {
     <main className="w-full min-h-screen py-16">
       <div className="w-full max-w-4xl mx-auto px-4">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold">ショッピングカート</h1>
+          <h1 className="text-3xl font-bold">{t("title")}</h1>
           <Button
             variant="outline"
             onClick={clearCart}
             className="text-red-600 hover:text-red-700"
           >
-            カートを空にする
+            {t("clear")}
           </Button>
         </div>
 
@@ -80,7 +96,11 @@ export default function CartPage() {
               </div>
 
               <div className="flex-1">
-                <h3 className="text-lg font-semibold">{item.product.name_jp}</h3>
+                <h3 className="text-lg font-semibold">
+                  {locale === "jp"
+                    ? item.product.name_jp
+                    : item.product.name_en || item.product.name_jp}
+                </h3>
                 <p className="text-sm text-gray-500">{item.product.brand}</p>
                 <p className="text-lg font-medium text-green-600">
                   ¥{item.product.price.toLocaleString()}
@@ -88,18 +108,24 @@ export default function CartPage() {
               </div>
 
               <div className="flex items-center space-x-2">
-                <label htmlFor={`quantity-${item.product.id}`} className="text-sm">
-                  数量:
+                <label
+                  htmlFor={`quantity-${item.product.id}`}
+                  className="text-sm"
+                >
+                  {qtyLabel}:
                 </label>
                 <select
                   id={`quantity-${item.product.id}`}
                   value={item.quantity}
                   onChange={(e) =>
-                    handleQuantityChange(item.product.id, Number(e.target.value))
+                    handleQuantityChange(
+                      item.product.id,
+                      Number(e.target.value)
+                    )
                   }
                   className="border rounded-md px-2 py-1 text-sm"
                 >
-                  <option value={0}>削除</option>
+                  <option value={0}>{deleteLabel}</option>
                   {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
                     <option key={num} value={num}>
                       {num}
@@ -118,7 +144,7 @@ export default function CartPage() {
                   onClick={() => removeFromCart(item.product.id)}
                   className="text-red-600 hover:text-red-700"
                 >
-                  削除
+                  {deleteLabel}
                 </Button>
               </div>
             </div>
@@ -127,7 +153,7 @@ export default function CartPage() {
 
         <div className="mt-8 p-6 bg-gray-50 rounded-lg">
           <div className="flex justify-between items-center mb-4">
-            <span className="text-xl font-semibold">合計:</span>
+            <span className="text-xl font-semibold">{totalLabel}:</span>
             <span className="text-2xl font-bold text-green-600">
               ¥{cart.total.toLocaleString()}
             </span>
@@ -136,16 +162,12 @@ export default function CartPage() {
           <div className="flex space-x-4">
             <Link href="/products" className="flex-1">
               <Button variant="outline" className="w-full" size="lg">
-                買い物を続ける
+                {continueLabel}
               </Button>
             </Link>
 
-            <Button
-              onClick={handleCheckout}
-              className="flex-1"
-              size="lg"
-            >
-              レジに進む
+            <Button onClick={handleCheckout} className="flex-1" size="lg">
+              {checkoutLabel}
             </Button>
           </div>
         </div>

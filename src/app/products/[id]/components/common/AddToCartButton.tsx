@@ -7,6 +7,8 @@ import OptionButtons from "./OptionButtons";
 import { useCart } from "@/contexts/CartContext";
 import { Product } from "@/lib/type";
 import content from "@/data/content.json";
+import { useLocale } from "next-intl";
+import { getLocalizedText, type Locale } from "@/lib/i18n";
 
 interface AddToCartButtonProps {
   product: Product;
@@ -14,9 +16,15 @@ interface AddToCartButtonProps {
 
 export default function AddToCartButton({ product }: AddToCartButtonProps) {
   const { addToCart } = useCart();
+  const locale = useLocale() as Locale;
   const [quantity, setQuantity] = useState(1);
   const [isAdding, setIsAdding] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+
+  const tQuantity = getLocalizedText(content.products_detail.quantity as any, locale);
+  const tDirect = getLocalizedText(content.products_detail.directly_buy as any, locale);
+  const tAdding = content.products_detail.cart.adding[locale === "jp" ? "jp" : locale];
+  const tAdded = content.products_detail.cart.addSuccess[locale === "jp" ? "jp" : locale];
 
   const handleAddToCart = async () => {
     setIsAdding(true);
@@ -41,7 +49,7 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
     <div className="grid grid-cols-2 gap-2">
       <div className="flex items-center space-x-4">
         <label htmlFor="quantity" className="text-sm font-medium">
-          {content.products_detail.quantity.jp}:
+          {tQuantity}:
         </label>
         <select
           id="quantity"
@@ -67,10 +75,10 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
         {isAdding ? (
           <>
             <Spinner size="sm" variant="white" />
-            {isSuccess ? "追加しました！" : "カートに追加中..."}
+            {isSuccess ? tAdded : tAdding}
           </>
         ) : (
-          content.products_detail.directly_buy.jp
+          tDirect
         )}
       </Button>
     </div>

@@ -18,6 +18,13 @@ import {
 } from "@/components/ui/tooltip";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Trash2, Eye, Loader2 } from "lucide-react";
+import { useLocale } from "next-intl";
+import {
+  getLocalizedText,
+  type Locale,
+  getTranslation,
+} from "@/lib/i18n";
+import content from "@/data/content.json";
 
 type UserProfile = {
   id: number;
@@ -68,6 +75,13 @@ function MyPageContent() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const locale = useLocale() as Locale;
+  const m = content.mypage;
+  const l = useCallback(
+    (node: { jp: string } & Record<string, string>) =>
+      getTranslation(node, locale),
+    [locale]
+  );
   const { cart, removeFromCart, updateQuantity, clearCart } = useCart();
   const initialTabParam = searchParams?.get("tab");
   const initialTab =
@@ -105,10 +119,38 @@ function MyPageContent() {
     room: "",
   });
 
-  const fetchProfile = async () => {
+  const myTabs = m.tabs;
+  const tabLabel = (key: keyof typeof myTabs) => l(myTabs[key]);
+  const profileCopy = m.profile;
+  const genderLabel = (key: keyof typeof profileCopy.fields.genderOptions) =>
+    locale === "jp"
+      ? profileCopy.fields.genderOptions[key].jp
+      : getLocalizedText(profileCopy.fields.genderOptions[key], locale);
+  const cartTab = m.cartTab;
+  const ordersCopy = m.orders;
+  const likesCopy = m.likes;
+  const commentsCopy = m.comments;
+  const dateLocale =
+    locale === "jp"
+      ? "ja-JP"
+      : locale === "zh_tw"
+        ? "zh-TW"
+        : locale === "zh_cn"
+          ? "zh-CN"
+          : "en-US";
+  const dateInputLang =
+    locale === "jp"
+      ? "ja-JP"
+      : locale === "zh_tw"
+        ? "zh-TW"
+        : locale === "zh_cn"
+          ? "zh-CN"
+          : "en-US";
+
+  const fetchProfile = useCallback(async () => {
     try {
       const res = await fetch("/api/profile");
-      if (!res.ok) throw new Error("プロフィールの取得に失敗しました");
+      if (!res.ok) throw new Error(l(profileCopy.errors.fetchProfile));
       const data = await res.json();
       setProfile(data.user);
       if (data.user) {
@@ -133,12 +175,12 @@ function MyPageContent() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [l, profileCopy.errors.fetchProfile]);
 
   const fetchOrders = useCallback(async () => {
     try {
       const res = await fetch("/api/orders");
-      if (!res.ok) throw new Error("注文履歴の取得に失敗しました");
+      if (!res.ok) throw new Error(l(profileCopy.errors.fetchOrders));
       const data = await res.json();
       const userOrders = data.filter(
         (order: any) => order.userId === Number(session?.user?.id)
@@ -147,31 +189,31 @@ function MyPageContent() {
     } catch (e: any) {
       console.error("Failed to fetch orders:", e);
     }
-  }, [session?.user?.id]);
+  }, [session?.user?.id, l, profileCopy.errors.fetchOrders]);
 
-  const fetchLikes = async () => {
+  const fetchLikes = useCallback(async () => {
     try {
       const res = await fetch("/api/likes");
-      if (!res.ok) throw new Error("お気に入りの取得に失敗しました");
+      if (!res.ok) throw new Error(l(profileCopy.errors.fetchLikes));
       const data = await res.json();
       const likesData = Array.isArray(data.likes) ? data.likes : data;
       setLikes(likesData as LikeItem[]);
     } catch (e: any) {
       console.error("Failed to fetch likes:", e);
     }
-  };
+  }, [l, profileCopy.errors.fetchLikes]);
 
-  const fetchComments = async () => {
+  const fetchComments = useCallback(async () => {
     try {
       const res = await fetch("/api/comment?mine=1");
-      if (!res.ok) throw new Error("レビューの取得に失敗しました");
+      if (!res.ok) throw new Error(l(profileCopy.errors.fetchComments));
       const data = await res.json();
       const commentsData = Array.isArray(data.comments) ? data.comments : [];
       setComments(commentsData as Comment[]);
     } catch (e: any) {
       console.error("Failed to fetch comments:", e);
     }
-  };
+  }, [l, profileCopy.errors.fetchComments]);
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -186,7 +228,7 @@ function MyPageContent() {
       fetchLikes();
       fetchComments();
     }
-  }, [status, fetchOrders]);
+  }, [status, fetchOrders, fetchProfile, fetchLikes, fetchComments]);
 
   useEffect(() => {
     if (!searchParams) return;
@@ -203,7 +245,7 @@ function MyPageContent() {
   }, [searchParams]);
 
   const handleDeleteComment = async (id: number) => {
-    if (!confirm("このレビューを削除しますか？")) return;
+    if (!confirm(profileCopy.errors.confirmDeleteReview[locale === "jp" ? "jp" : locale])) return;
     try {
       const res = await fetch("/api/comment", {
         method: "DELETE",
@@ -227,11 +269,11 @@ function MyPageContent() {
     const file = e.target.files?.[0];
     if (!file) return;
     if (!file.type.startsWith("image/")) {
-      setError("画像ファイルを選択してください");
+      setError(content.auth.register.imageFileError[locale === "jp" ? "jp" : locale]);
       return;
     }
     if (file.size > 5 * 1024 * 1024) {
-      setError("ファイルサイズは5MB以下にしてください");
+      setError(content.auth.register.fileSizeError[locale === "jp" ? "jp" : locale]);
       return;
     }
     setUploading(true);
@@ -245,14 +287,14 @@ function MyPageContent() {
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        throw new Error(data.error || "アップロードに失敗しました");
+        throw new Error(data.error || l(profileCopy.errors.uploadFailed));
       }
       const data = await res.json();
       setForm({ ...form, image: data.url });
-      setSuccess("画像をアップロードしました");
+      setSuccess(l(profileCopy.errors.uploadSuccess));
       setTimeout(() => setSuccess(""), 3000);
     } catch (err: any) {
-      setError(err.message || "アップロードに失敗しました");
+      setError(err.message || l(profileCopy.errors.uploadFailed));
     } finally {
       setUploading(false);
     }
@@ -262,11 +304,11 @@ function MyPageContent() {
     setError("");
     setSuccess("");
     if (form.postalCode && /^\d{3}-?\d{4}$/.test(form.postalCode) === false) {
-      setError("郵便番号は 123-4567 の形式（半角）で入力してください。");
+      setError(profileCopy.errors.postalFormat[locale === "jp" ? "jp" : locale]);
       return;
     }
     if (form.street && /[０-９]/.test(form.street)) {
-      setError("丁目・番地・号の数字は半角で入力してください。");
+      setError(profileCopy.errors.streetNumber[locale === "jp" ? "jp" : locale]);
       return;
     }
     try {
@@ -277,12 +319,15 @@ function MyPageContent() {
       });
       if (!res.ok) {
         const errorData = await res.json();
-        throw new Error(errorData.message || "更新に失敗しました");
+        throw new Error(
+          errorData.message ||
+            profileCopy.errors.updateFailed[locale === "jp" ? "jp" : locale]
+        );
       }
       const data = await res.json();
       setProfile(data.user);
       setEditing(false);
-      setSuccess("プロフィールを更新しました");
+      setSuccess(profileCopy.errors.updateSuccess[locale === "jp" ? "jp" : locale]);
       setTimeout(() => setSuccess(""), 3000);
     } catch (e: any) {
       setError(e.message);
@@ -299,7 +344,7 @@ function MyPageContent() {
     return `¥${price.toLocaleString()}`;
   };
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("ja-JP", {
+    return new Date(dateString).toLocaleDateString(dateLocale, {
       year: "numeric",
       month: "long",
       day: "numeric",
@@ -318,7 +363,7 @@ function MyPageContent() {
         </Skeleton>
         <Skeleton className="w-full h-60 md:h-108 rounded-lg shadow-sm flex flex-col items-center justify-center gap-4 mb-6">
           <Loader2 className="size-20 text-gray-300 animate-spin" />
-          <p className="text-2xl text-gray-400 animate-pulse">読み込み中...</p>
+          <p className="text-2xl text-gray-400 animate-pulse">{l(m.loading)}</p>
         </Skeleton>
       </div>
     );
@@ -326,6 +371,11 @@ function MyPageContent() {
   if (status === "unauthenticated") {
     return null;
   }
+  const displayName =
+    profile?.lastName || profile?.firstName
+      ? `${profile?.lastName || ""} ${profile?.firstName || ""}`.trim()
+      : profile?.email || session?.user?.email || "";
+  const welcomeText = l(m.welcome).replace("{name}", displayName);
   return (
     <div className="min-h-screen py-12 px-4">
       <div className="max-w-6xl mx-auto">
@@ -356,15 +406,14 @@ function MyPageContent() {
               </AvatarFallback>
             </Avatar>
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">マイページ</h1>
+              <h1 className="text-3xl font-bold text-gray-900">
+                {l(m.title)}
+              </h1>
               <p className="text-gray-600 mt-2">
-                ようこそ、
-                {profile?.lastName || profile?.firstName
-                  ? `${profile?.lastName || ""} ${
-                      profile?.firstName || ""
-                    }`.trim()
-                  : profile?.email || session?.user?.email}
-                {profile?.lastName || profile?.firstName ? "さん" : ""}
+                {welcomeText}
+                {locale === "jp" && (profile?.lastName || profile?.firstName)
+                  ? "さん"
+                  : ""}
               </p>
             </div>
           </div>
@@ -381,7 +430,7 @@ function MyPageContent() {
                     : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                 }`}
               >
-                プロフィール
+                {tabLabel("profile")}
               </button>
               <button
                 onClick={() => setActiveTab("cart")}
@@ -391,7 +440,7 @@ function MyPageContent() {
                     : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                 }`}
               >
-                カート ({cart.items.length})
+                {tabLabel("cart")} ({cart.items.length})
               </button>
               <button
                 onClick={() => setActiveTab("orders")}
@@ -401,7 +450,7 @@ function MyPageContent() {
                     : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                 }`}
               >
-                購入履歴 ({orders.length})
+                {tabLabel("orders")} ({orders.length})
               </button>
               <button
                 onClick={() => setActiveTab("likes")}
@@ -411,13 +460,13 @@ function MyPageContent() {
                     : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                 }`}
               >
-                お気に入り ({likes.length})
+                {tabLabel("likes")} ({likes.length})
               </button>
               <button
                 onClick={() => setActiveTab("comments")}
                 className={`px-6 py-4 text-sm font-medium border-b-2 transition-colors cursor-pointer ${activeTab === "comments" ? "border-accent text-primary" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}`}
               >
-                レビュー ({comments.length})
+                {tabLabel("comments")} ({comments.length})
               </button>
             </nav>
           </div>
@@ -427,9 +476,13 @@ function MyPageContent() {
             {activeTab === "profile" && (
               <div>
                 <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-2xl font-semibold">プロフィール情報</h2>
+                  <h2 className="text-2xl font-semibold">
+                    {l(profileCopy.infoTitle)}
+                  </h2>
                   {!editing && (
-                    <Button onClick={() => setEditing(true)}>編集</Button>
+                    <Button onClick={() => setEditing(true)}>
+                      {l(profileCopy.edit)}
+                    </Button>
                   )}
                 </div>
                 {error && (
@@ -446,7 +499,7 @@ function MyPageContent() {
                   <div className="space-y-4">
                     <div className="mb-6">
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        プロフィール画像
+                        {l(profileCopy.imageLabel)}
                       </label>
                       <div className="flex items-center gap-4">
                         {form.image && (
@@ -459,19 +512,29 @@ function MyPageContent() {
                           />
                         )}
                         <div className="flex-1">
-                          <input
-                            title="avatar"
-                            type="file"
-                            accept="image/*"
-                            onChange={handleAvatarUpload}
-                            disabled={uploading}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg"
-                          />
+                          <label className="flex items-center gap-2 cursor-pointer w-full px-3 py-2 border border-gray-300 rounded-lg">
+                            <div className="px-3 py-1 bg-primary text-primary-foreground rounded text-sm">
+                              {content.auth.register.fileSelect[locale === "jp" ? "jp" : locale]}
+                            </div>
+                            <span className="text-sm text-muted-foreground truncate">
+                              {form.image
+                                ? form.image.split("/").pop()
+                                : content.auth.register.noFile[locale === "jp" ? "jp" : locale]}
+                            </span>
+                            <input
+                              title="avatar"
+                              type="file"
+                              accept="image/*"
+                              onChange={handleAvatarUpload}
+                              disabled={uploading}
+                              className="hidden"
+                            />
+                          </label>
                           {uploading && (
                             <div className="flex items-center gap-2 text-gray-500">
                               <Loader2 className="size-4 animate-spin" />
                               <p className="text-sm animate-pulse">
-                                アップロード中...
+                                {l(profileCopy.uploading)}
                               </p>
                             </div>
                           )}
@@ -481,7 +544,7 @@ function MyPageContent() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                          姓
+                          {l(profileCopy.fields.lastName)}
                         </label>
                         <input
                           title="lastName"
@@ -494,7 +557,7 @@ function MyPageContent() {
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                          名
+                          {l(profileCopy.fields.firstName)}
                         </label>
                         <input
                           title="firstName"
@@ -509,7 +572,7 @@ function MyPageContent() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                          性別
+                          {l(profileCopy.fields.gender)}
                         </label>
                         <select
                           title="gender"
@@ -518,19 +581,22 @@ function MyPageContent() {
                           onChange={handleInputChange}
                           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                         >
-                          <option value="">選択してください</option>
-                          <option value="male">男性</option>
-                          <option value="female">女性</option>
-                          <option value="other">その他</option>
+                          <option value="">
+                            {content.auth.register.selectPlaceholder[locale === "jp" ? "jp" : locale]}
+                          </option>
+                          <option value="male">{genderLabel("male")}</option>
+                          <option value="female">{genderLabel("female")}</option>
+                          <option value="other">{genderLabel("other")}</option>
                         </select>
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                          誕生日
+                          {l(profileCopy.fields.birthday)}
                         </label>
                         <input
                           title="birthday"
                           type="date"
+                          lang={dateInputLang}
                           name="birthday"
                           value={form.birthday}
                           onChange={handleInputChange}
@@ -539,11 +605,13 @@ function MyPageContent() {
                       </div>
                     </div>
                     <div className="border-t pt-4 mt-4">
-                      <h3 className="text-lg font-semibold mb-4">住所情報</h3>
+                      <h3 className="text-lg font-semibold mb-4">
+                        {l(profileCopy.fields.addressSection)}
+                      </h3>
                       <div className="space-y-4">
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-1">
-                            郵便番号（半角）
+                            {l(profileCopy.fields.postalCode)}
                           </label>
                           <input
                             type="text"
@@ -556,7 +624,7 @@ function MyPageContent() {
                         </div>
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-1">
-                            都道府県
+                            {l(profileCopy.fields.prefecture)}
                           </label>
                           <select
                             title="prefecture"
@@ -565,7 +633,9 @@ function MyPageContent() {
                             onChange={handleInputChange}
                             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                           >
-                            <option value="">選択してください</option>
+                            <option value="">
+                              {content.auth.register.selectPlaceholder[locale === "jp" ? "jp" : locale]}
+                            </option>
                             {PREFECTURES.map((p) => (
                               <option key={p} value={p}>
                                 {p}
@@ -575,7 +645,7 @@ function MyPageContent() {
                         </div>
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-1">
-                            市区町村
+                            {l(profileCopy.fields.city)}
                           </label>
                           <input
                             title="city"
@@ -588,7 +658,7 @@ function MyPageContent() {
                         </div>
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-1">
-                            丁目・番地・号（半角）
+                            {l(profileCopy.fields.street)}
                           </label>
                           <input
                             title="street"
@@ -601,7 +671,7 @@ function MyPageContent() {
                         </div>
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-1">
-                            建物名・会社名（任意）
+                            {l(profileCopy.fields.building)}
                           </label>
                           <input
                             type="text"
@@ -614,7 +684,7 @@ function MyPageContent() {
                         </div>
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-1">
-                            部屋番号（任意）
+                            {l(profileCopy.fields.room)}
                           </label>
                           <input
                             type="text"
@@ -628,7 +698,9 @@ function MyPageContent() {
                       </div>
                     </div>
                     <div className="flex gap-3 pt-4">
-                      <Button onClick={handleSaveProfile}>保存</Button>
+                      <Button onClick={handleSaveProfile}>
+                        {l(profileCopy.save)}
+                      </Button>
                       <button
                         onClick={() => {
                           setEditing(false);
@@ -636,7 +708,7 @@ function MyPageContent() {
                         }}
                         className="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-300 transition-colors"
                       >
-                        キャンセル
+                        {l(profileCopy.cancel)}
                       </button>
                     </div>
                   </div>
@@ -660,46 +732,54 @@ function MyPageContent() {
                     </Avatar>
                     <div>
                       <p className="mb-2 text-sm text-gray-500">
-                        メールアドレス
+                        {l(profileCopy.email)}
                       </p>
                       <p className="text-lg md:text-2xl">{profile?.email}</p>
                     </div>
                     <div>
-                      <p className="mb-2 text-sm text-gray-500">氏名</p>
+                      <p className="mb-2 text-sm text-gray-500">
+                        {l(profileCopy.name)}
+                      </p>
                       <p className="text-lg md:text-2xl">
                         {profile?.lastName || profile?.firstName
                           ? `${profile?.lastName || ""} ${
                               profile?.firstName || ""
                             }`.trim()
-                          : "未設定"}
+                          : l(profileCopy.unset)}
                       </p>
                     </div>
                     <div>
-                      <p className="mb-2 text-sm text-gray-500">性別</p>
+                      <p className="mb-2 text-sm text-gray-500">
+                        {l(profileCopy.fields.gender)}
+                      </p>
                       <p className="text-lg md:text-2xl">
                         {profile?.gender === "male"
-                          ? "男性"
+                          ? genderLabel("male")
                           : profile?.gender === "female"
-                          ? "女性"
+                          ? genderLabel("female")
                           : profile?.gender === "other"
-                          ? "その他"
-                          : "未設定"}
+                          ? genderLabel("other")
+                          : l(profileCopy.unset)}
                       </p>
                     </div>
                     <div>
-                      <p className="mb-2text-sm text-gray-500">誕生日</p>
+                      <p className="mb-2text-sm text-gray-500">
+                        {l(profileCopy.fields.birthday)}
+                      </p>
                       <p className="text-lg md:text-2xl">
                         {profile?.birthday
                           ? new Date(profile.birthday).toLocaleDateString(
-                              "ja-JP"
+                              dateLocale
                             )
-                          : "未設定"}
+                          : l(profileCopy.unset)}
                       </p>
                     </div>
                     <div className="col-span-1 md:col-span-3 border-t">
-                      <h3 className="mt-4 mb-2 text-sm text-gray-500">住所</h3>
+                      <h3 className="mt-4 mb-2 text-sm text-gray-500">
+                        {l(profileCopy.address)}
+                      </h3>
                       <p className="text-gray-700 text-md md:text-xl">
-                        {profile?.address || "未設定"}
+                        {profile?.address || l(profileCopy.unset)}
                       </p>
                     </div>
                   </div>
@@ -710,13 +790,17 @@ function MyPageContent() {
             {activeTab === "cart" && (
               <div>
                 <h2 className="text-2xl font-semibold mb-6">
-                  ショッピングカート
+                  {l(cartTab.title)}
                 </h2>
                 {cart.items.length === 0 ? (
                   <div className="text-center py-12">
-                    <p className="text-gray-500 mb-4">カートは空です</p>
+                    <p className="text-gray-500 mb-4">
+                      {cartTab.empty[locale === "jp" ? "jp" : locale]}
+                    </p>
                     <Button asChild>
-                      <Link href="/products">商品を見る</Link>
+                      <Link href="/products">
+                        {cartTab.viewProduct[locale === "jp" ? "jp" : locale]}
+                      </Link>
                     </Button>
                   </div>
                 ) : (
@@ -737,7 +821,9 @@ function MyPageContent() {
                           </div>
                           <div className="flex-grow">
                             <h3 className="font-semibold text-lg md:text-2xl">
-                              {item.product.name_jp}
+                              {locale === "jp"
+                                ? item.product.name_jp
+                                : item.product.name_en || item.product.name_jp}
                             </h3>
                             <p className="text-gray-500 text-sm">
                               {item.product.brand}
@@ -748,7 +834,7 @@ function MyPageContent() {
                           </div>
                           <div className="flex flex-col md:flex-row items-center gap-2">
                             <input
-                              title="quantity"
+                              title={cartTab.quantity[locale === "jp" ? "jp" : locale]}
                               type="number"
                               min="1"
                               max={item.product.stock}
@@ -779,7 +865,7 @@ function MyPageContent() {
                                     </Button>
                                   </TooltipTrigger>
                                   <TooltipContent>
-                                    <p>商品詳細</p>
+                                    <p>{cartTab.details[locale === "jp" ? "jp" : locale]}</p>
                                   </TooltipContent>
                                 </Tooltip>
                               </TooltipProvider>
@@ -797,7 +883,7 @@ function MyPageContent() {
                                     </Button>
                                   </TooltipTrigger>
                                   <TooltipContent>
-                                    <p>カートから削除</p>
+                                    <p>{cartTab.remove[locale === "jp" ? "jp" : locale]}</p>
                                   </TooltipContent>
                                 </Tooltip>
                               </TooltipProvider>
@@ -808,7 +894,9 @@ function MyPageContent() {
                     </div>
                     <div className="border-t pt-4">
                       <div className="flex justify-between items-center mb-4">
-                        <span className="text-xl font-semibold">合計:</span>
+                        <span className="text-xl font-semibold">
+                          {cartTab.total[locale === "jp" ? "jp" : locale]}:
+                        </span>
                         <span className="text-2xl md:text-5xl font-bold text-secondary-600">
                           {formatPrice(calculateCartTotal())}
                         </span>
@@ -820,10 +908,12 @@ function MyPageContent() {
                           className="w/full shrink bg-gray-200 text-gray-700 hover:bg-gray-300 transition-colors"
                           onClick={clearCart}
                         >
-                          カートを空にする
+                          {cartTab.clear[locale === "jp" ? "jp" : locale]}
                         </Button>
                         <Button asChild size="lg" className="w/full shrink">
-                          <Link href="/checkout">購入手続きへ</Link>
+                          <Link href="/checkout">
+                            {cartTab.checkout[locale === "jp" ? "jp" : locale]}
+                          </Link>
                         </Button>
                       </div>
                     </div>
@@ -834,12 +924,18 @@ function MyPageContent() {
             {/* Orders Tab */}
             {activeTab === "orders" && (
               <div>
-                <h2 className="text-2xl font-semibold mb-6">購入履歴</h2>
+                <h2 className="text-2xl font-semibold mb-6">
+                  {l(ordersCopy.title)}
+                </h2>
                 {orders.length === 0 ? (
                   <div className="text-center py-12">
-                    <p className="text-gray-500 mb-4">購入履歴がありません</p>
+                    <p className="text-gray-500 mb-4">
+                      {ordersCopy.empty[locale === "jp" ? "jp" : locale]}
+                    </p>
                     <Button asChild>
-                      <Link href="/products">商品を見る</Link>
+                      <Link href="/products">
+                        {cartTab.viewProduct[locale === "jp" ? "jp" : locale]}
+                      </Link>
                     </Button>
                   </div>
                 ) : (
@@ -862,16 +958,18 @@ function MyPageContent() {
                             <div className="flex justify-between items-start">
                               <div>
                                 <h3 className="font-semibold text-lg">
-                                  {order.product.name_jp}
+                                  {locale === "jp"
+                                    ? order.product.name_jp
+                                    : order.product.name_en || order.product.name_jp}
                                 </h3>
                                 <p className="text-gray-600 text-sm">
                                   {order.product.brand}
                                 </p>
                                 <p className="text-sm text-gray-500 mt-1">
-                                  注文番号: #{order.id}
+                                  {ordersCopy.orderId[locale === "jp" ? "jp" : locale]}: #{order.id}
                                 </p>
                                 <p className="text-sm text-gray-500">
-                                  購入日: {formatDate(order.createdAt)}
+                                  {ordersCopy.purchaseDate[locale === "jp" ? "jp" : locale]}: {formatDate(order.createdAt)}
                                 </p>
                               </div>
                               <div className="text-right">
@@ -879,7 +977,7 @@ function MyPageContent() {
                                   {formatPrice(order.product.price)}
                                 </p>
                                 <p className="text-sm text-gray-600 mt-1">
-                                  数量: {order.quantity}
+                                  {ordersCopy.quantity[locale === "jp" ? "jp" : locale]}: {order.quantity}
                                 </p>
                                 <p className="text-lg font-bold text-gray-900 mt-1">
                                   {formatPrice(
@@ -899,12 +997,18 @@ function MyPageContent() {
             {/* Likes Tab */}
             {activeTab === "likes" && (
               <div>
-                <h2 className="text-2xl font-semibold mb-6">お気に入り</h2>
+                <h2 className="text-2xl font-semibold mb-6">
+                  {l(likesCopy.title)}
+                </h2>
                 {likes.length === 0 ? (
                   <div className="text-center py-12">
-                    <p className="text-gray-500 mb-4">お気に入りがありません</p>
+                    <p className="text-gray-500 mb-4">
+                      {likesCopy.empty[locale === "jp" ? "jp" : locale]}
+                    </p>
                     <Button asChild>
-                      <Link href="/products">商品を見る</Link>
+                      <Link href="/products">
+                        {cartTab.viewProduct[locale === "jp" ? "jp" : locale]}
+                      </Link>
                     </Button>
                   </div>
                 ) : (
@@ -927,7 +1031,9 @@ function MyPageContent() {
                             <div className="flex justify-between items-start">
                               <div>
                                 <h3 className="font-semibold text-lg">
-                                  {like.product.name_jp}
+                                  {locale === "jp"
+                                    ? like.product.name_jp
+                                    : like.product.name_en || like.product.name_jp}
                                 </h3>
                                 <p className="text-gray-600 text-sm">
                                   {like.product.brand}
@@ -941,7 +1047,7 @@ function MyPageContent() {
                                   href={`/products/${like.product.id}`}
                                   className="text-primary hover:underline"
                                 >
-                                  詳細を見る
+                                  {likesCopy.view[locale === "jp" ? "jp" : locale]}
                                 </Link>
                               </div>
                             </div>
@@ -956,12 +1062,18 @@ function MyPageContent() {
             {/* Comments Tab */}
             {activeTab === "comments" && (
               <div>
-                <h2 className="text-2xl font-semibold mb-6">あなたのレビュー</h2>
+                <h2 className="text-2xl font-semibold mb-6">
+                  {l(commentsCopy.title)}
+                </h2>
                 {comments.length === 0 ? (
                   <div className="text-center py-12">
-                    <p className="text-gray-500 mb-4">まだレビューはありません</p>
+                    <p className="text-gray-500 mb-4">
+                      {commentsCopy.empty[locale === "jp" ? "jp" : locale]}
+                    </p>
                     <Button asChild>
-                      <Link href="/products">商品を見る</Link>
+                      <Link href="/products">
+                        {cartTab.viewProduct[locale === "jp" ? "jp" : locale]}
+                      </Link>
                     </Button>
                   </div>
                 ) : (
@@ -978,13 +1090,17 @@ function MyPageContent() {
                             <div className="flex justify-between items-start">
                               <div>
                                 <h3 className="font-semibold text-lg">
-                                  {comment.product?.name_jp ?? "商品"}
+                                  {locale === "jp"
+                                    ? comment.product?.name_jp ?? commentsCopy.product.jp
+                                    : comment.product?.name_en ||
+                                      comment.product?.name_jp ||
+                                      getLocalizedText(commentsCopy.product, locale)}
                                 </h3>
                                 <p className="text-sm text-muted-foreground">
                                   {comment.product?.brand ?? ""}
                                 </p>
                                 <p className="text-xs text-gray-500 mt-1">
-                                  {new Date(comment.createdAt).toLocaleDateString("ja-JP")}
+                                  {new Date(comment.createdAt).toLocaleDateString(dateLocale)}
                                 </p>
                               </div>
                               <div className="text-right text-yellow-500 font-semibold">
@@ -997,13 +1113,13 @@ function MyPageContent() {
                                 className="text-xs text-red-500 hover:underline"
                                 onClick={() => handleDeleteComment(comment.id)}
                               >
-                                削除
+                                {commentsCopy.delete[locale === "jp" ? "jp" : locale]}
                               </button>
                             </div>
                             {comment.product?.id && (
                               <div className="mt-3 text-right">
                                 <Link href={`/products/${comment.product.id}`} className="text-primary hover:underline text-sm">
-                                  商品ページへ
+                                  {commentsCopy.productLink[locale === "jp" ? "jp" : locale]}
                                 </Link>
                               </div>
                             )}

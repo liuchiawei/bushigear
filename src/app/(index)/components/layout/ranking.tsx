@@ -7,25 +7,23 @@ import Image from "next/image";
 import Link from "next/link";
 import { Product } from "@/lib/type";
 import { useIsMobile } from "@/hooks/use-mobile";
-
-const categoryMapping: { [key: string]: string } = {
-  グローブ: "glove",
-  ミット: "mitt",
-  プロテクター: "protector",
-  服: "cloth",
-};
+import { useLocale } from "next-intl";
+import { getLocalizedText, type Locale } from "@/lib/i18n";
 
 export default function Ranking() {
+  const locale = useLocale() as Locale;
   const isMobile = useIsMobile();
-  const [selectedCategory, setSelectedCategory] = useState<string>("グローブ");
+  const categories = content.home.ranking.categories;
+  const [selectedCategory, setSelectedCategory] = useState<string>(
+    categories[0]?.slug ?? "glove"
+  );
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
   const fetchProducts = useCallback(
-    async (categoryName: string) => {
+    async (categorySlug: string) => {
       setLoading(true);
       try {
-        const categorySlug = categoryMapping[categoryName];
         // モバイルの場合は5個、デスクトップの場合は10個取得
         const limit = isMobile ? 3 : 10;
         const response = await fetch(
@@ -46,26 +44,50 @@ export default function Ranking() {
     fetchProducts(selectedCategory);
   }, [selectedCategory, fetchProducts]);
 
-  const handleCategoryClick = (categoryName: string) => {
-    setSelectedCategory(categoryName);
+  const handleCategoryClick = (categorySlug: string) => {
+    setSelectedCategory(categorySlug);
   };
+
+  const sectionTitle = content.home.ranking.section_info.title;
+  const sectionDescription = content.home.ranking.section_info.description;
+  const headerTitleJp =
+    locale === "jp" ? sectionTitle.jp : getLocalizedText(sectionTitle, locale);
+  const headerTitleEn = sectionTitle.en;
+  const headerDescription =
+    locale === "jp"
+      ? sectionDescription.jp
+      : getLocalizedText(sectionDescription, locale);
+
+  const rankingTitle =
+    locale === "jp"
+      ? content.home.ranking.title.jp
+      : getLocalizedText(content.home.ranking.title, locale);
+  const rankingDescription =
+    locale === "jp"
+      ? content.home.ranking.description.jp
+      : getLocalizedText(content.home.ranking.description, locale);
+  const loadingText = getLocalizedText(content.home.ranking.loading, locale);
+
+  const getCategoryLabel = (
+    name: { jp: string; en?: string; cn?: string }
+  ) => (locale === "jp" ? name.jp : getLocalizedText(name, locale));
 
   return (
     <section className="w-full max-w-5xl mx-auto px-4 md:px-0 py-4">
       <SectionHeader
-        title_en={content.home.ranking.section_info.title.en}
-        title_jp={content.home.ranking.section_info.title.jp}
-        description={content.home.ranking.section_info.description.jp}
+        title_en={headerTitleEn}
+        title_jp={headerTitleJp}
+        description={headerDescription}
         reverse={true}
       />
       <div className="grid grid-cols-3 md:grid-cols-4 gap-2">
         <div className="w-full">
           <div className="flex flex-col gap-2 mb-6">
             <h1 className="text-2xl font-bold uppercase">
-              {content.home.ranking.title}
+              {rankingTitle}
             </h1>
             <p className="text-sm text-neutral-400">
-              {content.home.ranking.description}
+              {rankingDescription}
             </p>
           </div>
           <ul className="flex flex-col gap-2">
@@ -73,20 +95,20 @@ export default function Ranking() {
               <li
                 key={category.id}
                 className={`py-2 px-4 border border-gray-300 text-lg font-bold cursor-pointer relative transition-all duration-300 before:content-[''] before:absolute before:top-0 before:left-0 before:right-full hover:before:right-0 before:h-full before:bg-primary before:z-[-1] before:transition-all before:duration-300 ${
-                  selectedCategory === category.name
+                  selectedCategory === category.slug
                     ? "bg-primary text-white"
                     : "hover:bg-primary hover:text-white"
                 }`}
-                onClick={() => handleCategoryClick(category.name)}
+                onClick={() => handleCategoryClick(category.slug)}
               >
-                {category.name}
+                {getCategoryLabel(category.name)}
               </li>
             ))}
           </ul>
         </div>
         {loading ? (
           <div className="col-span-2 md:col-span-3 flex items-center justify-center h-full">
-            <p className="text-gray-600">読み込み中...</p>
+            <p className="text-gray-600">{loadingText}</p>
           </div>
         ) : (
           <div className="grid col-span-2 md:col-span-3 grid-cols-subgrid gap-2">
@@ -100,7 +122,7 @@ export default function Ranking() {
                     index + 1 === 1 ? "bg-accent" : "bg-primary"
                   }`}
                 >
-                  {index + 1}位
+                  {locale === "jp" ? `${index + 1}位` : `#${index + 1}`}
                 </div>
                 <div className="w-full aspect-square flex items-center justify-center mb-6">
                   <Image

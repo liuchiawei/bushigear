@@ -8,9 +8,18 @@ import { PREFECTURES } from "@/constants/prefectures";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
+import { useLocale } from "next-intl";
+import {
+  type Locale,
+  createTranslationGetter,
+  getTranslation,
+  isSimpleTranslation,
+} from "@/lib/i18n";
+import content from "@/data/content.json";
 
 export default function RegisterPage() {
   const router = useRouter();
+  const locale = useLocale() as Locale;
   const [form, setForm] = useState({
     lastName: "",
     firstName: "",
@@ -30,6 +39,14 @@ export default function RegisterPage() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [googleLoading, setGoogleLoading] = useState(false);
+
+  const copy = content.auth.register;
+  const t = createTranslationGetter(copy, locale);
+  const genderOptions = copy.genderOptions;
+  const genderLabel = (key: keyof typeof genderOptions) => {
+    const value = genderOptions[key];
+    return isSimpleTranslation(value) ? getTranslation(value, locale) : "";
+  };
 
   const onChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -55,12 +72,12 @@ export default function RegisterPage() {
     if (!file) return;
 
     if (!file.type.startsWith("image/")) {
-      setError("画像ファイルを選択してください");
+      setError(t("imageFileError"));
       return;
     }
 
     if (file.size > 5 * 1024 * 1024) {
-      setError("ファイルサイズは5MB以下にしてください");
+      setError(t("fileSizeError"));
       return;
     }
 
@@ -78,13 +95,13 @@ export default function RegisterPage() {
 
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        throw new Error(data.error || "アップロードに失敗しました");
+        throw new Error(data.error || t("uploadFailed"));
       }
 
       const data = await res.json();
       setAvatarUrl(data.url);
     } catch (err: any) {
-      setError(err.message || "アップロードに失敗しました");
+      setError(err.message || t("uploadFailed"));
     } finally {
       setUploading(false);
     }
@@ -95,31 +112,31 @@ export default function RegisterPage() {
     setError("");
 
     if (!form.lastName.trim()) {
-      setError("姓を入力してください。");
+      setError(t("lastNameRequired"));
       return;
     }
     if (!form.firstName.trim()) {
-      setError("名を入力してください。");
+      setError(t("firstNameRequired"));
       return;
     }
     if (!/^\d{3}-?\d{4}$/.test(form.postalCode)) {
-      setError("郵便番号は 123-4567 の形式（半角）で入力してください。");
+      setError(t("postalCodeFormat"));
       return;
     }
     if (!form.prefecture) {
-      setError("都道府県を選択してください。");
+      setError(t("prefectureRequired"));
       return;
     }
     if (!form.city.trim()) {
-      setError("市区町村を入力してください。");
+      setError(t("cityRequired"));
       return;
     }
     if (!form.street.trim()) {
-      setError("丁目・番地・号を入力してください。");
+      setError(t("streetRequired"));
       return;
     }
     if (/[０-９]/.test(form.street)) {
-      setError("丁目・番地・号の数字は半角で入力してください。");
+      setError(t("streetNumberFormat"));
       return;
     }
 
@@ -151,10 +168,10 @@ export default function RegisterPage() {
         router.push("/login?registered=true");
       } else {
         const data = await res.json().catch(() => null);
-        setError(data?.message || "登録に失敗しました");
+        setError(data?.message || t("registrationFailed"));
       }
     } catch {
-      setError("予期しないエラーが発生しました。もう一度お試しください。");
+      setError(getTranslation(content.auth.login.unexpectedError, locale));
     } finally {
       setSubmitting(false);
     }
@@ -166,14 +183,23 @@ export default function RegisterPage() {
     try {
       await signIn("google");
     } catch {
-      setError("Google登録に失敗しました。もう一度お試しください。");
+      setError(t("googleRegisterFailed"));
       setGoogleLoading(false);
     }
   };
 
+  const dateInputLang =
+    locale === "jp"
+      ? "ja-JP"
+      : locale === "zh_tw"
+      ? "zh-TW"
+      : locale === "zh_cn"
+      ? "zh-CN"
+      : "en-US";
+
   return (
-    <div className="w-full py-16">
-      <h1 className="text-2xl font-bold mb-6">新規登録</h1>
+    <main className="w-full max-w-md mx-auto p-8">
+      <h1 className="text-2xl font-bold mb-6">{t("pageTitle")}</h1>
 
       {error && (
         <div className="mb-4 p-3 bg-destructive/10 border border-destructive/20 rounded-md">
@@ -184,7 +210,7 @@ export default function RegisterPage() {
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="block text-sm font-medium mb-1">
-            プロフィール画像（任意）
+            {t("profileImageLabel")}
           </label>
           {avatarUrl && (
             <div className="mb-2">
@@ -198,26 +224,38 @@ export default function RegisterPage() {
             </div>
           )}
           <div className="relative">
-            <input
-              title="avatar"
-              type="file"
-              accept="image/*"
-              onChange={handleAvatarUpload}
-              disabled={uploading || submitting || googleLoading}
-              className="w-full p-2 border rounded file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-sm file:font-medium file:bg-primary file:text-primary-foreground hover:file:bg-primary/90 disabled:opacity-50"
-            />
+            <label className="flex items-center gap-2 cursor-pointer w-full p-2 border rounded">
+              <div className="px-3 py-1 bg-primary text-primary-foreground rounded text-sm">
+                {getTranslation(content.auth.register.fileSelect, locale)}
+              </div>
+              <span className="text-sm text-muted-foreground truncate">
+                {avatarUrl
+                  ? avatarUrl.split("/").pop()
+                  : getTranslation(content.auth.register.noFile, locale)}
+              </span>
+              <input
+                title="avatar"
+                type="file"
+                accept="image/*"
+                onChange={handleAvatarUpload}
+                disabled={uploading || submitting || googleLoading}
+                className="hidden"
+              />
+            </label>
             {uploading && (
               <div className="absolute inset-0 flex items-center justify-center bg-background/80 rounded">
                 <div className="flex items-center gap-2">
                   <Spinner size="sm" />
-                  <span className="text-sm">アップロード中...</span>
+                  <span className="text-sm">{t("uploading")}</span>
                 </div>
               </div>
             )}
           </div>
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">氏</label>
+          <label className="block text-sm font-medium mb-1">
+            {t("lastNameLabel")}
+          </label>
           <Input
             title="lastName"
             name="lastName"
@@ -229,7 +267,9 @@ export default function RegisterPage() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">名</label>
+          <label className="block text-sm font-medium mb-1">
+            {t("firstNameLabel")}
+          </label>
           <Input
             title="firstName"
             name="firstName"
@@ -241,7 +281,9 @@ export default function RegisterPage() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">Email</label>
+          <label className="block text-sm font-medium mb-1">
+            {getTranslation(content.auth.login.emailLabel, locale)}
+          </label>
           <Input
             title="email"
             name="email"
@@ -253,7 +295,9 @@ export default function RegisterPage() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">Password</label>
+          <label className="block text-sm font-medium mb-1">
+            {getTranslation(content.auth.login.passwordLabel, locale)}
+          </label>
           <Input
             title="password"
             name="password"
@@ -265,26 +309,30 @@ export default function RegisterPage() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">性別</label>
+          <label className="block text-sm font-medium mb-1">
+            {t("genderLabel")}
+          </label>
           <select
             title="gender"
             name="gender"
             value={form.gender}
             onChange={onChange}
             disabled={submitting || googleLoading}
-            className="w-full h-9 px-3 py-1 text-sm border rounded-md bg-background disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full p-2 border rounded bg-background text-sm disabled:opacity-50 disabled:cursor-not-allowed"
             required
           >
-            <option value="">選択してください</option>
-            <option value="male">男性</option>
-            <option value="female">女性</option>
-            <option value="other">その他</option>
+            <option value="">{t("selectPlaceholder")}</option>
+            <option value="male">{genderLabel("male")}</option>
+            <option value="female">{genderLabel("female")}</option>
+            <option value="other">{genderLabel("other")}</option>
           </select>
         </div>
         <div>
-          <h2 className="text-lg font-semibold mt-6 mb-2">住所</h2>
+          <h2 className="text-lg font-semibold mt-6 mb-2">
+            {t("addressSection")}
+          </h2>
           <label className="block text-sm font-medium mb-1">
-            郵便番号（半角数字）
+            {t("postalCodeLabel")}
           </label>
           <Input
             name="postalCode"
@@ -297,16 +345,18 @@ export default function RegisterPage() {
           />
 
           {/* 都道府県（選單） */}
-          <label className="block text-sm font-medium mb-1">都道府県</label>
+          <label className="block text-sm font-medium mb-1">
+            {t("prefectureLabel")}
+          </label>
           <select
             title="prefecture"
             name="prefecture"
             value={form.prefecture}
             onChange={onChange}
             disabled={submitting || googleLoading}
-            className="w-full h-9 px-3 py-1 text-sm border rounded-md bg-background disabled:opacity-50 disabled:cursor-not-allowed mb-3"
+            className="w-full p-2 border rounded bg-background text-sm disabled:opacity-50 disabled:cursor-not-allowed mb-3"
           >
-            <option value="">選択してください</option>
+            <option value="">{t("selectPlaceholder")}</option>
             {PREFECTURES.map((p) => (
               <option key={p} value={p}>
                 {p}
@@ -315,7 +365,9 @@ export default function RegisterPage() {
           </select>
 
           {/* 市区町村 */}
-          <label className="block text-sm font-medium mb-1">市区町村</label>
+          <label className="block text-sm font-medium mb-1">
+            {t("cityLabel")}
+          </label>
           <Input
             title="city"
             name="city"
@@ -327,7 +379,7 @@ export default function RegisterPage() {
 
           {/* 丁目・番地・号（数字は半角数字） */}
           <label className="block text-sm font-medium mb-1">
-            丁目・番地・号（数字は半角）
+            {t("streetLabel")}
           </label>
           <Input
             title="street"
@@ -340,7 +392,7 @@ export default function RegisterPage() {
 
           {/* 建物名／会社名（任意） */}
           <label className="block text-sm font-medium mb-1">
-            建物名／会社名（任意）
+            {t("buildingLabel")}
           </label>
           <Input
             title="building"
@@ -353,7 +405,7 @@ export default function RegisterPage() {
 
           {/* 部屋番号（任意） */}
           <label className="block text-sm font-medium mb-1">
-            部屋番号（任意）
+            {t("roomLabel")}
           </label>
           <Input
             title="room"
@@ -365,11 +417,14 @@ export default function RegisterPage() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">誕生日</label>
+          <label className="block text-sm font-medium mb-1">
+            {t("birthdayLabel")}
+          </label>
           <Input
             title="birthday"
             name="birthday"
             type="date"
+            lang={dateInputLang}
             value={form.birthday}
             onChange={onChange}
             disabled={submitting || googleLoading}
@@ -384,42 +439,38 @@ export default function RegisterPage() {
           {submitting ? (
             <>
               <Spinner size="sm" variant="white" />
-              登録中...
+              {t("registering")}
             </>
           ) : (
-            "登録"
+            t("registerButton")
           )}
         </Button>
       </form>
 
-      <div className="my-6 flex items-center gap-4">
-        <div className="flex-1 border-t"></div>
-        <span className="text-sm text-muted-foreground">または</span>
-        <div className="flex-1 border-t"></div>
-      </div>
+      <hr className="my-6" />
 
       <Button
         onClick={handleGoogleSignIn}
-        variant="default"
+        variant="destructive"
         className="w-full"
         disabled={submitting || googleLoading}
       >
         {googleLoading ? (
           <>
             <Spinner size="sm" />
-            Googleで登録中...
+            {t("googleRegistering")}
           </>
         ) : (
-          "Googleで登録"
+          t("googleRegister")
         )}
       </Button>
 
       <p className="mt-6 text-center text-sm">
-        既にアカウントをお持ちの方は{" "}
+        {t("alreadyHaveAccount")}{" "}
         <a href="/login" className="text-primary underline hover:no-underline">
-          こちら
+          {getTranslation(content.auth.login.pageTitle, locale)}
         </a>
       </p>
-    </div>
+    </main>
   );
 }

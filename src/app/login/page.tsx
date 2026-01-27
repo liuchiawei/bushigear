@@ -7,19 +7,30 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useLocale } from "next-intl";
+import {
+  type Locale,
+  createTranslationGetter,
+  getTranslation,
+} from "@/lib/i18n";
+import content from "@/data/content.json";
 
 export default function LoginPage() {
   const router = useRouter();
   const { data: session, status } = useSession();
+  const locale = useLocale() as Locale;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
 
+  const copy = content.auth.login;
+  const t = createTranslationGetter(copy, locale);
+
   if (status === "loading") {
     return (
-      <main className="p-8 max-w-md mx-auto">
+      <main className="w-full max-w-md mx-auto p-8">
         <Skeleton className="h-8 w-32 mb-4" />
         <div className="space-y-4">
           <Skeleton className="h-10 w-full" />
@@ -28,23 +39,28 @@ export default function LoginPage() {
         </div>
         <div className="mt-6 flex items-center justify-center gap-2">
           <Spinner size="sm" />
-          <span className="text-sm text-muted-foreground">読み込み中...</span>
+          <span className="text-sm text-muted-foreground">{t("loading")}</span>
         </div>
       </main>
     );
   }
 
   if (session) {
+    const welcomeText = getTranslation(copy.welcome, locale).replace(
+      "{email}",
+      session.user?.email ?? ""
+    );
+
     return (
-      <main className="p-8 max-w-md mx-auto text-center">
-        <h1 className="text-2xl font-bold mb-4">ログイン済み</h1>
-        <p className="mb-4">ようこそ、{session.user?.email}</p>
+      <main className="w-full max-w-md mx-auto p-8 text-center">
+        <h1 className="text-2xl font-bold mb-4">{t("loggedInTitle")}</h1>
+        <p className="mb-4">{welcomeText}</p>
         <Button
           onClick={() => signOut()}
           variant="destructive"
           className="w-full"
         >
-          ログアウト
+          {t("logout")}
         </Button>
       </main>
     );
@@ -63,14 +79,12 @@ export default function LoginPage() {
       });
 
       if (res?.error) {
-        setError(
-          "ログインに失敗しました。メールアドレスとパスワードを確認してください。"
-        );
+        setError(t("loginFailed"));
       } else {
         router.push("/");
       }
     } catch {
-      setError("予期しないエラーが発生しました。もう一度お試しください。");
+      setError(t("unexpectedError"));
     } finally {
       setLoading(false);
     }
@@ -82,14 +96,14 @@ export default function LoginPage() {
     try {
       await signIn("google");
     } catch {
-      setError("Googleログインに失敗しました。もう一度お試しください。");
+      setError(t("googleLoginFailed"));
       setGoogleLoading(false);
     }
   };
 
   return (
-    <div className="w-full py-16 flex flex-col items-center justify-center">
-      <h1 className="text-2xl font-bold mb-6">ログイン</h1>
+    <main className="w-full max-w-md mx-auto p-8">
+      <h1 className="text-2xl font-bold mb-6">{t("pageTitle")}</h1>
 
       {error && (
         <div className="mb-4 p-3 bg-destructive/10 border border-destructive/20 rounded-md">
@@ -97,12 +111,9 @@ export default function LoginPage() {
         </div>
       )}
 
-      <form
-        onSubmit={handleSubmit}
-        className="w-full space-y-4 border bg-card rounded-xl p-4"
-      >
-        <div className="flex flex-col md:flex-row md:items-center gap-2">
-          <label className="block text-sm font-medium mb-1">Email</label>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="space-y-1">
+          <label className="block text-sm font-medium">{t("emailLabel")}</label>
           <Input
             title="email"
             type="email"
@@ -113,8 +124,10 @@ export default function LoginPage() {
             required
           />
         </div>
-        <div className="flex flex-col md:flex-row md:items-center gap-2">
-          <label className="block text-sm font-medium mb-1">Password</label>
+        <div className="space-y-1">
+          <label className="block text-sm font-medium">
+            {t("passwordLabel")}
+          </label>
           <Input
             title="password"
             type="password"
@@ -133,45 +146,41 @@ export default function LoginPage() {
           {loading ? (
             <>
               <Spinner size="sm" variant="white" />
-              ログイン中...
+              {t("loggingIn")}
             </>
           ) : (
-            "ログイン"
+            t("loginButton")
           )}
         </Button>
       </form>
 
-      <div className="my-6 flex items-center gap-4">
-        <div className="flex-1 border-t"></div>
-        <span className="text-sm text-muted-foreground">または</span>
-        <div className="flex-1 border-t"></div>
-      </div>
+      <hr className="my-6" />
 
       <Button
         onClick={handleGoogleSignIn}
-        variant="default"
+        variant="destructive"
         className="w-full"
         disabled={loading || googleLoading}
       >
         {googleLoading ? (
           <>
             <Spinner size="sm" />
-            Googleでログイン中...
+            {t("googleLoggingIn")}
           </>
         ) : (
-          "Googleでログイン"
+          t("googleLogin")
         )}
       </Button>
 
-      <p className="mt-6 text-center text-sm">
-        新規登録は{" "}
+      <p className="mt-4 text-center text-sm">
+        {t("newHerePrefix")}{" "}
         <a
           href="/register"
           className="text-primary underline hover:no-underline"
         >
-          こちら
+          {t("registerHere")}
         </a>
       </p>
-    </div>
+    </main>
   );
 }

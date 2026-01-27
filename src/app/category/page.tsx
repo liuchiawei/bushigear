@@ -1,8 +1,13 @@
+"use client";
+
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import content from "@/data/content.json";
+import { useLocale } from "next-intl";
+import { getLocalizedText, type Locale } from "@/lib/i18n";
 
 export default function CategoryPage() {
+  const locale = useLocale() as Locale;
   return (
     <div className="w-full py-16 flex flex-col items-center justify-center gap-12">
       <header className="w-full relative select-none overflow-hidden flex justify-center items-center">
@@ -21,7 +26,11 @@ export default function CategoryPage() {
             asChild
             key={category.id}
           >
-            <Link href={`/category/${category.slug}`}>{category.name.jp}</Link>
+            <Link href={`/category/${category.slug}`}>
+              {locale === "jp"
+                ? category.name.jp
+                : getLocalizedText(category.name as any, locale)}
+            </Link>
           </Button>
         ))}
       </section>
