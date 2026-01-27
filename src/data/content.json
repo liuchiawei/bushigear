@@ -1409,10 +1409,10 @@
   },
   "products_detail": {
     "price": {
-      "jp": "円（税込）",
-      "en": "Yen (Tax included)",
-      "zh_tw": "日元 (含税)",
-      "zh_cn": "日元 (含税)"
+      "jp": "（税込）",
+      "en": " (Tax included)",
+      "zh_tw": " (含税)",
+      "zh_cn": " (含税)"
     },
     "quantity": {
       "jp": "数量",

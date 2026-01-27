@@ -90,14 +90,14 @@ export default function Sales() {
                       index === 0 ? "text-sm md:text-lg" : "text-sm"
                     }`}
                   >
-                    ￥{item.price}
+                    ¥{item.price.toLocaleString()}
                   </h5>
                   <h4
                     className={`text-accent font-bold ${
                       index === 0 ? "text-xl md:text-3xl" : "text-lg"
                     }`}
                   >
-                    ￥{item.price}円
+                    ￥{item.price.toLocaleString()}
                   </h4>
                   <p className="text-xs text-muted-foreground">税込</p>
                 </div>
