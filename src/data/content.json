@@ -1535,19 +1535,19 @@
       },
       "tones": {
         "friendly": {
-          "jp": "友好",
+          "jp": "ポジティブ",
           "en": "Friendly",
           "zh_tw": "友好",
           "zh_cn": "友好"
         },
         "neutral": {
-          "jp": "中立",
+          "jp": "普通",
           "en": "Neutral",
           "zh_tw": "中立",
           "zh_cn": "中立"
         },
         "negative": {
-          "jp": "不満",
+          "jp": "ネガティブ",
           "en": "Critical",
           "zh_tw": "不滿",
           "zh_cn": "不满"
