@@ -214,7 +214,7 @@ export default function CheckoutPage() {
             <div className="mt-6 p-4 bg-gray-50 rounded-lg">
               <div className="flex justify-between items-center">
                 <span className="text-xl font-semibold">{t("total")}:</span>
-                <span className="text-2xl font-bold text-green-600">
+                <span className="text-2xl font-bold text-accent">
                   ¥{cart.total.toLocaleString()}
                 </span>
               </div>
@@ -224,16 +224,16 @@ export default function CheckoutPage() {
           <div>
             <h2 className="text-2xl font-semibold mb-6">{t("customerInfo")}</h2>
             <div className="space-y-6">
-              <div className="p-6 border rounded-lg bg-blue-50 border-blue-200">
-                <h3 className="font-semibold text-blue-800 mb-2">
+              <div className="p-6 space-y-2 border rounded-lg bg-muted-foreground/20 border-border">
+                <h3 className="font-semibold text-primary">
                   💳 {securePaymentTitle}
                 </h3>
-                <p className="text-sm text-blue-700">
+                <p className="text-sm text-muted-foreground">
                   {securePaymentLines[0]}
                   <br />
                   {securePaymentLines[1]}
                 </p>
-                <p className="text-sm text-blue-700 mt-2">
+                <p className="text-sm text-primary">
                   <a
                     href="/legal/tokusho"
                     target="_blank"

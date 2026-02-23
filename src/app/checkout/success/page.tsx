@@ -109,7 +109,7 @@ function CheckoutSuccessContent() {
     <main className="w-full min-h-screen py-16">
       <div className="w-full max-w-4xl mx-auto px-4">
         <div className="text-center mb-8">
-          <div className="text-green-500 text-5xl mb-4">✓</div>
+          <div className="text-accent text-5xl mb-4">✓</div>
           <h1 className="text-3xl font-bold mb-2">ご注文ありがとうございます！</h1>
           <p className="text-lg text-gray-600">
             お支払いが正常に完了しました
@@ -152,16 +152,16 @@ function CheckoutSuccessContent() {
           <div className="mt-6 pt-6 border-t">
             <div className="flex justify-between items-center">
               <span className="text-xl font-semibold">合計:</span>
-              <span className="text-2xl font-bold text-green-600">
+              <span className="text-2xl font-bold text-accent">
                 ¥{totalAmount.toLocaleString()}
               </span>
             </div>
           </div>
         </div>
 
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
-          <h3 className="font-semibold text-blue-800 mb-2">📧 注文確認メール</h3>
-          <p className="text-sm text-blue-700">
+        <div className="bg-primary/20 border border-accent rounded-lg p-6 mb-6">
+          <h3 className="font-semibold text-accent mb-2">📧 注文確認メール</h3>
+          <p className="text-sm text-accent">
             ご注文確認メールを送信いたしました。メールボックスをご確認ください。
             <br />
             メールが届かない場合は、迷惑メールフォルダもご確認ください。
